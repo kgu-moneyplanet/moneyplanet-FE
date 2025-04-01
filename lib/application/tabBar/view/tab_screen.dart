@@ -14,8 +14,10 @@ class _TabScreenState extends State<TabScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: viewModel.getCurrentPage(),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         items: viewModel.navBarItems,
         currentIndex: viewModel.selectedIndex,
