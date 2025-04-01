@@ -1,9 +1,16 @@
 ## Code Convention
 
-### 1️⃣ **파일명**
+### 1️⃣ **파일명 & 클래스명**
+
+#### 파일명
 **LowerCase**를 사용합니다.
 
 ex) `test_file.dart`
+
+#### 클래스명
+**UpperCase**를 사용합니다.
+
+ex) `RegisterView`
 
 <br>
 
