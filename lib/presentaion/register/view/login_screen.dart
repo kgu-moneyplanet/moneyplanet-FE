@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/presentaion/register/view/register_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class RegisterScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 100),
             const Text(
-              '회원가입',
+              '로그인',
               style: TextStyle(
                 fontSize: 24,
                 color: Colors.white,
@@ -38,14 +39,15 @@ class RegisterScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // 아이디 입력
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('이름', style: TextStyle(color: textColor)),
+                      child: Text('아이디', style: TextStyle(color: textColor)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
                       decoration: InputDecoration(
-                        hintText: '이름을 입력해주세요',
+                        hintText: '아이디를 입력해주세요',
                         filled: true,
                         fillColor: inputColor,
                         border: OutlineInputBorder(
@@ -59,15 +61,17 @@ class RegisterScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    // 비밀번호 입력
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('이메일',
+                      child: Text('비밀번호',
                           style: TextStyle(color: textColor)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
+                      obscureText: true,
                       decoration: InputDecoration(
-                        hintText: 'example@example.com',
+                        hintText: '비밀번호를 입력해주세요',
                         filled: true,
                         fillColor: inputColor,
                         border: OutlineInputBorder(
@@ -79,52 +83,27 @@ class RegisterScreen extends StatelessWidget {
                           vertical: 12,
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 8),
+                    // 아이디/비밀번호 찾기
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('아이디 찾기',
+                              style: TextStyle(color: Colors.black)),
+                        ),
+                        const Text('|'),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('비밀번호 찾기',
+                              style: TextStyle(color: Colors.black)),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('전화번호',
-                          style: TextStyle(color: textColor)),
-                    ),
-                    const SizedBox(height: 6),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: '+123 456 789',
-                        filled: true,
-                        fillColor: inputColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('생일',
-                          style: TextStyle(color: textColor)),
-                    ),
-                    const SizedBox(height: 6),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'DD/MM/YY',
-                        filled: true,
-                        fillColor: inputColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 40),
+                    // 로그인 버튼
                     SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -136,15 +115,21 @@ class RegisterScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('다음',
-                          style: TextStyle(color:Colors.white)),
+                        child: const Text('로그인',
+                            style: TextStyle(color:Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 16),
+                    // 회원가입
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                      );
+                      },
                       child: Text(
-                        '이미 계정이 있으신가요? 로그인하기',
+                        '계정이 없으신가요? 회원가입하기',
                         style: TextStyle(color: textColor),
                       ),
                     ),
