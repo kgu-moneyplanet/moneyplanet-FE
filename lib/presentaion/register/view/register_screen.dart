@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/presentaion/register/view/register_screen2.dart';
+
+import 'login_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -17,7 +20,7 @@ class RegisterScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 100),
             const Text(
-              '회원가입',
+              '회원 가입',
               style: TextStyle(
                 fontSize: 24,
                 color: Colors.white,
@@ -129,7 +132,12 @@ class RegisterScreen extends StatelessWidget {
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const RegisterScreen2()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: buttonColor,
                           shape: RoundedRectangleBorder(
@@ -142,7 +150,12 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        );
+                      },
                       child: Text(
                         '이미 계정이 있으신가요? 로그인하기',
                         style: TextStyle(color: textColor),

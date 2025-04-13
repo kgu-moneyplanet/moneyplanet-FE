@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/presentaion/register/view/guideprofile_screen.dart';
-import 'package:money_planet/presentaion/register/view/register_screen.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+import 'login_screen.dart';
+
+class RegisterScreen2 extends StatelessWidget {
+  const RegisterScreen2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class LoginScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 100),
             const Text(
-              '로그인',
+              '회원 가입',
               style: TextStyle(
                 fontSize: 24,
                 color: Colors.white,
@@ -40,37 +41,12 @@ class LoginScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // 아이디 입력
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('아이디', style: TextStyle(color: textColor)),
+                      child: Text('비밀번호', style: TextStyle(color: textColor)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
-                      decoration: InputDecoration(
-                        hintText: '아이디를 입력해주세요',
-                        filled: true,
-                        fillColor: inputColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // 비밀번호 입력
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('비밀번호',
-                          style: TextStyle(color: textColor)),
-                    ),
-                    const SizedBox(height: 6),
-                    TextField(
-                      obscureText: true,
                       decoration: InputDecoration(
                         hintText: '비밀번호를 입력해주세요',
                         filled: true,
@@ -85,52 +61,59 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    // 아이디/비밀번호 찾기
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text('아이디 찾기',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                        const Text('|'),
-                        TextButton(
-                          onPressed: () {},
-                          child: const Text('비밀번호 찾기',
-                              style: TextStyle(color: Colors.black)),
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 16),
-                    // 로그인 버튼
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('비밀번호 확인',
+                          style: TextStyle(color: textColor)),
+                    ),
+                    const SizedBox(height: 6),
+                    TextField(
+                      decoration: InputDecoration(
+                        hintText: '비밀번호를 다시 입력해 주세요',
+                        filled: true,
+                        fillColor: inputColor,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 240),
                     SizedBox(
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const GuideProfileScreen()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: buttonColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('로그인',
+                        child: const Text('다음',
                             style: TextStyle(color:Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // 회원가입
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const GuideProfileScreen()),
-                      );
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                        );
                       },
                       child: Text(
-                        '계정이 없으신가요? 회원가입하기',
+                        '이미 계정이 있으신가요? 로그인하기',
                         style: TextStyle(color: textColor),
                       ),
                     ),

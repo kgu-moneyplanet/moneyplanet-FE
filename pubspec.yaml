@@ -60,7 +60,7 @@ flutter:
 #   이미지 등록
   assets:
     - lib/global/assets/images/test.JPG
-
+    - lib/global/assets/images/rocket3.png
 
   # 폰트 등록
   fonts:
