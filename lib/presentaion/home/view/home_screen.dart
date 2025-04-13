@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
-import 'package:money_planet/global/theme/textStyles.dart';
+import 'package:money_planet/presentaion/home/view/home_first_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        '홈 화면',
-        style: customTextStyle(fontFamily: Pretendard_Medium_12, color: primary_050),
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: neutral_900,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+                children: [
+                  home_first_section(),
+
+                  SizedBox(height: 48,),
+
+
+
+                ],
+            ),
+          ),
+        ),
       ),
     );
   }
