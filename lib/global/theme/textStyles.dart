@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+TextStyle customTextStyle({
+  required TextStyle fontFamily,
+  Color? color,
+}) {
+  return fontFamily.copyWith(color: color);
+}
 
 // Mark: - Bold
 

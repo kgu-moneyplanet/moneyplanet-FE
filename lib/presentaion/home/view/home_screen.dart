@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -6,10 +7,10 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Text(
         '홈 화면',
-        style: Pretendard_Bold_18,
+        style: customTextStyle(fontFamily: Pretendard_Medium_12, color: primary_050),
       ),
     );
   }
