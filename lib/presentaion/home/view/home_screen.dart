@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 HomeThirdSection(),
 
-                SizedBox(height: 70),
+                SizedBox(height: 50),
 
               ],
             ),

@@ -20,7 +20,7 @@ class DiaryModel {
   });
 }
 
-List<DiaryModel> mockLedgerData = [
+List<DiaryModel> DiaryMockData = [
   DiaryModel(
     isIncome: false,
     date: DateTime(2025, 4, 9),

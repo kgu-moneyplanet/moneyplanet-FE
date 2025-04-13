@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/global/theme/colors.dart';
+import 'package:money_planet/global/theme/textStyles.dart';
+import 'package:money_planet/presentaion/diary/model/diary_model.dart';
 
 import '../../../global/components/consumption_item.dart';
 
@@ -36,12 +39,13 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
           borderRadius: BorderRadius.circular(12),
           color: Colors.white,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 달 바꾸는 부분 & 자세히 보기
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
@@ -52,9 +56,9 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
                       ),
                       Text(
                         "$selectedMonth월",
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
+                        style: customTextStyle(
+                          fontFamily: Pretendard_Semibold_24,
+                          color: neutral_1100,
                         ),
                       ),
                       IconButton(
@@ -63,75 +67,132 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
                       ),
                     ],
                   ),
-                  TextButton(onPressed: () {}, child: const Text("자세히보기")),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      "자세히보기",
+                      style: customTextStyle(
+                        fontFamily: Pretendard_Medium_12,
+                        color: neutral_300,
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 20),
-              Row(
+            ),
+
+            // 지출
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  SizedBox(width: 10),
+                  Text(
+                    "지출",
+                    style: customTextStyle(
+                      fontFamily: Pretendard_Semibold_16,
+                      color: neutral_400,
+                    ),
+                  ),
+                  Spacer(),
+                  Text(
+                    "475,180 원",
+                    style: customTextStyle(
+                      fontFamily: Pretendard_Medium_24,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                ],
+              ),
+            ),
+
+            // 수입
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  SizedBox(width: 10),
+                  Text(
+                    "수입",
+                    style: customTextStyle(
+                      fontFamily: Pretendard_Semibold_16,
+                      color: neutral_400,
+                    ),
+                  ),
+                  Spacer(),
+                  Text(
+                    "0 원",
+                    style: customTextStyle(
+                      fontFamily: Pretendard_Medium_24,
+                      color: Colors.black,
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 20),
+
+            // daily, weekly, monthly 선택 버튼
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  for (var view in ['Daily', 'Weekly', 'Monthly'])
+                  for (var viewType in ['Daily', 'Weekly', 'Monthly'])
                     ElevatedButton(
-                      onPressed: () => changeView(view),
+                      onPressed: () => changeView(viewType),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            selectedView == view ? Colors.blue : Colors.white,
+                            selectedView == viewType
+                                ? primary_400
+                                : primary_050,
                         foregroundColor:
-                            selectedView == view ? Colors.white : Colors.blue,
+                            selectedView == viewType
+                                ? Colors.white
+                                : primary_400,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(6),
                           side: const BorderSide(color: Colors.blue),
                         ),
                       ),
-                      child: Text(view),
+                      child: Text(
+                        viewType,
+                        style: customTextStyle(
+                          fontFamily: Pretendard_Semibold_18,
+                        ),
+                      ),
                     ),
                 ],
               ),
-              const SizedBox(height: 20),
-              Text("9일 오늘", style: TextStyle(color: Colors.grey[600])),
-              const Divider(),
-              Column(
-                children: const [
-                  ConsumptionItem(
-                    icon: Icons.ramen_dining,
-                    title: "소비내역",
-                    subtitle: "식비",
-                    amount: "- 20,000원",
-                  ),
-                  ConsumptionItem(
-                    icon: Icons.local_cafe,
-                    title: "CU",
-                    subtitle: "카페/간식",
-                    amount: "- 3,500원",
-                  ),
-                  ConsumptionItem(
-                    icon: Icons.shopping_bag,
-                    title: "쇼핑몰",
-                    subtitle: "패션/쇼핑",
-                    amount: "- 60,000원",
-                  ),
-                  ConsumptionItem(
-                    icon: Icons.list_alt,
-                    title: "다이소",
-                    subtitle: "생활",
-                    amount: "- 5,000원",
-                  ),
-                  ConsumptionItem(
-                    icon: Icons.local_shipping,
-                    title: "택시",
-                    subtitle: "교통",
-                    amount: "- 5,800원",
-                  ),
-                  ConsumptionItem(
-                    icon: Icons.liquor,
-                    title: "PC방",
-                    subtitle: "여가생활",
-                    amount: "- 2,000원",
-                  ),
-                ],
+            ),
+
+            const SizedBox(height: 30),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text("9일 오늘", style: TextStyle(color: Colors.grey[600])),
+            ),
+
+            // 구분선
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Divider(),
+            ),
+
+            // 리스트 보여주는 곳
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: DiaryMockData.map((item) => ConsumptionItem(item: item)).toList(),
               ),
-            ],
-          ),
+            ),
+
+            const SizedBox(height: 20),
+
+          ],
         ),
       ),
     );

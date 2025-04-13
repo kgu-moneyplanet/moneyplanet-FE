@@ -39,6 +39,9 @@ class HomeSecondSection extends StatelessWidget {
                       ),
                     ],
                   ),
+
+                  SizedBox(height: 10),
+
                   Text(
                     "도달률 50%",
                     style: customTextStyle(
@@ -141,7 +144,7 @@ class HomeSecondSection extends StatelessWidget {
                                   "30,000원",
                                   style: customTextStyle(
                                     fontFamily: Pretendard_Semibold_14,
-                                    color: Colors.red,
+                                    color: neutral_1100,
                                   ),
                                 ),
 
