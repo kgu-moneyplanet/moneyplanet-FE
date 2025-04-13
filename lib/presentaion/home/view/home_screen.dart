@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/presentaion/home/view/home_first_section.dart';
 
+import 'home_second_section.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -13,14 +15,13 @@ class HomeScreen extends StatelessWidget {
         body: SafeArea(
           child: SingleChildScrollView(
             child: Column(
-                children: [
-                  home_first_section(),
+              children: [
+                HomeFirstSection(),
 
-                  SizedBox(height: 48,),
+                SizedBox(height: 40),
 
-
-
-                ],
+                HomeSecondSection(),
+              ],
             ),
           ),
         ),

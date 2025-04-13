@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
-class home_first_section extends StatelessWidget {
-  const home_first_section({super.key});
+class HomeFirstSection extends StatelessWidget {
+  const HomeFirstSection({super.key});
 
   @override
   Widget build(BuildContext context) {

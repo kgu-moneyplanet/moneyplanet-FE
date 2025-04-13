@@ -63,6 +63,13 @@ flutter:
 
     - lib/global/assets/images/icons/bell_01.png
     - lib/global/assets/images/icons/help_circle.png
+    - lib/global/assets/images/icons/category_car.png
+    - lib/global/assets/images/icons/category_coffee.png
+    - lib/global/assets/images/icons/category_food.png
+    - lib/global/assets/images/icons/category_health.png
+    - lib/global/assets/images/icons/category_life.png
+    - lib/global/assets/images/icons/category_rest.png
+    - lib/global/assets/images/icons/category_shopping.png
 
     - lib/global/assets/images/planet_icon/planet1.png
     - lib/global/assets/images/planet_icon/planet2.png
@@ -72,6 +79,7 @@ flutter:
     - lib/global/assets/images/planet_icon/planet6.png
     - lib/global/assets/images/planet_icon/planet7.png
     - lib/global/assets/images/planet_icon/planet8.png
+    - lib/global/assets/images/planet_icon/planet_border.png
 
 
   # 폰트 등록
