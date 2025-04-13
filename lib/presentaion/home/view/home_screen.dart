@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/global/theme/textStyles.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -8,7 +9,7 @@ class HomeScreen extends StatelessWidget {
     return const Center(
       child: Text(
         '홈 화면',
-        style: TextStyle(fontFamily: "Pretendard", fontWeight: FontWeight.w700),
+        style: Pretendard_Bold_18,
       ),
     );
   }
