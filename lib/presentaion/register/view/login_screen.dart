@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/global/theme/colors.dart';
+import 'package:money_planet/global/theme/textStyles.dart';
 import 'package:money_planet/presentaion/register/view/guideprofile_screen.dart';
-import 'package:money_planet/presentaion/register/view/register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -8,9 +9,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final backgroundColor = const Color(0xFFD7E3FF); // 배경
-    final inputColor = Colors.white;
-    final buttonColor = const Color(0xFF9292A1); // 회색 버튼
-    final textColor = const Color(0xFF000000);
+    final buttonColor = const Color(0xFF9292A1); //회색 버튼
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -18,12 +17,10 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 100),
-            const Text(
-              '로그인',
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+            Center(
+              child: Text(
+                '로그인',
+                style: customTextStyle(fontFamily: Pretendard_Bold_24,color: secondary_050_1)
               ),
             ),
             const SizedBox(height: 60),
@@ -43,14 +40,15 @@ class LoginScreen extends StatelessWidget {
                     // 아이디 입력
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('아이디', style: TextStyle(color: textColor)),
+                      child: Text('아이디',
+                          style: customTextStyle(fontFamily: Pretendard_Medium_14, color:Colors.black)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
                       decoration: InputDecoration(
                         hintText: '아이디를 입력해주세요',
                         filled: true,
-                        fillColor: inputColor,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -66,7 +64,7 @@ class LoginScreen extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text('비밀번호',
-                          style: TextStyle(color: textColor)),
+                          style: customTextStyle(fontFamily: Pretendard_Medium_14, color:Colors.black)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
@@ -74,7 +72,7 @@ class LoginScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: '비밀번호를 입력해주세요',
                         filled: true,
-                        fillColor: inputColor,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -92,14 +90,14 @@ class LoginScreen extends StatelessWidget {
                       children: [
                         TextButton(
                           onPressed: () {},
-                          child: const Text('아이디 찾기',
-                              style: TextStyle(color: Colors.black)),
+                          child: Text('아이디 찾기',
+                              style: customTextStyle(fontFamily: Pretendard_Medium_14,color: neutral_600)),
                         ),
-                        const Text('|'),
+                        Text('|'),
                         TextButton(
                           onPressed: () {},
-                          child: const Text('비밀번호 찾기',
-                              style: TextStyle(color: Colors.black)),
+                          child: Text('비밀번호 찾기',
+                              style: customTextStyle(fontFamily: Pretendard_Medium_14,color: neutral_600)),
                         ),
                       ],
                     ),
@@ -116,8 +114,8 @@ class LoginScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('로그인',
-                            style: TextStyle(color:Colors.white)),
+                        child: Text('로그인',
+                            style: customTextStyle(fontFamily: Pretendard_Medium_18,color: Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -131,7 +129,7 @@ class LoginScreen extends StatelessWidget {
                       },
                       child: Text(
                         '계정이 없으신가요? 회원가입하기',
-                        style: TextStyle(color: textColor),
+                        style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black),
                       ),
                     ),
                   ],

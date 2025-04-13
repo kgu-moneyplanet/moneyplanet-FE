@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:money_planet/presentaion/register/view/guideprofile_screen.dart';
+import 'package:money_planet/global/theme/colors.dart';
 
+import '../../../global/theme/textStyles.dart';
+import 'guidetype_screen.dart';
 import 'login_screen.dart';
 
 class RegisterScreen2 extends StatelessWidget {
@@ -11,7 +13,6 @@ class RegisterScreen2 extends StatelessWidget {
     final backgroundColor = const Color(0xFFD7E3FF); // 배경
     final inputColor = Colors.white;
     final buttonColor = const Color(0xFF9292A1); // 회색 버튼
-    final textColor = const Color(0xFF000000);
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -19,12 +20,10 @@ class RegisterScreen2 extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 100),
-            const Text(
-              '회원 가입',
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+            Center(
+              child: Text(
+                '회원 가입',
+                style: customTextStyle(fontFamily: Pretendard_Bold_24,color: secondary_050_1)
               ),
             ),
             const SizedBox(height: 60),
@@ -43,7 +42,7 @@ class RegisterScreen2 extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('비밀번호', style: TextStyle(color: textColor)),
+                      child: Text('비밀번호', style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
@@ -65,7 +64,7 @@ class RegisterScreen2 extends StatelessWidget {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text('비밀번호 확인',
-                          style: TextStyle(color: textColor)),
+                          style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
@@ -91,7 +90,7 @@ class RegisterScreen2 extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const GuideProfileScreen()),
+                            MaterialPageRoute(builder: (context) => const GuideTypeScreen()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -100,8 +99,8 @@ class RegisterScreen2 extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('다음',
-                            style: TextStyle(color:Colors.white)),
+                        child: Text('다음',
+                            style: customTextStyle(fontFamily: Pretendard_Medium_18,color: Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -114,7 +113,7 @@ class RegisterScreen2 extends StatelessWidget {
                       },
                       child: Text(
                         '이미 계정이 있으신가요? 로그인하기',
-                        style: TextStyle(color: textColor),
+                        style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black),
                       ),
                     ),
                   ],
