@@ -68,6 +68,17 @@ flutter:
       fonts:
         - asset: lib/global/assets/fonts/SOYO Maple Regular.ttf
 
+    - family: Pretendard
+      fonts:
+        - asset: lib/global/assets/fonts/Pretendard-Regular.ttf
+          weight: 400
+        - asset: lib/global/assets/fonts/Pretendard-Medium.ttf
+          weight: 500
+        - asset: lib/global/assets/fonts/Pretendard-SemiBold.ttf
+          weight: 600
+        - asset: lib/global/assets/fonts/Pretendard-Bold.ttf
+          weight: 700
+
 
 
   # For details regarding fonts from package dependencies,

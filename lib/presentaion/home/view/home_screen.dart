@@ -5,6 +5,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('홈 화면'));
+    return const Center(
+      child: Text(
+        '홈 화면',
+        style: TextStyle(fontFamily: "Pretendard", fontWeight: FontWeight.w700),
+      ),
+    );
   }
 }
