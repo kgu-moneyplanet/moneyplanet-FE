@@ -24,7 +24,7 @@ class GuideTypeScreen extends StatelessWidget {
                 height: 300,
                 decoration: const BoxDecoration(),
                 child: Image.asset(
-                  'lib/global/assets/images/planet.png',
+                  'lib/global/assets/images/login_planet.png',
                   fit: BoxFit.contain,
                 ),
               ),
