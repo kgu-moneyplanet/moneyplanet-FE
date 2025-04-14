@@ -61,6 +61,7 @@ flutter:
   assets:
     - lib/global/assets/images/test.JPG
 
+
     - lib/global/assets/images/icons/bell_01.png
     - lib/global/assets/images/icons/help_circle.png
     - lib/global/assets/images/icons/category_car.png
@@ -80,6 +81,10 @@ flutter:
     - lib/global/assets/images/planet_icon/planet7.png
     - lib/global/assets/images/planet_icon/planet8.png
     - lib/global/assets/images/planet_icon/planet_border.png
+
+
+    - lib/global/assets/images/rocket3.png
+    - lib/global/assets/images/planet.png
 
 
   # 폰트 등록

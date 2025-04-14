@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/presentaion/register/view/login_screen.dart';
 
 import '../../../presentaion/chart/view/chart_screen.dart';
 import '../../../presentaion/diary/view/diary_screen.dart';
@@ -12,7 +13,7 @@ class TabModel {
   final List<Widget> pages = [
     const HomeScreen(),
     const DiaryScreen(),
-    const RegisterScreen(),
+    const LoginScreen(),
     const ChartScreen(),
     const MyPageScreen(),
   ];

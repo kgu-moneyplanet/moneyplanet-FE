@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
-import 'package:money_planet/global/theme/textStyles.dart';
-import 'package:money_planet/presentaion/register/view/register_screen2.dart';
 
+import '../../../global/theme/textStyles.dart';
+import 'guidetype_screen.dart';
 import 'login_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+class RegisterScreen2 extends StatelessWidget {
+  const RegisterScreen2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class RegisterScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 100),
             Center(
-              child:  Text(
+              child: Text(
                 '회원 가입',
                 style: customTextStyle(fontFamily: Pretendard_Bold_24,color: secondary_050_1)
               ),
@@ -42,12 +42,12 @@ class RegisterScreen extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('이름', style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black)),
+                      child: Text('비밀번호', style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
                       decoration: InputDecoration(
-                        hintText: '이름을 입력해주세요',
+                        hintText: '비밀번호를 입력해주세요',
                         filled: true,
                         fillColor: inputColor,
                         border: OutlineInputBorder(
@@ -63,13 +63,13 @@ class RegisterScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     Align(
                       alignment: Alignment.centerLeft,
-                      child: Text('이메일',
+                      child: Text('비밀번호 확인',
                           style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black)),
                     ),
                     const SizedBox(height: 6),
                     TextField(
                       decoration: InputDecoration(
-                        hintText: 'example@example.com',
+                        hintText: '비밀번호를 다시 입력해 주세요',
                         filled: true,
                         fillColor: inputColor,
                         border: OutlineInputBorder(
@@ -82,51 +82,7 @@ class RegisterScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('전화번호',
-                          style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black)),
-                    ),
-                    const SizedBox(height: 6),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: '+123 456 789',
-                        filled: true,
-                        fillColor: inputColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('생일',
-                          style: customTextStyle(fontFamily: Pretendard_Medium_14,color: Colors.black)),
-                    ),
-                    const SizedBox(height: 6),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'DD/MM/YY',
-                        filled: true,
-                        fillColor: inputColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 240),
                     SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -134,7 +90,7 @@ class RegisterScreen extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const RegisterScreen2()),
+                            MaterialPageRoute(builder: (context) => const GuideTypeScreen()),
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -144,7 +100,7 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ),
                         child: Text('다음',
-                          style: customTextStyle(fontFamily: Pretendard_Medium_18,color: Colors.white)),
+                            style: customTextStyle(fontFamily: Pretendard_Medium_18,color: Colors.white)),
                       ),
                     ),
                     const SizedBox(height: 16),
