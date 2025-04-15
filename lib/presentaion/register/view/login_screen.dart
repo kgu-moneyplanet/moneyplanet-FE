@@ -8,11 +8,9 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = const Color(0xFFD7E3FF); // 배경
-    final buttonColor = const Color(0xFF9292A1); //회색 버튼
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: neutral_900,
       body: SafeArea(
         child: Column(
           children: [
@@ -28,7 +26,7 @@ class LoginScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 decoration: BoxDecoration(
-                  color: backgroundColor,
+                  color: primary_050,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
@@ -109,7 +107,7 @@ class LoginScreen extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: buttonColor,
+                          backgroundColor: neutral_300,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
