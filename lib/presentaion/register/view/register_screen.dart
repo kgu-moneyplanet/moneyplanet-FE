@@ -9,21 +9,21 @@ class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final backgroundColor = const Color(0xFFD7E3FF); // 배경
-    final inputColor = Colors.white;
+  Widget build(BuildContext context) {// 배경
     final buttonColor = const Color(0xFF9292A1); // 회색 버튼
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: neutral_900,
       body: SafeArea(
         child: Column(
           children: [
             const SizedBox(height: 100),
-            Center(
-              child:  Text(
-                '회원 가입',
-                style: customTextStyle(fontFamily: Pretendard_Bold_24,color: secondary_050_1)
+            Container(
+              child: Center(
+                child:  Text(
+                  '회원 가입',
+                  style: customTextStyle(fontFamily: Pretendard_Bold_24,color: secondary_050_1)
+                ),
               ),
             ),
             const SizedBox(height: 60),
@@ -31,7 +31,7 @@ class RegisterScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 decoration: BoxDecoration(
-                  color: backgroundColor,
+                  color: primary_050,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
@@ -49,7 +49,7 @@ class RegisterScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: '이름을 입력해주세요',
                         filled: true,
-                        fillColor: inputColor,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -71,7 +71,7 @@ class RegisterScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: 'example@example.com',
                         filled: true,
-                        fillColor: inputColor,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -93,7 +93,7 @@ class RegisterScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: '+123 456 789',
                         filled: true,
-                        fillColor: inputColor,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -115,7 +115,7 @@ class RegisterScreen extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: 'DD/MM/YY',
                         filled: true,
-                        fillColor: inputColor,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,

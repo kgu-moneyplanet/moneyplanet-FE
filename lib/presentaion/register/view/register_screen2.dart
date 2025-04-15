@@ -10,12 +10,9 @@ class RegisterScreen2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = const Color(0xFFD7E3FF); // 배경
-    final inputColor = Colors.white;
-    final buttonColor = const Color(0xFF9292A1); // 회색 버튼
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: neutral_900,
       body: SafeArea(
         child: Column(
           children: [
@@ -31,7 +28,7 @@ class RegisterScreen2 extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 decoration: BoxDecoration(
-                  color: backgroundColor,
+                  color: primary_050,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(24),
                     topRight: Radius.circular(24),
@@ -49,7 +46,7 @@ class RegisterScreen2 extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: '비밀번호를 입력해주세요',
                         filled: true,
-                        fillColor: inputColor,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -71,7 +68,7 @@ class RegisterScreen2 extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: '비밀번호를 다시 입력해 주세요',
                         filled: true,
-                        fillColor: inputColor,
+                        fillColor: Colors.white,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
@@ -94,7 +91,7 @@ class RegisterScreen2 extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: buttonColor,
+                          backgroundColor: neutral_300,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
