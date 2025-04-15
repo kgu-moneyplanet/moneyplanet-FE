@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
+
 class MypageFirstSection extends StatelessWidget {
   const MypageFirstSection({super.key});
 
@@ -135,24 +136,28 @@ class MypageFirstSection extends StatelessWidget {
         SizedBox(height: 20),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 48),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              gradient: LinearGradient(
-                colors: [secondary_100_1, secondary_100_2],
+            child: GestureDetector(
+              onTap: () {
+              },
+              child: Container(
+                width: 343,
+                height: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  gradient: LinearGradient(
+                    colors: [secondary_100_1, secondary_100_2],
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  "소비 성향 재검사하기",
+                  style: customTextStyle(
+                    fontFamily: Pretendard_Medium_18,
+                    color: neutral_900,
+                  ),
+                ),
               ),
-            ),
-            height: 56,
-            width: 343,
-            alignment: Alignment.center,
-            child: Text(
-              "소비 성향 재검사하기",
-              style: customTextStyle(
-                fontFamily: Pretendard_Medium_18,
-                color: neutral_900,
-              ),
-            ),
-          ),
+            )
         ),
       ],
     );
