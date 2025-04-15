@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/presentaion/myPage/view/mypage_first_section.dart';
+import 'package:money_planet/presentaion/myPage/view/mypage_second_section.dart';
+import 'package:money_planet/presentaion/myPage/view/mypage_third_section.dart';
 
 import '../../../global/theme/colors.dart';
 
@@ -12,23 +14,23 @@ class MyPageScreen extends StatelessWidget {
       home: Scaffold(
         backgroundColor: neutral_900,
         body: SafeArea(
-          child: SingleChildScrollView(
+          child:SingleChildScrollView(
             child: Column(
               children: [
                 MypageFirstSection(),
 
-                SizedBox(height: 40),
+                SizedBox(height: 10),
 
+                MyPageSecondSection(),
 
-                SizedBox(height: 40),
+                SizedBox(height: 10),
 
-
-                SizedBox(height: 50),
+                MyPageThirdSection(),
 
               ],
             ),
           ),
-        ),
+        )
       ),
     );
   }
