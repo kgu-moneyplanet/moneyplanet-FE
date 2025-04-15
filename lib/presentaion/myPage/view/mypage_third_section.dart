@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
 class MyPageThirdSection extends StatelessWidget {
