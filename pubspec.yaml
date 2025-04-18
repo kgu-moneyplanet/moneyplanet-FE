@@ -82,9 +82,9 @@ flutter:
     - lib/global/assets/images/planet_icon/planet8.png
     - lib/global/assets/images/planet_icon/planet_border.png
 
-
+    - lib/global/assets/images/icons/pencil_line.png
     - lib/global/assets/images/rocket3.png
-    - lib/global/assets/images/planet.png
+    - lib/global/assets/images/login_planet.png
 
 
   # 폰트 등록

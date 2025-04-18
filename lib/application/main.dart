@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/application/tabBar/view/tab_screen.dart';
+import 'package:money_planet/presentaion/onboarding/view/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const TabScreen(),
+      home: const LoginScreen(),
     );
   }
 }

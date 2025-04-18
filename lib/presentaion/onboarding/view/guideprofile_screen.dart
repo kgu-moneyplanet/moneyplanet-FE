@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
-import 'package:money_planet/presentaion/register/view/register_screen.dart';
+import 'package:money_planet/presentaion/onboarding/view/signup_screen.dart';
 
 import '../../../global/theme/textStyles.dart';
 
@@ -60,7 +60,7 @@ class GuideProfileScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const RegisterScreen(),
+                        builder: (context) => const SignUpScreen(),
                       ),
                     );
                   },

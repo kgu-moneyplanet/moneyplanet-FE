@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
-import 'package:money_planet/presentaion/register/view/selecttype_screen.dart';
+import 'package:money_planet/presentaion/onboarding/view/selecttype_screen.dart';
 
+import '../../../application/tabBar/view/tab_screen.dart';
 import '../../../global/theme/textStyles.dart';
 
 class GuideTypeScreen extends StatelessWidget {
@@ -60,7 +61,7 @@ class GuideTypeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const SelectTypeScreen1(),
+                        builder: (context) =>  const TabScreen(),
                       ),
                     );
                   },

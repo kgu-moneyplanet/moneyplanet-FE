@@ -1,10 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/presentaion/myPage/view/mypage_first_section.dart';
+import 'package:money_planet/presentaion/myPage/view/mypage_second_section.dart';
+import 'package:money_planet/presentaion/myPage/view/mypage_third_section.dart';
+
+import '../../../global/theme/colors.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('마이페이지 화면'));
+    return MaterialApp(
+      home: Scaffold(
+        backgroundColor: neutral_900,
+        body: SafeArea(
+          child:SingleChildScrollView(
+            child: Column(
+              children: [
+                MypageFirstSection(),
+
+                SizedBox(height: 10),
+
+                MyPageSecondSection(),
+
+                SizedBox(height: 10),
+
+                MyPageThirdSection(),
+
+              ],
+            ),
+          ),
+        )
+      ),
+    );
   }
 }
