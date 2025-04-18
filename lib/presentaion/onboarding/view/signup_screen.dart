@@ -9,8 +9,7 @@ class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {// 배경
-    final buttonColor = const Color(0xFF9292A1); // 회색 버튼
+  Widget build(BuildContext context) {
 
     return Scaffold(
       backgroundColor: neutral_900,
@@ -138,7 +137,7 @@ class SignUpScreen extends StatelessWidget {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: buttonColor,
+                          backgroundColor: neutral_300,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
