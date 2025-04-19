@@ -22,17 +22,29 @@ class _QuestionFlowState extends State<QuestionScreen> {
 
   int _currentPage = 0;
 
-  late final List<Widget> _pages;  // 나중에 값을 넣겠다고 표시
+  late final List<Widget> _pages; // 나중에 값을 넣겠다고 표시
 
   @override
   void initState() {
     super.initState();
     _pages = [
       GuideTypeScreen(controller: _pageController),
-      SelectTypeScreen1(controller: _pageController, onAnswerSelected: (String key, int value) {  }, onNext: () {  }, answers: {},),
-      SelectTypeScreen2(controller: _pageController, onAnswerSelected: (String key, int value) {  }, onNext: () {  }, answers: {},),
-      SelectTypeScreen3(controller: _pageController, onAnswerSelected: (String key, int value) {  }, onNext: () {  }, answers: {},),
-      SelectTypeScreen4(controller: _pageController, onAnswerSelected: (String key, int value) {  }, onNext: () {  }, answers: {},),
+      SelectTypeScreen1(controller: _pageController,
+        onAnswerSelected: (String key, int value) {},
+        onNext: () {},
+        answers: {},),
+      SelectTypeScreen2(controller: _pageController,
+        onAnswerSelected: (String key, int value) {},
+        onNext: () {},
+        answers: {},),
+      SelectTypeScreen3(controller: _pageController,
+        onAnswerSelected: (String key, int value) {},
+        onNext: () {},
+        answers: {},),
+      SelectTypeScreen4(controller: _pageController,
+        onAnswerSelected: (String key, int value) {},
+        onNext: () {},
+        answers: {},),
       SelectTypeScreen5(controller: _pageController,)
     ];
   }
@@ -42,6 +54,7 @@ class _QuestionFlowState extends State<QuestionScreen> {
     _pageController.dispose();
     super.dispose();
   }
+
   void _onNextPressed() {
     if (_currentPage < _pages.length - 1) {
       _pageController.nextPage(
@@ -52,20 +65,41 @@ class _QuestionFlowState extends State<QuestionScreen> {
       // 마지막 화면에서 완료 액션
     }
   }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        physics: const BouncingScrollPhysics(),
-        onPageChanged: (idx) => setState(() => _currentPage = idx),
-        children: _pages,
-
+      body: Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            physics: const BouncingScrollPhysics(),
+            onPageChanged: (idx) => setState(() => _currentPage = idx),
+            children: _pages,
+          ),
+          Positioned(
+            bottom: 100,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: SmoothPageIndicator(
+                controller: _pageController,
+                count: _pages.length,
+                effect: WormEffect(
+                  dotHeight: 10,
+                  dotWidth: 10,
+                  spacing: 8,
+                  activeDotColor: neutral_600,
+                  // 원하는 색상
+                  dotColor: neutral_200,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-
     );
   }
-  }
+}
 
 

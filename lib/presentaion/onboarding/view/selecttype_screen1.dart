@@ -125,12 +125,14 @@ class _SelectTypeScreen1State extends State<SelectTypeScreen1> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: Text(
-                options[i],
-                textAlign: TextAlign.left,
-                style: customTextStyle(
-                  fontFamily: Pretendard_Medium_14,
-                  color: selectedIndex == i ? Colors.white : Colors.black,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  options[i],
+                  style: customTextStyle(
+                    fontFamily: Pretendard_Medium_14,
+                    color: selectedIndex == i ? Colors.white : Colors.black,
+                  ),
                 ),
               ),
             ),
