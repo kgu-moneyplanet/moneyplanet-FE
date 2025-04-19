@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
+import 'package:money_planet/presentaion/onboarding/view/question_screen.dart';
 
 import '../../../global/theme/textStyles.dart';
 import '../../onboarding/view/guidetype_screen.dart';
@@ -148,7 +149,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const GuideTypeScreen()),
+                              MaterialPageRoute(builder: (_) => const QuestionScreen()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
