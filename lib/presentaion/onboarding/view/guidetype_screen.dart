@@ -11,10 +11,8 @@ class GuideTypeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonColor = const Color(0xFF849BEB); // 하늘 버튼
-    final backgroundColor = const Color(0xFF202029);
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: neutral_900,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -66,7 +64,7 @@ class GuideTypeScreen extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor,
+                    backgroundColor: primary_400,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

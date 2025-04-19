@@ -29,11 +29,11 @@ class _QuestionFlowState extends State<QuestionScreen> {
     super.initState();
     _pages = [
       GuideTypeScreen(controller: _pageController),
-      SelectTypeScreen1(controller: _pageController),
-      SelectTypeScreen2(controller: _pageController),
-      SelectTypeScreen3(controller: _pageController),
-      SelectTypeScreen4(controller: _pageController),
-      SelectTypeScreen5(controller: _pageController),
+      SelectTypeScreen1(controller: _pageController, onAnswerSelected: (String key, int value) {  }, onNext: () {  }, answers: {},),
+      SelectTypeScreen2(controller: _pageController, onAnswerSelected: (String key, int value) {  }, onNext: () {  }, answers: {},),
+      SelectTypeScreen3(controller: _pageController, onAnswerSelected: (String key, int value) {  }, onNext: () {  }, answers: {},),
+      SelectTypeScreen4(controller: _pageController, onAnswerSelected: (String key, int value) {  }, onNext: () {  }, answers: {},),
+      SelectTypeScreen5(controller: _pageController,)
     ];
   }
 
@@ -61,6 +61,7 @@ class _QuestionFlowState extends State<QuestionScreen> {
         physics: const BouncingScrollPhysics(),
         onPageChanged: (idx) => setState(() => _currentPage = idx),
         children: _pages,
+
       ),
 
     );
