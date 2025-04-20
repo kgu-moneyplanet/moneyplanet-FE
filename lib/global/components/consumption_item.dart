@@ -20,7 +20,8 @@ class ConsumptionItem extends StatelessWidget {
             height: 40,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFF0F0F0),
+              //TODO: - 여기가 ABC따라서 아이콘 배경색 바꾸는 곳
+              color: secondary_200,
             ),
             padding: const EdgeInsets.all(6),
             child: Image.asset(
