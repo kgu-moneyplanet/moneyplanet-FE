@@ -1,3 +1,5 @@
+// TODO: - 코드 정리 필요
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -34,9 +36,8 @@ class _DiaryScreenState extends State<DiaryScreen> {
         child:
             groupedData.isEmpty
                 ?
-
                 // 내역 없을때
-            Column(
+                Column(
                   children: [
                     SizedBox(
                       height: 52,
@@ -98,7 +99,8 @@ class _DiaryScreenState extends State<DiaryScreen> {
                                 vertical: 30,
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -147,7 +149,9 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
                             // 지출
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
                               child: Row(
                                 children: [
                                   SizedBox(width: 10),
@@ -173,7 +177,9 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
                             // 수입
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
                               child: Row(
                                 children: [
                                   SizedBox(width: 10),
@@ -209,9 +215,12 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
                             // daily, weekly, monthly 선택 버튼
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 5),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   for (var viewType in [
                                     'Daily',
@@ -230,7 +239,9 @@ class _DiaryScreenState extends State<DiaryScreen> {
                                                 ? Colors.white
                                                 : primary_400,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(6),
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
                                           side: const BorderSide(
                                             color: Colors.blue,
                                           ),
@@ -261,15 +272,13 @@ class _DiaryScreenState extends State<DiaryScreen> {
                                 ),
                               ),
                             ),
-
                           ],
                         ),
                       ),
                     ),
                   ],
                 )
-
-            // 내역 있을 때
+                // 내역 있을 때
                 : SingleChildScrollView(
                   child: Column(
                     children: [
@@ -526,12 +535,10 @@ class _DiaryScreenState extends State<DiaryScreen> {
                                           const SizedBox(height: 10),
                                           const Divider(),
                                           const SizedBox(height: 10),
-                                          ...entry.value
-                                              .map(
-                                                (item) =>
-                                                    ConsumptionItem(item: item),
-                                              )
-                                              .toList(),
+                                          ...entry.value.map(
+                                            (item) =>
+                                                ConsumptionItem(item: item),
+                                          ),
                                           const SizedBox(height: 20),
                                         ],
                                       );
