@@ -17,38 +17,17 @@ class _DiaryScreenState extends State<DiaryScreen> {
   int selectedMonth = DateTime.now().month;
   String selectedView = 'Daily';
 
-  void changeMonth(int delta) {
-    setState(() {
-      selectedMonth += delta;
-      if (selectedMonth < 1) selectedMonth = 1;
-      if (selectedMonth > 12) selectedMonth = 12;
-    });
-  }
-
-  void changeView(String view) {
-    setState(() {
-      selectedView = view;
-    });
-  }
-
-  // 날짜별로 그룹핑한 Map 생성 함수
-  Map<String, List<DiaryModel>> groupByDate(List<DiaryModel> data) {
-    Map<String, List<DiaryModel>> grouped = {};
-
-    for (var item in data) {
-      final dateKey = DateFormat('yyyy-MM-dd').format(item.date);
-      grouped.putIfAbsent(dateKey, () => []).add(item);
-    }
-
-    // 최신 날짜가 위에 오도록 정렬
-    final sortedEntries = grouped.entries.toList()
-      ..sort((a, b) => b.key.compareTo(a.key));
-
-    return Map.fromEntries(sortedEntries);
-  }
-
   @override
   Widget build(BuildContext context) {
+    // 필터링된 데이터만 가져오기
+    final filteredData =
+        DiaryMockData.where(
+          (item) => item.date.month == selectedMonth,
+        ).toList();
+
+    // 날짜별로 그룹핑된 Map 생성
+    final groupedData = groupByDate(filteredData);
+
     return Scaffold(
       backgroundColor: neutral_900,
       body: SafeArea(
@@ -141,7 +120,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(26),
-                                color: primary_200
+                                color: primary_200,
                               ),
                               width: 48,
                               height: 48,
@@ -157,7 +136,6 @@ class _DiaryScreenState extends State<DiaryScreen> {
                               ),
                             ),
                           ),
-
                         ],
                       ),
                     ),
@@ -260,48 +238,43 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
                     const SizedBox(height: 30),
 
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(horizontal: 32),
-                    //   child: Text(
-                    //     "9일 오늘",
-                    //     style: TextStyle(color: Colors.grey[600]),
-                    //   ),
-                    // ),
-                    //
-                    // // 구분선
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(
-                    //     horizontal: 32,
-                    //     vertical: 10,
-                    //   ),
-                    //   child: Divider(),
-                    // ),
-
                     // 리스트 보여주는 곳
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Column(
-                        children: groupByDate(DiaryMockData).entries.map((entry) {
-                          final date = DateTime.parse(entry.key);
-                          final dayText = DateFormat('d일 EEEE', 'ko').format(date);
+                        children:
+                            groupedData.entries.map((entry) {
+                              final date = DateTime.parse(entry.key);
+                              final dayText = DateFormat(
+                                'd일 EEEE',
+                                'ko',
+                              ).format(date);
 
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                dayText == DateFormat('d일 EEEE', 'ko').format(DateTime.now())
-                                    ? "${date.day}일 오늘"
-                                    : dayText,
-                                style: TextStyle(color: Colors.grey[600]),
-                              ),
-                              const SizedBox(height: 10),
-                              const Divider(),
-                              const SizedBox(height: 10),
-                              ...entry.value.map((item) => ConsumptionItem(item: item)).toList(),
-                              const SizedBox(height: 20),
-                            ],
-                          );
-                        }).toList(),
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    dayText ==
+                                            DateFormat(
+                                              'd일 EEEE',
+                                              'ko',
+                                            ).format(DateTime.now())
+                                        ? "${date.day}일 오늘"
+                                        : dayText,
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Divider(),
+                                  const SizedBox(height: 10),
+                                  ...entry.value
+                                      .map(
+                                        (item) => ConsumptionItem(item: item),
+                                      )
+                                      .toList(),
+                                  const SizedBox(height: 20),
+                                ],
+                              );
+                            }).toList(),
                       ),
                     ),
 
@@ -314,5 +287,35 @@ class _DiaryScreenState extends State<DiaryScreen> {
         ),
       ),
     );
+  }
+
+  void changeMonth(int delta) {
+    setState(() {
+      selectedMonth += delta;
+      if (selectedMonth < 1) selectedMonth = 1;
+      if (selectedMonth > 12) selectedMonth = 12;
+    });
+  }
+
+  void changeView(String view) {
+    setState(() {
+      selectedView = view;
+    });
+  }
+
+  // 날짜별로 그룹핑한 Map 생성 함수
+  Map<String, List<DiaryModel>> groupByDate(List<DiaryModel> data) {
+    Map<String, List<DiaryModel>> grouped = {};
+
+    for (var item in data) {
+      final dateKey = DateFormat('yyyy-MM-dd').format(item.date);
+      grouped.putIfAbsent(dateKey, () => []).add(item);
+    }
+
+    // 최신 날짜가 위에 오도록 정렬
+    final sortedEntries =
+        grouped.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
+
+    return Map.fromEntries(sortedEntries);
   }
 }
