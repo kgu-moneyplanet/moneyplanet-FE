@@ -2,6 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:money_planet/presentaion/diary/view/empty_diary_screen.dart';
+import 'package:money_planet/presentaion/diary/viewModel/diary_viewModel.dart';
+import 'package:money_planet/presentaion/register/view/register_ocr_screen.dart';
+import 'package:money_planet/presentaion/register/view/register_screen.dart';
 
 import '../../../global/components/consumption_item.dart';
 import '../../../global/theme/colors.dart';
@@ -16,6 +20,8 @@ class DiaryScreen extends StatefulWidget {
 }
 
 class _DiaryScreenState extends State<DiaryScreen> {
+  final DiaryViewModel viewModel = DiaryViewModel();
+
   int selectedMonth = DateTime.now().month;
   String selectedView = 'Daily';
 
@@ -33,531 +39,270 @@ class _DiaryScreenState extends State<DiaryScreen> {
     return Scaffold(
       backgroundColor: neutral_900,
       floatingActionButton: FloatingActionButton(
-        onPressed: onTapWriteDiaryButton,
+        onPressed: () => onTapWriteDiaryButton(context), // context 꼭 전달!
         backgroundColor: primary_400,
         child: Icon(Icons.add, color: Colors.white, size: 50),
       ),
       body: SafeArea(
-        child:
-            groupedData.isEmpty
-                ?
-                // 내역 없을때
-                Column(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+
+              // 헤더부분
+              SizedBox(
+                height: 52,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(
-                      height: 52,
+                    SizedBox(width: 28),
+                    Text(
+                      "가계부",
+                      style: customTextStyle(
+                        fontFamily: Pretendard_Bold_28,
+                        color: Colors.white,
+                      ),
+                    ),
+
+                    Spacer(),
+
+                    IconButton(
+                      onPressed: () {
+                        print("tapped bell");
+                      },
+                      icon: Image.asset(
+                        'lib/global/assets/images/icons/bell_01.png',
+                      ),
+                    ),
+
+                    IconButton(
+                      onPressed: () {
+                        print("tapped help");
+                      },
+                      icon: Image.asset(
+                        'lib/global/assets/images/icons/help_circle.png',
+                      ),
+                    ),
+
+                    SizedBox(width: 28),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 29),
+
+              // 가계부
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(40),
+                    topRight: Radius.circular(40),
+                  ),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 달 바꾸는 부분 & 자세히 보기
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 30,
+                      ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(width: 28),
-                          Text(
-                            "가계부",
-                            style: customTextStyle(
-                              fontFamily: Pretendard_Bold_28,
-                              color: Colors.white,
-                            ),
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () => changeMonth(-1),
+                                icon: const Icon(Icons.chevron_left),
+                              ),
+                              Text(
+                                "$selectedMonth월",
+                                style: customTextStyle(
+                                  fontFamily: Pretendard_Semibold_24,
+                                  color: neutral_1100,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () => changeMonth(1),
+                                icon: const Icon(Icons.chevron_right),
+                              ),
+                            ],
                           ),
 
-                          Spacer(),
-
-                          IconButton(
-                            onPressed: () {
-                              print("tapped bell");
-                            },
-                            icon: Image.asset(
-                              'lib/global/assets/images/icons/bell_01.png',
+                          Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(26),
+                                color: primary_200,
+                              ),
+                              width: 48,
+                              height: 48,
+                              child: IconButton(
+                                onPressed: () {
+                                  print("달력버튼 클릭");
+                                },
+                                iconSize: 24,
+                                icon: Icon(
+                                  Icons.calendar_today,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
                           ),
-
-                          IconButton(
-                            onPressed: () {
-                              print("tapped help");
-                            },
-                            icon: Image.asset(
-                              'lib/global/assets/images/icons/help_circle.png',
-                            ),
-                          ),
-
-                          SizedBox(width: 28),
                         ],
                       ),
                     ),
 
-                    SizedBox(height: 29),
-
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40),
-                            topRight: Radius.circular(40),
+                    // 지출
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: [
+                          SizedBox(width: 10),
+                          Text(
+                            "지출",
+                            style: customTextStyle(
+                              fontFamily: Pretendard_Semibold_16,
+                              color: neutral_400,
+                            ),
                           ),
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // 달 바꾸는 부분 & 자세히 보기
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 30,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () => changeMonth(-1),
-                                        icon: const Icon(Icons.chevron_left),
-                                      ),
-                                      Text(
-                                        "$selectedMonth월",
-                                        style: customTextStyle(
-                                          fontFamily: Pretendard_Semibold_24,
-                                          color: neutral_1100,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () => changeMonth(1),
-                                        icon: const Icon(Icons.chevron_right),
-                                      ),
-                                    ],
-                                  ),
-
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(26),
-                                        color: primary_200,
-                                      ),
-                                      width: 48,
-                                      height: 48,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          print("달력버튼 클릭");
-                                        },
-                                        iconSize: 24,
-                                        icon: Icon(
-                                          Icons.calendar_today,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          Spacer(),
+                          Text(
+                            "475,180 원",
+                            style: customTextStyle(
+                              fontFamily: Pretendard_Medium_24,
+                              color: Colors.black,
                             ),
-
-                            // 지출
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 10),
-                                  Text(
-                                    "지출",
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Semibold_16,
-                                      color: neutral_400,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "475,180 원",
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Medium_24,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                ],
-                              ),
-                            ),
-
-                            // 수입
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 10),
-                                  Text(
-                                    "수입",
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Semibold_16,
-                                      color: neutral_400,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "0 원",
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Medium_24,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                ],
-                              ),
-                            ),
-
-                            SizedBox(height: 25),
-
-                            Container(
-                              height: 12,
-                              width: double.infinity,
-                              color: neutral_100,
-                            ),
-
-                            SizedBox(height: 35),
-
-                            // daily, weekly, monthly 선택 버튼
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 5,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  for (var viewType in [
-                                    'Daily',
-                                    'Weekly',
-                                    'Monthly',
-                                  ])
-                                    ElevatedButton(
-                                      onPressed: () => changeView(viewType),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            selectedView == viewType
-                                                ? primary_400
-                                                : primary_050,
-                                        foregroundColor:
-                                            selectedView == viewType
-                                                ? Colors.white
-                                                : primary_400,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            6,
-                                          ),
-                                          side: const BorderSide(
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        viewType,
-                                        style: customTextStyle(
-                                          fontFamily: Pretendard_Semibold_18,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 150),
-
-                            Container(
-                              width: double.infinity,
-                              color: Colors.white,
-                              alignment: Alignment.center,
-                              child: Text(
-                                "이 달의 내역이 없습니다.",
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 10),
+                        ],
                       ),
                     ),
-                  ],
-                )
-                // 내역 있을 때
-                : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 52,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(width: 28),
-                            Text(
-                              "가계부",
-                              style: customTextStyle(
-                                fontFamily: Pretendard_Bold_28,
-                                color: Colors.white,
-                              ),
+
+                    // 수입
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(
+                        children: [
+                          SizedBox(width: 10),
+                          Text(
+                            "수입",
+                            style: customTextStyle(
+                              fontFamily: Pretendard_Semibold_16,
+                              color: neutral_400,
                             ),
-
-                            Spacer(),
-
-                            IconButton(
-                              onPressed: () {
-                                print("tapped bell");
-                              },
-                              icon: Image.asset(
-                                'lib/global/assets/images/icons/bell_01.png',
-                              ),
-                            ),
-
-                            IconButton(
-                              onPressed: () {
-                                print("tapped help");
-                              },
-                              icon: Image.asset(
-                                'lib/global/assets/images/icons/help_circle.png',
-                              ),
-                            ),
-
-                            SizedBox(width: 28),
-                          ],
-                        ),
-                      ),
-
-                      SizedBox(height: 29),
-
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(40),
-                            topRight: Radius.circular(40),
                           ),
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // 달 바꾸는 부분 & 자세히 보기
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 30,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () => changeMonth(-1),
-                                        icon: const Icon(Icons.chevron_left),
-                                      ),
-                                      Text(
-                                        "$selectedMonth월",
-                                        style: customTextStyle(
-                                          fontFamily: Pretendard_Semibold_24,
-                                          color: neutral_1100,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () => changeMonth(1),
-                                        icon: const Icon(Icons.chevron_right),
-                                      ),
-                                    ],
-                                  ),
-
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 10),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(26),
-                                        color: primary_200,
-                                      ),
-                                      width: 48,
-                                      height: 48,
-                                      child: IconButton(
-                                        onPressed: () {
-                                          print("달력버튼 클릭");
-                                        },
-                                        iconSize: 24,
-                                        icon: Icon(
-                                          Icons.calendar_today,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          Spacer(),
+                          Text(
+                            "0 원",
+                            style: customTextStyle(
+                              fontFamily: Pretendard_Medium_24,
+                              color: Colors.black,
                             ),
-
-                            // 지출
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 10),
-                                  Text(
-                                    "지출",
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Semibold_16,
-                                      color: neutral_400,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "475,180 원",
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Medium_24,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                ],
-                              ),
-                            ),
-
-                            // 수입
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: 10),
-                                  Text(
-                                    "수입",
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Semibold_16,
-                                      color: neutral_400,
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  Text(
-                                    "0 원",
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Medium_24,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                ],
-                              ),
-                            ),
-
-                            SizedBox(height: 25),
-
-                            Container(
-                              height: 12,
-                              width: double.infinity,
-                              color: neutral_100,
-                            ),
-
-                            SizedBox(height: 35),
-
-                            // daily, weekly, monthly 선택 버튼
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 5,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  for (var viewType in [
-                                    'Daily',
-                                    'Weekly',
-                                    'Monthly',
-                                  ])
-                                    ElevatedButton(
-                                      onPressed: () => changeView(viewType),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            selectedView == viewType
-                                                ? primary_400
-                                                : primary_050,
-                                        foregroundColor:
-                                            selectedView == viewType
-                                                ? Colors.white
-                                                : primary_400,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            6,
-                                          ),
-                                          side: const BorderSide(
-                                            color: Colors.blue,
-                                          ),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        viewType,
-                                        style: customTextStyle(
-                                          fontFamily: Pretendard_Semibold_18,
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 30),
-
-                            // 리스트 보여주는 곳
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 32,
-                              ),
-                              child: Column(
-                                children:
-                                    groupedData.entries.map((entry) {
-                                      final date = DateTime.parse(entry.key);
-                                      final dayText = DateFormat(
-                                        'd일 EEEE',
-                                        'ko',
-                                      ).format(date);
-
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            dayText ==
-                                                    DateFormat(
-                                                      'd일 EEEE',
-                                                      'ko',
-                                                    ).format(DateTime.now())
-                                                ? "${date.day}일 오늘"
-                                                : dayText,
-                                            style: TextStyle(
-                                              color: Colors.grey[600],
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          const Divider(),
-                                          const SizedBox(height: 10),
-                                          ...entry.value.map(
-                                            (item) =>
-                                                ConsumptionItem(item: item),
-                                          ),
-                                          const SizedBox(height: 20),
-                                        ],
-                                      );
-                                    }).toList(),
-                              ),
-                            ),
-
-                            const SizedBox(height: 20),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 10),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+
+                    SizedBox(height: 25),
+
+                    Container(
+                      height: 12,
+                      width: double.infinity,
+                      color: neutral_100,
+                    ),
+
+                    SizedBox(height: 35),
+
+                    groupedData.isEmpty ? EmptyDiaryScreen() : Column(
+                      children: [
+                        // daily, weekly, monthly 선택 버튼
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              for (var viewType in ['Daily', 'Weekly', 'Monthly'])
+                                ElevatedButton(
+                                  onPressed: () => changeView(viewType),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                    selectedView == viewType
+                                        ? primary_400
+                                        : primary_050,
+                                    foregroundColor:
+                                    selectedView == viewType
+                                        ? Colors.white
+                                        : primary_400,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                      side: const BorderSide(color: Colors.blue),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    viewType,
+                                    style: customTextStyle(
+                                      fontFamily: Pretendard_Semibold_18,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 30),
+
+                        // 리스트 보여주는 곳
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: Column(
+                            children:
+                            groupedData.entries.map((entry) {
+                              final date = DateTime.parse(entry.key);
+                              final dayText = DateFormat(
+                                'd일 EEEE',
+                                'ko',
+                              ).format(date);
+
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    dayText ==
+                                        DateFormat(
+                                          'd일 EEEE',
+                                          'ko',
+                                        ).format(DateTime.now())
+                                        ? "${date.day}일 오늘"
+                                        : dayText,
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Divider(),
+                                  const SizedBox(height: 10),
+                                  ...entry.value.map(
+                                        (item) => ConsumptionItem(item: item),
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 20),
+                  ],
                 ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -593,19 +338,93 @@ class _DiaryScreenState extends State<DiaryScreen> {
   }
 
   //하단에 + 플로팅버튼 클릭시 이벤트
-  Future onTapWriteDiaryButton() {
-    //바텀시트 상세설정은 메인화면에 theme에서 설정했음
+  Future onTapWriteDiaryButton(BuildContext context) {
     return showModalBottomSheet(
       context: context,
-      builder: (context) {
-        return SizedBox(
-          height: 600,
-        );
-      },
       backgroundColor: Colors.white,
       isScrollControlled: true,
       showDragHandle: true,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: SizedBox(
+            height: 300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Wrap(
+                  spacing: 30,
+                  runSpacing: 20,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    tapFloatingActionButton(
+                      icon: Icons.receipt_long,
+                      label: '영수증 등록',
+                      onTap: () {
+                        Navigator.pop(context); // 바텀시트 닫기
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => RegisterScreen()),
+                        );
+                      },
+                    ),
+                    tapFloatingActionButton(
+                      icon: Icons.camera_alt,
+                      label: '사진 촬영',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => RegisterOcrScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    tapFloatingActionButton(
+                      icon: Icons.edit,
+                      label: '직접 작성',
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => RegisterScreen()),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget tapFloatingActionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue[200],
+            ),
+            child: Icon(icon, size: 30, color: Colors.white),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(label, style: TextStyle(fontSize: 12)),
+      ],
     );
   }
 }
