@@ -32,6 +32,13 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
     return Scaffold(
       backgroundColor: neutral_900,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          print("+버튼 클릭");
+        },
+        backgroundColor: primary_400,
+        child: Icon(Icons.add, color: Colors.white, size: 50),
+      ),
       body: SafeArea(
         child:
             groupedData.isEmpty
