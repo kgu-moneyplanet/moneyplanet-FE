@@ -2,12 +2,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:money_planet/presentaion/diary/view/diary_list_screen.dart';
 import 'package:money_planet/presentaion/diary/view/empty_diary_screen.dart';
-import 'package:money_planet/presentaion/diary/viewModel/diary_viewModel.dart';
 import 'package:money_planet/presentaion/register/view/register_ocr_screen.dart';
 import 'package:money_planet/presentaion/register/view/register_screen.dart';
 
-import '../../../global/components/consumption_item.dart';
 import '../../../global/theme/colors.dart';
 import '../../../global/theme/textStyles.dart';
 import '../model/diary_model.dart';
@@ -20,8 +19,6 @@ class DiaryScreen extends StatefulWidget {
 }
 
 class _DiaryScreenState extends State<DiaryScreen> {
-  final DiaryViewModel viewModel = DiaryViewModel();
-
   int selectedMonth = DateTime.now().month;
   String selectedView = 'Daily';
 
@@ -47,7 +44,6 @@ class _DiaryScreenState extends State<DiaryScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
               // 헤더부분
               SizedBox(
                 height: 52,
@@ -102,7 +98,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 달 바꾸는 부분 & 자세히 보기
+                    // 달 바꾸는 부분 & 달력 아이콘
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 20,
@@ -210,6 +206,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
                     SizedBox(height: 25),
 
+                    // 구분선
                     Container(
                       height: 12,
                       width: double.infinity,
@@ -218,83 +215,59 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
                     SizedBox(height: 35),
 
-                    groupedData.isEmpty ? EmptyDiaryScreen() : Column(
-                      children: [
-                        // daily, weekly, monthly 선택 버튼
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              for (var viewType in ['Daily', 'Weekly', 'Monthly'])
-                                ElevatedButton(
-                                  onPressed: () => changeView(viewType),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                    selectedView == viewType
-                                        ? primary_400
-                                        : primary_050,
-                                    foregroundColor:
-                                    selectedView == viewType
-                                        ? Colors.white
-                                        : primary_400,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      side: const BorderSide(color: Colors.blue),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    viewType,
-                                    style: customTextStyle(
-                                      fontFamily: Pretendard_Semibold_18,
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 30),
-
-                        // 리스트 보여주는 곳
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: Column(
-                            children:
-                            groupedData.entries.map((entry) {
-                              final date = DateTime.parse(entry.key);
-                              final dayText = DateFormat(
-                                'd일 EEEE',
-                                'ko',
-                              ).format(date);
-
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                    // 리스트 보여주는 곳
+                    groupedData.isEmpty
+                        ? EmptyDiaryScreen()
+                        : Column(
+                          children: [
+                            // daily, weekly, monthly 선택 버튼
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Text(
-                                    dayText ==
-                                        DateFormat(
-                                          'd일 EEEE',
-                                          'ko',
-                                        ).format(DateTime.now())
-                                        ? "${date.day}일 오늘"
-                                        : dayText,
-                                    style: TextStyle(color: Colors.grey[600]),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  const Divider(),
-                                  const SizedBox(height: 10),
-                                  ...entry.value.map(
-                                        (item) => ConsumptionItem(item: item),
-                                  ),
-                                  const SizedBox(height: 20),
+                                  for (var viewType in [
+                                    'Daily',
+                                    'Weekly',
+                                    'Monthly',
+                                  ])
+                                    ElevatedButton(
+                                      onPressed: () => changeView(viewType),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            selectedView == viewType
+                                                ? primary_400
+                                                : primary_050,
+                                        foregroundColor:
+                                            selectedView == viewType
+                                                ? Colors.white
+                                                : primary_400,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
+                                          side: const BorderSide(
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        viewType,
+                                        style: customTextStyle(
+                                          fontFamily: Pretendard_Semibold_18,
+                                        ),
+                                      ),
+                                    ),
                                 ],
-                              );
-                            }).toList(),
-                          ),
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            DiaryListScreen(groupedData: groupedData),
+                          ],
                         ),
-                      ],
-                    ),
 
                     const SizedBox(height: 20),
                   ],
