@@ -33,9 +33,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
     return Scaffold(
       backgroundColor: neutral_900,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print("+버튼 클릭");
-        },
+        onPressed: onTapWriteDiaryButton,
         backgroundColor: primary_400,
         child: Icon(Icons.add, color: Colors.white, size: 50),
       ),
@@ -592,5 +590,22 @@ class _DiaryScreenState extends State<DiaryScreen> {
         grouped.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
 
     return Map.fromEntries(sortedEntries);
+  }
+
+  //하단에 + 플로팅버튼 클릭시 이벤트
+  Future onTapWriteDiaryButton() {
+    //바텀시트 상세설정은 메인화면에 theme에서 설정했음
+    return showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return SizedBox(
+          height: 600,
+        );
+      },
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    );
   }
 }
