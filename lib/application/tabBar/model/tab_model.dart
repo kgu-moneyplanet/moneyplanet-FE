@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/global/theme/colors.dart';
 
 import '../../../presentaion/chart/view/chart_screen.dart';
 import '../../../presentaion/diary/view/diary_screen.dart';
@@ -12,16 +13,14 @@ class TabModel {
   final List<Widget> pages = [
     const HomeScreen(),
     const DiaryScreen(),
-    const RegisterScreen(),
     const ChartScreen(),
     const MyPageScreen(),
   ];
 
   final List<BottomNavigationBarItem> navBarItems = const [
-    BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-    BottomNavigationBarItem(icon: Icon(Icons.book), label: '가계부'),
-    BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: '등록'),
-    BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: '통계'),
-    BottomNavigationBarItem(icon: Icon(Icons.person), label: '마이페이지'),
+    BottomNavigationBarItem(icon: Icon(Icons.home_filled,), label: '홈'),
+    BottomNavigationBarItem(icon: Icon(Icons.add_card_rounded,), label: '가계부'),
+    BottomNavigationBarItem(icon: Icon(Icons.diversity_2_rounded,), label: '통계'),
+    BottomNavigationBarItem(icon: Icon(Icons.person,), label: '마이페이지'),
   ];
 }

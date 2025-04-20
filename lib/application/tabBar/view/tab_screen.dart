@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/global/theme/colors.dart';
 import '../viewmodel/tab_viewmodel.dart';
 
 class TabScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _TabScreenState extends State<TabScreen> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
+        selectedItemColor: primary_400,
         items: viewModel.navBarItems,
         currentIndex: viewModel.selectedIndex,
         onTap: (index) {
