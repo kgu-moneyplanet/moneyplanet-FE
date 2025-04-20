@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../global/components/consumption_item.dart';
 import '../../../global/theme/colors.dart';
@@ -28,6 +29,22 @@ class _DiaryScreenState extends State<DiaryScreen> {
     setState(() {
       selectedView = view;
     });
+  }
+
+  // 날짜별로 그룹핑한 Map 생성 함수
+  Map<String, List<DiaryModel>> groupByDate(List<DiaryModel> data) {
+    Map<String, List<DiaryModel>> grouped = {};
+
+    for (var item in data) {
+      final dateKey = DateFormat('yyyy-MM-dd').format(item.date);
+      grouped.putIfAbsent(dateKey, () => []).add(item);
+    }
+
+    // 최신 날짜가 위에 오도록 정렬
+    final sortedEntries = grouped.entries.toList()
+      ..sort((a, b) => b.key.compareTo(a.key));
+
+    return Map.fromEntries(sortedEntries);
   }
 
   @override
@@ -243,31 +260,48 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
                     const SizedBox(height: 30),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: Text(
-                        "9일 오늘",
-                        style: TextStyle(color: Colors.grey[600]),
-                      ),
-                    ),
-
-                    // 구분선
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 10,
-                      ),
-                      child: Divider(),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 32),
+                    //   child: Text(
+                    //     "9일 오늘",
+                    //     style: TextStyle(color: Colors.grey[600]),
+                    //   ),
+                    // ),
+                    //
+                    // // 구분선
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //     horizontal: 32,
+                    //     vertical: 10,
+                    //   ),
+                    //   child: Divider(),
+                    // ),
 
                     // 리스트 보여주는 곳
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
                       child: Column(
-                        children:
-                            DiaryMockData.map(
-                              (item) => ConsumptionItem(item: item),
-                            ).toList(),
+                        children: groupByDate(DiaryMockData).entries.map((entry) {
+                          final date = DateTime.parse(entry.key);
+                          final dayText = DateFormat('d일 EEEE', 'ko').format(date);
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                dayText == DateFormat('d일 EEEE', 'ko').format(DateTime.now())
+                                    ? "${date.day}일 오늘"
+                                    : dayText,
+                                style: TextStyle(color: Colors.grey[600]),
+                              ),
+                              const SizedBox(height: 10),
+                              const Divider(),
+                              const SizedBox(height: 10),
+                              ...entry.value.map((item) => ConsumptionItem(item: item)).toList(),
+                              const SizedBox(height: 20),
+                            ],
+                          );
+                        }).toList(),
                       ),
                     ),
 
