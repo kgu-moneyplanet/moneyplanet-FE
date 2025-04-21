@@ -15,27 +15,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: neutral_900,
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                HomeFirstSection(),
+    return Scaffold(
+      backgroundColor: neutral_900,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              HomeFirstSection(),
 
-                SizedBox(height: 40),
+              SizedBox(height: 40),
 
-                HomeSecondSection(),
+              HomeSecondSection(),
 
-                SizedBox(height: 40),
+              SizedBox(height: 40),
 
-                HomeThirdSection(),
+              HomeThirdSection(),
 
-                SizedBox(height: 50),
+              SizedBox(height: 50),
 
-              ],
-            ),
+            ],
           ),
         ),
       ),
