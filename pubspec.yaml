@@ -96,6 +96,10 @@ flutter:
     - lib/global/assets/images/type_icon/rocket.png
     - lib/global/assets/images/type_icon/roller_coaster.png
     - lib/global/assets/images/type_icon/sparkles.png
+
+    - lib/global/assets/images/type_icon/type_shopping.png
+    - lib/global/assets/images/type_icon/type_cafe.png
+    - lib/global/assets/images/type_icon/type_food.png
   # 폰트 등록
   fonts:
     - family: Soyo
