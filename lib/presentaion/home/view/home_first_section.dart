@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
+import '../../myPage/view/hint_screen.dart';
+
 class HomeFirstSection extends StatelessWidget {
   const HomeFirstSection({super.key});
 
@@ -36,6 +38,10 @@ class HomeFirstSection extends StatelessWidget {
               IconButton(
                 onPressed: () {
                   print("tapped help");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HintScreen()),
+                  );
                 },
                 icon: Image.asset(
                   'lib/global/assets/images/icons/help_circle.png',

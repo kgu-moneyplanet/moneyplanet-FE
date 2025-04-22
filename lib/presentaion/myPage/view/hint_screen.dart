@@ -4,7 +4,7 @@ import '../../../global/theme/colors.dart';
 
 
 import 'hint_abc_screen.dart';
-import 'hint_consume_screen.dart';
+import 'hint_consumetype_screen.dart';
 
 class HintScreen extends StatefulWidget {
   const HintScreen({super.key});
@@ -43,7 +43,7 @@ class _HintScreenState extends State<HintScreen> with SingleTickerProviderStateM
       body: TabBarView(
         controller: _tabController,
         children: [
-          HintConsumeScreen(),
+          HintConsumeTypeScreen(),
           HintABCScreen(),
         ],
       ),
