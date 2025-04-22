@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
+import '../../onboarding/view/question_screen.dart';
+
 
 class MypageFirstSection extends StatelessWidget {
   const MypageFirstSection({super.key});
@@ -138,6 +140,10 @@ class MypageFirstSection extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 48),
             child: GestureDetector(
               onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const QuestionScreen()),
+                );
               },
               child: Container(
                 width: 343,

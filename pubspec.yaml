@@ -83,6 +83,7 @@ flutter:
     - lib/global/assets/images/planet_icon/planet_border.png
 
     - lib/global/assets/images/icons/pencil_line.png
+    - lib/global/assets/images/rocket1.png
     - lib/global/assets/images/rocket3.png
     - lib/global/assets/images/login_planet.png
 

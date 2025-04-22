@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_planet/presentaion/home/view/home_screen.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
-import '../../../application/tabBar/view/tab_screen.dart';
+import 'package:money_planet/presentaion/onboarding/view/resulttype_screen.dart';
 import '../../../global/theme/colors.dart';
 import '../../../global/theme/textStyles.dart';
 
@@ -66,13 +63,24 @@ class SelectTypeScreen5 extends StatelessWidget {
               width: 343,
               height: 56,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>  const TabScreen(),
-                    ),
+                onPressed: () async {
+                  showGeneralDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    transitionDuration: const Duration(milliseconds: 300),
+                    pageBuilder: (context, animation1, animation2) {
+                      return const _RocketLoadingDialog();
+                    },
                   );
+
+                  await Future.delayed(const Duration(seconds: 5));
+
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const ResultTypeScreen()),
+                    );
+                  }
                 },
 
                 style: ElevatedButton.styleFrom(
@@ -89,7 +97,46 @@ class SelectTypeScreen5 extends StatelessWidget {
                   ),
                 ),
               ),
-            ), // 다음
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RocketLoadingDialog extends StatelessWidget {
+  const _RocketLoadingDialog();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black.withOpacity(0.85), // 완전한 배경 덮기
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'lib/global/assets/images/rocket1.png',
+              width: 338,
+              height: 338,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              '행성을 분석하고 있습니다.',
+              style: customTextStyle(
+                fontFamily: Pretendard_Medium_24,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              '로켓발사 준비 중…',
+              style: customTextStyle(
+                fontFamily: Pretendard_Medium_20,
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),
