@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
-import 'package:money_planet/presentaion/onboarding/view/selecttype_screen.dart';
+import 'package:money_planet/presentaion/onboarding/view/selecttype_screen1.dart';
 
 import '../../../application/tabBar/view/tab_screen.dart';
 import '../../../global/theme/textStyles.dart';
 
 class GuideTypeScreen extends StatelessWidget {
-  const GuideTypeScreen({super.key});
+  final PageController controller;
+  const GuideTypeScreen({Key? key, required this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final buttonColor = const Color(0xFF849BEB); // 하늘 버튼
-    final backgroundColor = const Color(0xFF202029);
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: neutral_900,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -58,15 +57,14 @@ class GuideTypeScreen extends StatelessWidget {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>  const TabScreen(),
-                      ),
+                    controller.animateToPage(
+                      1,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.ease,
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: buttonColor,
+                    backgroundColor: primary_400,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
