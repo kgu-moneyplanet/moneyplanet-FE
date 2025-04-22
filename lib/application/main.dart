@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:money_planet/application/tabBar/view/tab_screen.dart';
 import 'package:money_planet/presentaion/onboarding/view/login_screen.dart';
 
-void main() {
+void main() async {
+  await initializeDateFormatting();
+
   runApp(const MyApp());
 }
 
@@ -13,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      // home: const LoginScreen(),
       home: const LoginScreen(),
     );
   }
