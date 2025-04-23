@@ -14,7 +14,7 @@ class MyPageSecondSection extends StatelessWidget {
           Row(
             children: [
               Image.asset(
-                'lib/global/assets/images/login_planet.png', // 행성 아이콘 작은 이미지
+                'assets/images/login_planet.png', // 행성 아이콘 작은 이미지
                 width: 27,
                 height: 28,
               ),

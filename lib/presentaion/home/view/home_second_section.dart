@@ -27,13 +27,13 @@ class HomeSecondSection extends StatelessWidget {
                     alignment: Alignment.center,
                     children: [
                       Image.asset(
-                        'lib/global/assets/images/planet_icon/planet_border.png',
+                        'assets/images/planet_icon/planet_border.png',
                         width: 108,
                         height: 108,
                         fit: BoxFit.cover,
                       ),
                       Image.asset(
-                        'lib/global/assets/images/planet_icon/planet3.png',
+                        'assets/images/planet_icon/planet3.png',
                         width: 88,
                         height: 88,
                       ),
@@ -78,7 +78,7 @@ class HomeSecondSection extends StatelessWidget {
                       child: Row(
                         children: [
                           Image.asset(
-                            'lib/global/assets/images/icons/category_rest.png',
+                            'assets/images/icons/category_rest.png',
                             width: 20,
                             height: 20,
                           ),
@@ -123,7 +123,7 @@ class HomeSecondSection extends StatelessWidget {
                         child: Row(
                           children: [
                             Image.asset(
-                              'lib/global/assets/images/icons/category_shopping.png',
+                              'assets/images/icons/category_shopping.png',
                               width: 20,
                               height: 20,
                             ),

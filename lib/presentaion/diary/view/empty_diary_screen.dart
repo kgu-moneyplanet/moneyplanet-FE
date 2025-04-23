@@ -24,7 +24,7 @@ class EmptyDiaryScreen extends StatelessWidget {
               children: [
                 // TODO: - 본인 행성 아이콘으로 맞추기
                 Image.asset(
-                  "lib/global/assets/images/planet_icon/planet3.png",
+                  "assets/images/planet_icon/planet3.png",
                   width: 300,
                   height: 300,
                   fit: BoxFit.fill,

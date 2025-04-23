@@ -63,7 +63,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                         print("tapped bell");
                       },
                       icon: Image.asset(
-                        'lib/global/assets/images/icons/bell_01.png',
+                        'assets/images/icons/bell_01.png',
                       ),
                     ),
 
@@ -76,7 +76,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                         );
                       },
                       icon: Image.asset(
-                        'lib/global/assets/images/icons/help_circle.png',
+                        'assets/images/icons/help_circle.png',
                       ),
                     ),
 

@@ -81,37 +81,37 @@ class ConsumptionItem extends StatelessWidget {
   String _getCategoryIconPath(String category) {
     switch (category) {
       case '식비':
-        return 'lib/global/assets/images/icons/category_food.png';
+        return 'assets/images/icons/category_food.png';
       case '교통/차량':
-        return 'lib/global/assets/images/icons/category_car.png';
+        return 'assets/images/icons/category_car.png';
       // case '문화생활':
-      //   return 'lib/global/assets/images/icons/category_culture.png';
+      //   return 'assets/images/icons/category_culture.png';
       // case '마트/편의점':
-      //   return 'lib/global/assets/images/icons/category_mart.png';
+      //   return 'assets/images/icons/category_mart.png';
       // case '패션/미용':
-      //   return 'lib/global/assets/images/icons/category_fashion.png';
+      //   return 'assets/images/icons/category_fashion.png';
       case '생활용품':
-        return 'lib/global/assets/images/icons/category_life.png';
+        return 'assets/images/icons/category_life.png';
       // case '주거/통신':
-      //   return 'lib/global/assets/images/icons/category_home.png';
+      //   return 'assets/images/icons/category_home.png';
       case '건강':
-        return 'lib/global/assets/images/icons/category_health.png';
+        return 'assets/images/icons/category_health.png';
       // case '교육':
-      //   return 'lib/global/assets/images/icons/category_education.png';
+      //   return 'assets/images/icons/category_education.png';
       // case '경조사/회비':
-      //   return 'lib/global/assets/images/icons/category_event.png';
+      //   return 'assets/images/icons/category_event.png';
       // case '부모님':
-      //   return 'lib/global/assets/images/icons/category_parents.png';
+      //   return 'assets/images/icons/category_parents.png';
       // case '저축성 지출':
-      //   return 'lib/global/assets/images/icons/category_saving.png';
+      //   return 'assets/images/icons/category_saving.png';
       // case '세금':
-      //   return 'lib/global/assets/images/icons/category_tax.png';
+      //   return 'assets/images/icons/category_tax.png';
       // case '반려동물':
-      //   return 'lib/global/assets/images/icons/category_pet.png';
+      //   return 'assets/images/icons/category_pet.png';
       // case '기타':
-      //   return 'lib/global/assets/images/icons/category_etc.png';
+      //   return 'assets/images/icons/category_etc.png';
       default:
-        return 'lib/global/assets/images/icons/category_coffee.png';
+        return 'assets/images/icons/category_coffee.png';
     }
   }
 }

@@ -16,7 +16,7 @@ class MyPageThirdSection extends StatelessWidget {
           Row(
             children: [
               Image.asset(
-                'lib/global/assets/images/rocket3.png', // 행성 아이콘 작은 이미지
+                'assets/images/rocket3.png', // 행성 아이콘 작은 이미지
                 width: 27,
                 height: 28,
               ),
