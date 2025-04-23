@@ -64,7 +64,6 @@ flutter:
   assets:
     - lib/global/assets/images/test.JPG
 
-
     - lib/global/assets/images/icons/bell_01.png
     - lib/global/assets/images/icons/help_circle.png
     - lib/global/assets/images/icons/category_car.png
@@ -74,6 +73,7 @@ flutter:
     - lib/global/assets/images/icons/category_life.png
     - lib/global/assets/images/icons/category_rest.png
     - lib/global/assets/images/icons/category_shopping.png
+    - lib/global/assets/images/icons/pencil_line.png
 
     - lib/global/assets/images/planet_icon/planet1.png
     - lib/global/assets/images/planet_icon/planet2.png
@@ -85,12 +85,22 @@ flutter:
     - lib/global/assets/images/planet_icon/planet8.png
     - lib/global/assets/images/planet_icon/planet_border.png
 
-    - lib/global/assets/images/icons/pencil_line.png
     - lib/global/assets/images/rocket1.png
     - lib/global/assets/images/rocket3.png
     - lib/global/assets/images/login_planet.png
 
+    - lib/global/assets/images/type_icon/artist_palette.png
+    - lib/global/assets/images/type_icon/crown.png
+    - lib/global/assets/images/type_icon/money_bag.png
+    - lib/global/assets/images/type_icon/objects.png
+    - lib/global/assets/images/type_icon/reading_glasses.png
+    - lib/global/assets/images/type_icon/rocket.png
+    - lib/global/assets/images/type_icon/roller_coaster.png
+    - lib/global/assets/images/type_icon/sparkles.png
 
+    - lib/global/assets/images/type_icon/type_shopping.png
+    - lib/global/assets/images/type_icon/type_cafe.png
+    - lib/global/assets/images/type_icon/type_food.png
   # 폰트 등록
   fonts:
     - family: Soyo
