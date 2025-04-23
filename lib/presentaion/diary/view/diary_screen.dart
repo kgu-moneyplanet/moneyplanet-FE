@@ -8,6 +8,7 @@ import 'package:money_planet/presentaion/register/view/register_screen.dart';
 import '../../../global/components/floating_dial_button.dart';
 import '../../../global/theme/colors.dart';
 import '../../../global/theme/textStyles.dart';
+import '../../myPage/view/hint_screen.dart';
 import '../model/diary_model.dart';
 
 class DiaryScreen extends StatefulWidget {
@@ -69,6 +70,10 @@ class _DiaryScreenState extends State<DiaryScreen> {
                     IconButton(
                       onPressed: () {
                         print("tapped help");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const HintScreen()),
+                        );
                       },
                       icon: Image.asset(
                         'lib/global/assets/images/icons/help_circle.png',
