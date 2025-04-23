@@ -30,11 +30,11 @@ SpeedDial floatingDialButton(BuildContext context) {
         child: const Icon(Icons.camera_alt, color: Colors.white),
         backgroundColor: Colors.blue[200],
         label: '영수증 촬영',
-        onTap:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => RegisterOcrScreen()),
-            ),
+        onTap: () => null,
+            // () => Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (_) => RegisterOcrScreen()),
+            // ),
       ),
       SpeedDialChild(
         child: const Icon(Icons.edit, color: Colors.white),
