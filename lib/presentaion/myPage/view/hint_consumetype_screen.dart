@@ -21,6 +21,7 @@ class HintConsumeTypeScreen extends StatelessWidget {
 
   Widget _buildCard(PlanetModel planet) {
     return Card(
+      color: Colors.white,
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 23),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(

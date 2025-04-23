@@ -26,6 +26,7 @@ class _HintScreenState extends State<HintScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('도움말',style: customTextStyle(fontFamily: Pretendard_Semibold_24,color: Colors.black),),
         bottom: TabBar(
           controller: _tabController,
