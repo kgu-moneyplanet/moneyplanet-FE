@@ -24,7 +24,6 @@ class HintABCScreen extends StatelessWidget {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Glow 효과용 원
                         Container(
                           width: 40,
                           height: 40,
