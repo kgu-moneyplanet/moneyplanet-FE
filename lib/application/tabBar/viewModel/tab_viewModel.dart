@@ -10,6 +10,7 @@ class TabViewModel {
 
   void updateIndex(int index) {
     model.selectedIndex = index;
+
   }
 
   Widget getCurrentPage() {

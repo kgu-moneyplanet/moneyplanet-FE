@@ -24,7 +24,7 @@ class GuideProfileScreen extends StatelessWidget {
                 height: 300,
                 decoration: const BoxDecoration(),
                 child: Image.asset(
-                  'lib/global/assets/images/rocket3.png',
+                  'assets/images/rocket3.png',
                   fit: BoxFit.contain,
                 ),
               ),

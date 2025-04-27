@@ -395,7 +395,7 @@ class HintABCScreen extends StatelessWidget {
                             ),
                           ),
                           Image.asset(
-                            'lib/global/assets/images/type_icon/type_food.png',
+                            'assets/images/type_icon/type_food.png',
                             width: 50,
                             height: 52,
                             fit: BoxFit.cover,
@@ -427,7 +427,7 @@ class HintABCScreen extends StatelessWidget {
                             ),
                           ),
                           Image.asset(
-                            'lib/global/assets/images/type_icon/type_cafe.png',
+                            'assets/images/type_icon/type_cafe.png',
                             width: 50,
                             height: 52,
                             fit: BoxFit.cover,
@@ -459,7 +459,7 @@ class HintABCScreen extends StatelessWidget {
                             ),
                           ),
                           Image.asset(
-                            'lib/global/assets/images/type_icon/type_shopping.png',
+                            'assets/images/type_icon/type_shopping.png',
                             width: 50,
                             height: 52,
                             fit: BoxFit.cover,

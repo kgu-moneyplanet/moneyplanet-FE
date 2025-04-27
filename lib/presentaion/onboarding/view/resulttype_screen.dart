@@ -33,7 +33,7 @@ class ResultTypeScreen extends StatelessWidget {
 
               // 실제 이미지
               Image.asset(
-                'lib/global/assets/images/planet_icon/planet5.png',
+                'assets/images/planet_icon/planet5.png',
                 width: 329,
                 height: 329,
                 fit: BoxFit.cover,
@@ -247,7 +247,7 @@ class ResultTypeScreen extends StatelessWidget {
                             ),
                           ),
                           Image.asset(
-                            'lib/global/assets/images/planet_icon/planet5.png',
+                            'assets/images/planet_icon/planet5.png',
                             width: 95,
                             height: 98,
                             fit: BoxFit.cover,

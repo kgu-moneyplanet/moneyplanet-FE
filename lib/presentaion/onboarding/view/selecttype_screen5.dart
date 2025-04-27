@@ -117,7 +117,7 @@ class _RocketLoadingDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'lib/global/assets/images/rocket1.png',
+              'assets/images/rocket1.png',
               width: 338,
               height: 338,
             ),

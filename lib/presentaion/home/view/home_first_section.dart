@@ -32,7 +32,7 @@ class HomeFirstSection extends StatelessWidget {
                 onPressed: () {
                   print("tapped bell");
                 },
-                icon: Image.asset('lib/global/assets/images/icons/bell_01.png'),
+                icon: Image.asset('assets/images/icons/bell_01.png'),
               ),
 
               IconButton(
@@ -44,7 +44,7 @@ class HomeFirstSection extends StatelessWidget {
                   );
                 },
                 icon: Image.asset(
-                  'lib/global/assets/images/icons/help_circle.png',
+                  'assets/images/icons/help_circle.png',
                 ),
               ),
 
@@ -76,7 +76,7 @@ class HomeFirstSection extends StatelessWidget {
 
             // 실제 이미지
             Image.asset(
-              'lib/global/assets/images/planet_icon/planet3.png',
+              'assets/images/planet_icon/planet3.png',
               width: 190,
               height: 190,
               fit: BoxFit.cover,

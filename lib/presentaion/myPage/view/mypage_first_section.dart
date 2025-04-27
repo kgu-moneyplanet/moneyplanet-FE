@@ -34,7 +34,7 @@ class MypageFirstSection extends StatelessWidget {
                 onPressed: () {
                   print("tapped bell");
                 },
-                icon: Image.asset('lib/global/assets/images/icons/bell_01.png'),
+                icon: Image.asset('assets/images/icons/bell_01.png'),
               ),
 
               IconButton(
@@ -46,7 +46,7 @@ class MypageFirstSection extends StatelessWidget {
                   );
                 },
                 icon: Image.asset(
-                  'lib/global/assets/images/icons/help_circle.png',
+                  'assets/images/icons/help_circle.png',
                 ),
               ),
 
@@ -78,7 +78,7 @@ class MypageFirstSection extends StatelessWidget {
 
             // 실제 이미지
             Image.asset(
-              'lib/global/assets/images/planet_icon/planet3.png',
+              'assets/images/planet_icon/planet3.png',
               width: 190,
               height: 190,
               fit: BoxFit.cover,
@@ -121,7 +121,7 @@ class MypageFirstSection extends StatelessWidget {
                     print('닉네임 편집');
                   },
                   icon: Image.asset(
-                    'lib/global/assets/images/icons/pencil_line.png',
+                    'assets/images/icons/pencil_line.png',
                     width: 13,
                     height: 13,
                     fit: BoxFit.cover,
