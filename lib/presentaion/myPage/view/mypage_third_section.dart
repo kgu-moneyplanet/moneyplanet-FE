@@ -82,6 +82,7 @@ class MyPageThirdSection extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
+          backgroundColor: Colors.white,
           child: Container(
             padding: EdgeInsets.all(30),
             width: 308,
@@ -168,6 +169,7 @@ class MyPageThirdSection extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
+          backgroundColor: Colors.white,
           child: Container(
             padding: EdgeInsets.all(30),
             width: 308,

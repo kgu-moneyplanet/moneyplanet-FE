@@ -66,6 +66,7 @@ class HintABCScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: 24),
                   Container(
+                    margin: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
                     width: 356,
                     height: 55,
                     decoration: BoxDecoration(
@@ -84,7 +85,7 @@ class HintABCScreen extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     child: Text(
                       '먹고사는 데 필수적인 소비. 교통비나 식대, 아파트 관리비, 세금과 같은 소비가 이 소비에 속한다.',
                       style: customTextStyle(
@@ -94,6 +95,7 @@ class HintABCScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    margin: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
                     width: 356,
                     height: 55,
                     decoration: BoxDecoration(
@@ -112,7 +114,7 @@ class HintABCScreen extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     child: Text(
                       '반드시까지는 아니더라도 필요한 소비. 자녀 학원비나 미용실 같은 소비가 이 소비에 속한다.',
                       style: customTextStyle(
@@ -122,6 +124,7 @@ class HintABCScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    margin: EdgeInsetsDirectional.fromSTEB(20, 0, 20, 0),
                     width: 356,
                     height: 55,
                     decoration: BoxDecoration(
@@ -141,7 +144,7 @@ class HintABCScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Padding(
-                    padding: const EdgeInsets.all(12.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     child: Text(
                       '그다지 필요 없는 낭비성 지출에 가까운 소비. 명품이나 잦은 외식, 또는 신경쓰면 나가지 않아도 되는 주차위반 딱지나 과태료가 이 소비에 속한다.',
                       style: customTextStyle(
@@ -153,6 +156,7 @@ class HintABCScreen extends StatelessWidget {
                 ],
               ),
             ),
+
             SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.all(12.0),
