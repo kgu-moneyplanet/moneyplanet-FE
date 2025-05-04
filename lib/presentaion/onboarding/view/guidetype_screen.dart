@@ -15,7 +15,7 @@ class GuideTypeScreen extends StatelessWidget {
       backgroundColor: neutral_900,
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.fromLTRB(24, 40, 24, 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

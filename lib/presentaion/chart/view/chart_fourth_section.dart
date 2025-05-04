@@ -5,8 +5,8 @@ import 'package:money_planet/presentaion/myPage/view/hint_screen.dart';
 
 import '../../onboarding/view/question_screen.dart';
 
-class ChartThirdSection extends StatelessWidget {
-  const ChartThirdSection({super.key});
+class ChartFourthSection extends StatelessWidget {
+  const ChartFourthSection({super.key});
   @override
   Widget build(BuildContext context) {
     return Padding(

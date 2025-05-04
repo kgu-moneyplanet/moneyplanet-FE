@@ -79,6 +79,8 @@ flutter:
     - assets/images/icons/category_rest.png
     - assets/images/icons/category_shopping.png
     - assets/images/icons/pencil_line.png
+    - assets/images/icons/arrow_square_downright.png
+    - assets/images/icons/arrow_square_upright.png
 
     - assets/images/planet_icon/planet1.png
     - assets/images/planet_icon/planet2.png

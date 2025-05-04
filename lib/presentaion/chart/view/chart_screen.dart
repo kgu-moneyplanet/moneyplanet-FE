@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../global/theme/colors.dart';
 import 'chart_first_section.dart';
+import 'chart_fourth_section.dart';
 import 'chart_second_section.dart';
 import 'chart_first_section.dart';
+import 'chart_third_section.dart';
 
 class ChartScreen extends StatelessWidget {
   const ChartScreen({super.key});
@@ -19,14 +21,18 @@ class ChartScreen extends StatelessWidget {
                 children: [
                   ChartFirstSection(),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
 
                   ChartSecondSection(),
 
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
 
-                  //ChartThirdSection(),
+                  ChartThirdSection(),
 
+                  SizedBox(height: 20),
+
+                  ChartFourthSection(),
+                  SizedBox(height: 60),
                 ],
               ),
             ),

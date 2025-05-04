@@ -40,65 +40,87 @@ class _SelectTypeScreen2State extends State<SelectTypeScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primary_050,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 60),
-              questionBlock('4. 물건을 살 때 나는?', 'q4', q4, [
-                '후기를 꼼꼼히 읽고 실용성을 따진다.',
-                '감각적으로 끌리는 제품을 선택한다.',
-              ]),
-              const SizedBox(height: 24),
-              questionBlock('5. 가계부를 작성할 때 나는?', 'q5', q5, [
-                '숫자와 데이터를 꼼꼼하게 정리한다.',
-                '소비 패턴의 흐름을 감각적으로 파악한다.',
-              ]),
-              const SizedBox(height: 24),
-              questionBlock('6. 내가 더 선호하는 소비 방식은?', 'q6', q6, [
-                '가성비 좋은 실용적인 물건을 구매한다.',
-                '약간 비싸더라도 트렌디하고 감성적인 아이템을 산다.',
-              ]),
-              const SizedBox(height: 100),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    widget.controller.nextPage(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primary_400,
-                    fixedSize: const Size(343, 56),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 40, 24, 20),
+        child: Column(
+          children: [
+            // 질문 및 선택지
+            Expanded(
+              child: ListView(
+                children: [
+                  buildQuestion(
+                    title: '4. 물건을 살 때 나는?',
+                    keyStr: 'q4',
+                    selectedIndex: q4,
+                    options: [
+                      '후기를 꼼꼼히 읽고 실용성을 따진다.',
+                      '감각적으로 끌리는 제품을 선택한다.',
+                    ],
                   ),
-                  child: Text(
-                    '다음',
-                    style: customTextStyle(
-                      fontFamily: Pretendard_Medium_18,
-                      color: Colors.white,
-                    ),
+                  const SizedBox(height: 20),
+                  buildQuestion(
+                    title: '5. 가계부를 작성할 때 나는?',
+                    keyStr: 'q5',
+                    selectedIndex: q5,
+                    options: [
+                      '숫자와 데이터를 꼼꼼하게 정리한다.',
+                      '소비 패턴의 흐름을 감각적으로 파악한다.',
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  buildQuestion(
+                    title: '6. 내가 더 선호하는 소비 방식은?',
+                    keyStr: 'q6',
+                    selectedIndex: q6,
+                    options: [
+                      '가성비 좋은 실용적인 물건을 구매한다.',
+                      '약간 비싸더라도 트렌디하고 감성적인 아이템을 산다.',
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // 다음 버튼
+            SizedBox(
+              width: double.infinity,
+              height: 56,
+              child: ElevatedButton(
+                onPressed: () {
+                  widget.controller.nextPage(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primary_400,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  '다음',
+                  style: customTextStyle(
+                    fontFamily: Pretendard_Medium_18,
+                    color: Colors.white,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget questionBlock(
-      String title,
-      String key,
-      int? selectedIndex,
-      List<String> options,
-      ) {
+  Widget buildQuestion({
+    required String title,
+    required String keyStr,
+    required int? selectedIndex,
+    required List<String> options,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -109,16 +131,16 @@ class _SelectTypeScreen2State extends State<SelectTypeScreen2> {
             color: Colors.black,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         for (int i = 0; i < options.length; i++)
-          Container(
-            margin: const EdgeInsets.only(bottom: 8),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
             child: ElevatedButton(
-              onPressed: () => select(key, i),
+              onPressed: () => select(keyStr, i),
               style: ElevatedButton.styleFrom(
                 backgroundColor:
                 selectedIndex == i ? primary_300 : Colors.white,
-                fixedSize: const Size(357, 48),
+                fixedSize: const Size.fromHeight(48),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

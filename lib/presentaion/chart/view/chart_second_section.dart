@@ -14,7 +14,7 @@ class ChartSecondSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 23),
       child: Container(
         width: 393,
-        height: 100,
+        height: 147,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -23,9 +23,9 @@ class ChartSecondSection extends StatelessWidget {
           children: [
             // 이번주 수입
             _buildInfoBlock(
-              imagePath: 'assets/images/icons/arrow_upward.png',
+              imagePath: 'assets/images/icons/arrow_square_upright.png',
               label: '이번주 수입',
-              amount: '500000',
+              amount: '500,000원',
               labelColor: neutral_400,
               amountColor: Colors.black,
             ),
@@ -38,11 +38,11 @@ class ChartSecondSection extends StatelessWidget {
 
             // 이번주 지출
             _buildInfoBlock(
-              imagePath: 'assets/images/icons/arrow_downward.png',
+              imagePath: 'assets/images/icons/arrow_square_downright.png',
               label: '이번주 지출',
-              amount: '500000',
+              amount: '500,000원',
               labelColor: neutral_400,
-              amountColor: Colors.black,
+              amountColor: secondary_200,
             ),
           ],
         ),
@@ -64,10 +64,10 @@ class ChartSecondSection extends StatelessWidget {
           // Icon 대신 Image.asset 사용
           Image.asset(
             imagePath,
-            width: 24,
-            height: 24,
+            width: 25.5,
+            height: 25.5,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 9),
           Text(
             label,
             style: customTextStyle(
