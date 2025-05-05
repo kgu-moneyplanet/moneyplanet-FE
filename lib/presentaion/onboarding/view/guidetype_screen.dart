@@ -51,7 +51,7 @@ class GuideTypeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 60),
+              const SizedBox(height: 130),
               SizedBox(
                 width: 343,
                 height: 56,
