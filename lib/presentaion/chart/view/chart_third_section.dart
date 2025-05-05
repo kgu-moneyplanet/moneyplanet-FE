@@ -2,9 +2,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
-import 'package:money_planet/presentaion/myPage/view/hint_screen.dart';
-
-import '../../onboarding/view/question_screen.dart';
 
 class ChartThirdSection extends StatelessWidget {
   const ChartThirdSection({super.key});
