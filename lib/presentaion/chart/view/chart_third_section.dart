@@ -9,7 +9,7 @@ class ChartThirdSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categories = [
-      {'label': '식비', 'value': 100.0, 'color': primary_400},
+      {'label': '식비', 'value': 1000.0, 'color': primary_400},
       {'label': '교통/차량', 'value': 80.0, 'color': primary_300},
       {'label': '문화생활', 'value': 60.0, 'color': primary_200},
       {'label': '마트/편의점', 'value': 90.0, 'color': primary_100},
