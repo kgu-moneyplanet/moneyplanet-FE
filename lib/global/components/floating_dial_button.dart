@@ -20,11 +20,22 @@ SpeedDial floatingDialButton(BuildContext context) {
         child: const Icon(Icons.receipt_long, color: Colors.white),
         backgroundColor: Colors.blue[200],
         label: '붙여넣기',
-        onTap:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => RegisterScreen()),
-            ),
+        onTap: () => showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.9,
+              padding: EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              child: RegisterScreen(isIncome: true), // 또는 false
+            );
+          },
+        ),
       ),
       SpeedDialChild(
         child: const Icon(Icons.camera_alt, color: Colors.white),
@@ -41,9 +52,23 @@ SpeedDial floatingDialButton(BuildContext context) {
         backgroundColor: Colors.blue[200],
         label: '직접 작성',
         onTap:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => RegisterScreen()),
+            () => showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.transparent,
+              enableDrag: false,
+              isDismissible: false,
+              builder: (context) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  padding: EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+                  ),
+                  child: RegisterScreen(isIncome: true), // 또는 false
+                );
+              },
             ),
       ),
     ],
