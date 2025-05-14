@@ -65,7 +65,7 @@ List<DiaryModel> DiaryMockData = [
     isIncome: true,
     date: DateTime(2025, 4, 8),
     amount: 300000,
-    category: '기타',
+    category: '월급',
     payment: '계좌이체',
     description: '용돈',
     memo: '부모님이 보내주심',

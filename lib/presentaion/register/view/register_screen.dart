@@ -22,8 +22,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _categoryController = TextEditingController();
   final _assetController = TextEditingController();
   final _noteController = TextEditingController();
+  final _memoController = TextEditingController();
 
-  String selectedType = 'A';
+  String selectedType = '';
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _categoryController.dispose();
     _assetController.dispose();
     _noteController.dispose();
+    _memoController.dispose();
     super.dispose();
   }
 
@@ -63,12 +65,77 @@ class _RegisterScreenState extends State<RegisterScreen> {
           selectedTime.minute,
         );
         _dateController.text =
-            "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} "
-            "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
+            "${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ";
         _timeController.text =
             "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
       }
     }
+  }
+
+  void _showCategoryModal() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) {
+        final categories = [
+          '식비', '교통/차량', '문화생활', '마트/편의점', '패션/미용', '생활용품', '주거/통신', '건강',
+          '교육', '경조사/회비', '부모님', '저축성 지출', '세금', '반려동물', '월급', '기타',
+        ];
+        return Container(
+          padding: const EdgeInsets.all(20),
+          width: double.infinity,
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: categories.map((category) {
+              return ChoiceChip(
+                label: Text(category),
+                selected: _categoryController.text == category,
+                onSelected: (_) {
+                  setState(() {
+                    _categoryController.text = category;
+                  });
+                  Navigator.pop(context);
+                },
+                selectedColor: primary_050,
+                labelStyle: const TextStyle(fontSize: 16),
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showAssetModal() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) {
+        final assets = ['현금', '체크카드', '신용카드', '은행계좌'];
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: assets.map((asset) {
+              return ListTile(
+                title: Text(asset),
+                onTap: () {
+                  setState(() {
+                    _assetController.text = asset;
+                  });
+                  Navigator.pop(context);
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -135,18 +202,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     intValue = 10000000;
                     return;
                   }
-                  var formatted = NumberFormat.decimalPattern().format(intValue);
+                  var formatted = NumberFormat.decimalPattern().format(
+                    intValue,
+                  );
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     _amountController.value = TextEditingValue(
                       text: formatted,
-                      selection: TextSelection.collapsed(offset: formatted.length),
+                      selection: TextSelection.collapsed(
+                        offset: formatted.length,
+                      ),
                     );
                   });
                 },
               ),
-              _buildTextField('분류', _categoryController),
-              _buildTextField('자산', _assetController),
+              _buildTextField(
+                '분류',
+                _categoryController,
+                readOnly: true,
+                onTap: _showCategoryModal,
+              ),
+
+              _buildTextField(
+                '자산',
+                _assetController,
+                readOnly: true,
+                onTap: _showAssetModal,
+              ),
               _buildTextField('내용', _noteController),
+
+              SizedBox(height: 20,),
+
+              Divider(),
+
+              SizedBox(height: 20,),
+
+              _buildTextField('메모', _memoController),
               if (!isIncome) ...[
                 const SizedBox(height: 10),
                 _buildTypeSelector(),
@@ -205,10 +295,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               CircleAvatar(
                                 radius: 36,
                                 backgroundColor: primary_400.withOpacity(0.2),
-                                child: Icon(
-                                  Icons.ramen_dining,
-                                  size: 36,
-                                  color: primary_400,
+                                child: Image.asset(
+                                  getCategoryImagePath(_categoryController.text),
+                                  width: 36,
+                                  height: 36,
+                                  fit: BoxFit.contain,
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -238,15 +329,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ElevatedButton.icon(
                           onPressed: () {
                             setState(() {
+                              selectedType = 'C';
                               showAnalysisResult = false;
                             });
                           },
-                          icon: const Icon(Icons.edit, size: 18),
-                          label: const Text('수정하기'),
+                          label: const Text('확인'),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                               vertical: 14,
-                              horizontal: 24,
+                              horizontal: 100,
                             ),
                             backgroundColor: primary_400,
                             shape: RoundedRectangleBorder(
@@ -420,7 +511,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: OutlinedButton(
-                  onPressed: () => setState(() => selectedType = type),
+                  onPressed: null,
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
                       width: isSelected ? 3 : 1,
@@ -433,5 +524,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           }).toList(),
     );
+  }
+
+  String getCategoryImagePath(String category) {
+    final imageMap = {
+      '식비': 'assets/images/icons/category_food.png',
+      '교통/차량': 'assets/images/icons/category_transport.png',
+      '문화생활': 'assets/images/icons/category_entertainment.png',
+      '마트/편의점': 'assets/images/icons/category_mart.png',
+      '패션/미용': 'assets/images/icons/category_fashion.png',
+      '생활용품': 'assets/images/icons/category_mart.png',
+      '주거/통신': 'assets/images/icons/category_home.png',
+      '건강': 'assets/images/icons/category_health.png',
+      '교육': 'assets/images/icons/category_mart.png',
+      '경조사/회비': 'assets/images/icons/category_event.png',
+      '부모님': 'assets/images/icons/category_parents.png',
+      '저축성 지출': 'assets/images/icons/category_saving.png',
+      '세금': 'assets/images/icons/category_tax.png',
+      '반려동물': 'assets/images/icons/category_pet.png',
+      '기타': 'assets/images/icons/category_coffee.png',
+      '월급': 'assets/images/icons/category_saving.png',
+    };
+
+    // 기본 이미지 지정
+    return imageMap[category] ?? 'assets/images/icons/category_coffee.png';
   }
 }
