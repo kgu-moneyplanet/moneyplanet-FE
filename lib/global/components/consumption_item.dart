@@ -18,10 +18,9 @@ class ConsumptionItem extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              /// TODO: - 여기가 ABC따라서 아이콘 배경색 바꾸는 곳, 아이콘 새로 다운 받아서 구현해야함
-              color: secondary_200,
+              color: _getImportanceColor(item.type),
             ),
             padding: const EdgeInsets.all(6),
             child: Image.asset(
@@ -112,6 +111,19 @@ class ConsumptionItem extends StatelessWidget {
         return 'assets/images/icons/category_coffee.png';
       default:
         return 'assets/images/icons/category_saving.png';
+    }
+  }
+
+  Color _getImportanceColor(String importance) {
+    switch (importance) {
+      case 'a':
+        return primary_400; // 밝은 파랑
+      case 'b':
+        return primary_050; // 밝은 노랑
+      case 'c':
+        return secondary_200; // 밝은 빨강
+      default:
+        return secondary_200; // 기본색
     }
   }
 }
