@@ -13,7 +13,6 @@ class DiaryCalendarScreen extends StatefulWidget {
 class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDate;
-  PageController _pageController = PageController(initialPage: 0);
 
   final DateFormat _monthFormat = DateFormat('yyyy.MM');
   Map<DateTime, bool> transactionDates = {};

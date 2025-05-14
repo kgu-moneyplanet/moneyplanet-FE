@@ -294,7 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             children: [
                               CircleAvatar(
                                 radius: 36,
-                                backgroundColor: primary_400.withOpacity(0.2),
+                                backgroundColor: primary_400,
                                 child: Image.asset(
                                   getCategoryImagePath(_categoryController.text),
                                   width: 36,
