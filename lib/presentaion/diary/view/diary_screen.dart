@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:money_planet/presentaion/diary/view/diary_calendar_screen.dart';
 import 'package:money_planet/presentaion/diary/view/diary_list_screen.dart';
 import 'package:money_planet/presentaion/diary/view/empty_diary_screen.dart';
 import 'package:money_planet/presentaion/diary/viewModel/diary_viewModel.dart';
-import 'package:money_planet/presentaion/register/view/register_ocr_screen.dart';
-import 'package:money_planet/presentaion/register/view/register_screen.dart';
 
 import '../../../global/components/floating_dial_button.dart';
 import '../../../global/theme/colors.dart';
@@ -62,9 +61,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                       onPressed: () {
                         print("tapped bell");
                       },
-                      icon: Image.asset(
-                        'assets/images/icons/bell_01.png',
-                      ),
+                      icon: Image.asset('assets/images/icons/bell_01.png'),
                     ),
 
                     IconButton(
@@ -72,12 +69,12 @@ class _DiaryScreenState extends State<DiaryScreen> {
                         print("tapped help");
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const HintScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const HintScreen(),
+                          ),
                         );
                       },
-                      icon: Image.asset(
-                        'assets/images/icons/help_circle.png',
-                      ),
+                      icon: Image.asset('assets/images/icons/help_circle.png'),
                     ),
 
                     SizedBox(width: 28),
@@ -138,9 +135,13 @@ class _DiaryScreenState extends State<DiaryScreen> {
                               width: 48,
                               height: 48,
                               child: IconButton(
-                                onPressed: () {
-                                  print("달력버튼 클릭");
-                                },
+                                onPressed:
+                                    () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => DiaryCalendarScreen(),
+                                      ),
+                                    ),
                                 iconSize: 24,
                                 icon: Icon(
                                   Icons.calendar_today,
@@ -242,7 +243,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                                                 ? primary_400
                                                 : primary_050,
                                         foregroundColor:
-                                        viewModel.selectedView == viewType
+                                            viewModel.selectedView == viewType
                                                 ? Colors.white
                                                 : primary_400,
                                         shape: RoundedRectangleBorder(
@@ -293,5 +294,4 @@ class _DiaryScreenState extends State<DiaryScreen> {
       if (viewModel.selectedMonth > 12) viewModel.selectedMonth = 12;
     });
   }
-
 }
