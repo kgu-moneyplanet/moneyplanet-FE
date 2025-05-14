@@ -18,10 +18,9 @@ class ConsumptionItem extends StatelessWidget {
           Container(
             width: 40,
             height: 40,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              /// TODO: - 여기가 ABC따라서 아이콘 배경색 바꾸는 곳, 아이콘 새로 다운 받아서 구현해야함
-              color: secondary_200,
+              color: _getImportanceColor(item.type),
             ),
             padding: const EdgeInsets.all(6),
             child: Image.asset(
@@ -84,34 +83,47 @@ class ConsumptionItem extends StatelessWidget {
         return 'assets/images/icons/category_food.png';
       case '교통/차량':
         return 'assets/images/icons/category_car.png';
-      // case '문화생활':
-      //   return 'assets/images/icons/category_culture.png';
-      // case '마트/편의점':
-      //   return 'assets/images/icons/category_mart.png';
-      // case '패션/미용':
-      //   return 'assets/images/icons/category_fashion.png';
+      case '문화생활':
+        return 'assets/images/icons/category_culture.png';
+      case '마트/편의점':
+        return 'assets/images/icons/category_mart.png';
+      case '패션/미용':
+        return 'assets/images/icons/category_fashion.png';
       case '생활용품':
         return 'assets/images/icons/category_life.png';
-      // case '주거/통신':
-      //   return 'assets/images/icons/category_home.png';
+      case '주거/통신':
+        return 'assets/images/icons/category_home.png';
       case '건강':
         return 'assets/images/icons/category_health.png';
-      // case '교육':
-      //   return 'assets/images/icons/category_education.png';
-      // case '경조사/회비':
-      //   return 'assets/images/icons/category_event.png';
-      // case '부모님':
-      //   return 'assets/images/icons/category_parents.png';
-      // case '저축성 지출':
-      //   return 'assets/images/icons/category_saving.png';
-      // case '세금':
-      //   return 'assets/images/icons/category_tax.png';
-      // case '반려동물':
-      //   return 'assets/images/icons/category_pet.png';
-      // case '기타':
-      //   return 'assets/images/icons/category_etc.png';
-      default:
+      case '교육':
+        return 'assets/images/icons/category_education.png';
+      case '경조사/회비':
+        return 'assets/images/icons/category_event.png';
+      case '부모님':
+        return 'assets/images/icons/category_parents.png';
+      case '저축성 지출':
+        return 'assets/images/icons/category_saving.png';
+      case '세금':
+        return 'assets/images/icons/category_tax.png';
+      case '반려동물':
+        return 'assets/images/icons/category_pet.png';
+      case '기타':
         return 'assets/images/icons/category_coffee.png';
+      default:
+        return 'assets/images/icons/category_saving.png';
+    }
+  }
+
+  Color _getImportanceColor(String importance) {
+    switch (importance) {
+      case 'a':
+        return primary_400; // 밝은 파랑
+      case 'b':
+        return primary_050; // 밝은 노랑
+      case 'c':
+        return secondary_200; // 밝은 빨강
+      default:
+        return secondary_200; // 기본색
     }
   }
 }

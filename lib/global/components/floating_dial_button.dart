@@ -17,35 +17,13 @@ SpeedDial floatingDialButton(BuildContext context) {
     buttonSize: Size(60, 60),
     children: [
       SpeedDialChild(
-        child: const Icon(Icons.receipt_long, color: Colors.white),
-        backgroundColor: Colors.blue[200],
-        label: '붙여넣기',
-        onTap: () => showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (context) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.9,
-              padding: EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-              ),
-              child: RegisterScreen(isIncome: true), // 또는 false
-            );
-          },
-        ),
-      ),
-      SpeedDialChild(
         child: const Icon(Icons.camera_alt, color: Colors.white),
         backgroundColor: Colors.blue[200],
         label: '영수증 촬영',
-        onTap: () => null,
-            // () => Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (_) => RegisterOcrScreen()),
-            // ),
+        onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => RegisterOcrScreen()),
+            ),
       ),
       SpeedDialChild(
         child: const Icon(Icons.edit, color: Colors.white),

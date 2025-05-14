@@ -42,7 +42,7 @@ dependencies:
   google_mlkit_text_recognition: ^0.15.0
   path_provider: ^2.1.5
   fl_chart: ^0.71.0
-#  flutter_tesseract_ocr: ^0.4.28
+  flutter_tesseract_ocr: ^0.4.28
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +79,15 @@ flutter:
     - assets/images/icons/category_life.png
     - assets/images/icons/category_rest.png
     - assets/images/icons/category_shopping.png
+    - assets/images/icons/category_culture.png
+    - assets/images/icons/category_education.png
+    - assets/images/icons/category_event.png
+    - assets/images/icons/category_fashion.png
+    - assets/images/icons/category_home.png
+    - assets/images/icons/category_mart.png
+    - assets/images/icons/category_pet.png
+    - assets/images/icons/category_saving.png
+    - assets/images/icons/category_tax.png
     - assets/images/icons/pencil_line.png
     - assets/images/icons/arrow_square_downright.png
     - assets/images/icons/arrow_square_upright.png
