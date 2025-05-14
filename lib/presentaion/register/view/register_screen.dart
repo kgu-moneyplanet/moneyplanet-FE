@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
+import 'package:flutter/services.dart';
 
 class RegisterScreen extends StatefulWidget {
   final bool isIncome;
@@ -138,6 +139,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  Future<void> parseClipboardAndFillFields() async {
+
+    final clipboardData = await Clipboard.getData('text/plain');
+    final text = clipboardData?.text ?? '';
+    final lines = text.split('\n');
+
+    String? dateStr;
+    String? timeStr;
+    String? amountStr;
+    String? contentStr;
+
+    final dateRegex = RegExp(r'(\d{2})/(\d{2})'); // MM/DD
+    final timeRegex = RegExp(r'(\d{2}):(\d{2})'); // HH:mm
+    final amountRegex = RegExp(r'([\d,]+)원');     // 금액
+    final contentRegex = RegExp(r'[^\d]+사용');
+
+    for (final line in lines) {
+      if (dateRegex.hasMatch(line)) {
+        final match = dateRegex.firstMatch(line)!;
+        final month = match.group(1)!;
+        final day = match.group(2)!;
+        final year = DateTime.now().year;
+        final formattedDate = DateFormat('yyyy-MM-dd').format(
+          DateTime(year, int.parse(month), int.parse(day)),
+        );
+        dateStr = formattedDate;
+      }
+
+      if (timeRegex.hasMatch(line)) {
+        timeStr = timeRegex.firstMatch(line)!.group(0)!;
+      }
+
+      if (amountRegex.hasMatch(line)) {
+        amountStr = amountRegex.firstMatch(line)!.group(1)!.replaceAll(',', '');
+      }
+
+      if (contentRegex.hasMatch(line)) {
+        contentStr = contentRegex.firstMatch(line)!.group(0)!;
+      }
+    }
+
+    // 여기서 이 값을 각 TextEditingController 등에 넣어주면 돼
+    print('날짜: $dateStr');
+    print('시간: $timeStr');
+    print('금액: $amountStr');
+    print('내용: $contentStr');
+
+    // 예시 - 실제로 컨트롤러에 적용
+    _dateController.text = dateStr ?? '';
+    _timeController.text = timeStr ?? '';
+    _amountController.text = amountStr ?? '';
+    _memoController.text = contentStr ?? '';
+    _assetController.text = contentStr!.isEmpty ? '' : '체크카드';
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -155,6 +212,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 30),
               _buildToggleTab(),
               const SizedBox(height: 30),
+              if (!isIncome) ...[
+                ElevatedButton(
+                  onPressed: () => parseClipboardAndFillFields(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: secondary_200, // 배경 색상
+                    foregroundColor: Colors.white,  // 텍스트 색상
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                    ),
+                    elevation: 4, // 그림자 깊이
+                    shadowColor: secondary_300, // 그림자 색상
+                  ),
+                  child: const Text('📋 붙여넣기', style: Pretendard_Semibold_16,),
+                ),
+                const SizedBox(height: 30),
+              ],
+
               Row(
                 children: [
                   Expanded(
