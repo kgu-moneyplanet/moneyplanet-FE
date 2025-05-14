@@ -43,6 +43,7 @@ dependencies:
   path_provider: ^2.1.5
   fl_chart: ^0.71.0
 #  flutter_tesseract_ocr: ^0.4.28
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:

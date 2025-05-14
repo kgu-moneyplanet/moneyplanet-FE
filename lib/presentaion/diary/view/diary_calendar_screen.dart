@@ -16,10 +16,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
   PageController _pageController = PageController(initialPage: 0);
 
   final DateFormat _monthFormat = DateFormat('yyyy.MM');
-
-  // 초기화되지 않아서 문제가 되었던 변수
-  // late Map<DateTime, bool> transactionDates;
-  Map<DateTime, bool>? transactionDates;
+  Map<DateTime, bool> transactionDates = {};
 
   @override
   void initState() {
@@ -28,14 +25,20 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     _loadTransactionDates();
   }
 
+  /// 날짜에서 시간 정보를 제거한 날짜를 반환
+  DateTime normalizeDate(DateTime date) {
+    return DateTime(date.year, date.month, date.day);
+  }
+
   void _loadTransactionDates() {
-    // 예시 데이터. 실제로는 서버나 로컬 DB에서 가져와야 함.
+    final Map<DateTime, bool> map = {};
+    for (var item in DiaryMockData) {
+      final dateOnly = normalizeDate(item.date);
+      map[dateOnly] = true;
+    }
+
     setState(() {
-      transactionDates = {
-        DateTime(_focusedDay.year, _focusedDay.month, 5): true,
-        DateTime(_focusedDay.year, _focusedDay.month, 12): true,
-        DateTime(_focusedDay.year, _focusedDay.month, 25): true,
-      };
+      transactionDates = map;
     });
   }
 
@@ -60,9 +63,9 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     return weekdays
         .map(
           (day) => Center(
-            child: Text(day, style: TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        )
+        child: Text(day, style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
+    )
         .toList();
   }
 
@@ -76,7 +79,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
 
     return List.generate(
       lastToDisplay.difference(firstToDisplay).inDays + 1,
-      (index) => DateTime(
+          (index) => DateTime(
         firstToDisplay.year,
         firstToDisplay.month,
         firstToDisplay.day + index,
@@ -88,7 +91,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     final days = _daysInMonth(_focusedDay);
 
     return SizedBox(
-      height: 320, // 원하는 고정 높이
+      height: 320,
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -100,18 +103,12 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
         itemCount: days.length,
         itemBuilder: (context, index) {
           final day = days[index];
-          final isSelected =
-              _selectedDate != null &&
-              day.year == _selectedDate!.year &&
-              day.month == _selectedDate!.month &&
-              day.day == _selectedDate!.day;
-          final isToday =
-              DateTime.now().year == day.year &&
-              DateTime.now().month == day.month &&
-              DateTime.now().day == day.day;
-
+          final normalizedDay = normalizeDate(day);
+          final isSelected = _selectedDate != null &&
+              normalizeDate(_selectedDate!) == normalizedDay;
+          final isToday = normalizeDate(DateTime.now()) == normalizedDay;
           final isWithinCurrentMonth = day.month == _focusedDay.month;
-          final hasTransaction = transactionDates?[day] ?? false;
+          final hasTransaction = transactionDates[normalizedDay] ?? false;
 
           return GestureDetector(
             onTap: () {
@@ -121,12 +118,11 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
             },
             child: Container(
               decoration: BoxDecoration(
-                color:
-                    isSelected
-                        ? Colors.blue
-                        : isToday
-                        ? Colors.blue[100]
-                        : Colors.transparent,
+                color: isSelected
+                    ? Colors.blue
+                    : isToday
+                    ? Colors.blue[100]
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Stack(
@@ -136,9 +132,9 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                       '${day.day}',
                       style: TextStyle(
                         color:
-                            isWithinCurrentMonth ? Colors.black : Colors.grey,
+                        isWithinCurrentMonth ? Colors.black : Colors.grey,
                         fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.normal,
+                        isSelected ? FontWeight.bold : FontWeight.normal,
                       ),
                     ),
                   ),
@@ -168,13 +164,12 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
   }
 
   List<Widget> _buildTransactionList() {
-    final selectedList =
-        DiaryMockData.where(
-          (item) =>
-              item.date.year == _selectedDate!.year &&
-              item.date.month == _selectedDate!.month &&
-              item.date.day == _selectedDate!.day,
-        ).toList();
+    if (_selectedDate == null) return [];
+
+    final normalizedSelected = normalizeDate(_selectedDate!);
+    final selectedList = DiaryMockData.where(
+          (item) => normalizeDate(item.date) == normalizedSelected,
+    ).toList();
 
     if (selectedList.isEmpty) {
       return [
@@ -185,10 +180,10 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     return selectedList
         .map(
           (item) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ConsumptionItem(item: item),
-          ),
-        )
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: ConsumptionItem(item: item),
+      ),
+    )
         .toList();
   }
 
@@ -208,7 +203,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-            color: Colors.white
+            color: Colors.white,
           ),
           child: Column(
             children: [
@@ -238,7 +233,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                 physics: NeverScrollableScrollPhysics(),
                 children: _buildDayHeaders(),
               ),
-              _buildDateGrid(), // ← 고정 높이로 들어감
+              _buildDateGrid(),
               if (_selectedDate != null) ..._buildTransactionList(),
             ],
           ),

@@ -101,5 +101,15 @@ List<DiaryModel> DiaryMockData = [
     memo: 'KT',
     type: 'c',
   ),
+  DiaryModel(
+    isIncome: false,
+    date: DateTime(2025, 5, 5),
+    amount: 80000,
+    category: '주거/통신',
+    payment: '계좌이체',
+    description: '인터넷 요금',
+    memo: 'KT',
+    type: 'c',
+  ),
 ];
 
