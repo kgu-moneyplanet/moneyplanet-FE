@@ -84,7 +84,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           '교육', '경조사/회비', '부모님', '저축성 지출', '세금', '반려동물', '월급', '기타',
         ];
         return Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 70, left: 20),
           width: double.infinity,
           child: Wrap(
             spacing: 10,
@@ -118,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       builder: (_) {
         final assets = ['현금', '체크카드', '신용카드', '은행계좌'];
         return Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 70, left: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: assets.map((asset) {
