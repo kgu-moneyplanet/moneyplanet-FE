@@ -91,4 +91,21 @@ List<PlanetModel> planetList = [
     number: 8,
     iconsURL: 'assets/images/type_icon/sparkles.png',
   ),
+
+
 ];
+PlanetModel classifyPlanet(Map<String, int> answers) {
+  const groups = [
+    ['q1', 'q2', 'q3', 'q4'],
+    ['q5', 'q6', 'q7', 'q8'],
+    ['q9', 'q10', 'q11', 'q12'],
+  ];
+
+  final bits = groups.map((keys) {
+    final sum = keys.fold<int>(0, (acc, key) => acc + (answers[key] ?? 0));
+    return sum >= 3 ? 1 : 0;
+  }).toList();
+
+  final mask = (bits[0] << 0) | (bits[1] << 1) | (bits[2] << 2);
+  return planetList[mask];
+}
