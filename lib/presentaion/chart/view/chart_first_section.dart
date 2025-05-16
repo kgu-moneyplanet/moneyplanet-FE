@@ -3,7 +3,6 @@ import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 import 'package:money_planet/presentaion/myPage/view/hint_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../onboarding/view/question_screen.dart';
 
 class ChartFirstSection extends StatefulWidget {
   const ChartFirstSection({super.key});
@@ -87,7 +86,7 @@ class ChartFirstSectionState extends State<ChartFirstSection> {
                 spacing: 8,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (var viewType in ['Daily', 'Weekly', 'Monthly', 'Year'])
+                  for (var viewType in ['Daily', 'Weekly', 'Monthly'])
                     ElevatedButton(
                       onPressed: () => changeView(viewType),
                       style: ElevatedButton.styleFrom(
