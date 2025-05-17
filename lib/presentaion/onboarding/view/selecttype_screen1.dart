@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../global/theme/textStyles.dart';
 
@@ -12,12 +11,11 @@ class SelectTypeScreen1 extends StatefulWidget {
   final Map<String, int> answers;
 
   const SelectTypeScreen1({
-    super.key,
-    required this.onNext,
-    required this.onAnswerSelected,
-    required this.answers,
+    Key? key,
     required this.controller,
-  });
+    required this.onAnswerSelected,
+    required this.answers, required this.onNext,
+  }) : super(key: key);
 
   @override
   State<SelectTypeScreen1> createState() => _SelectTypeScreen1State();
@@ -36,7 +34,7 @@ class _SelectTypeScreen1State extends State<SelectTypeScreen1> {
     });
     widget.onAnswerSelected(key, index);
   }
-
+  bool get allSelected => q1 != null && q2 != null && q3 != null;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,12 +88,14 @@ class _SelectTypeScreen1State extends State<SelectTypeScreen1> {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: allSelected
+                    ? () {
                   widget.controller.nextPage(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeInOut,
                   );
-                },
+                }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primary_400,
                   shape: RoundedRectangleBorder(

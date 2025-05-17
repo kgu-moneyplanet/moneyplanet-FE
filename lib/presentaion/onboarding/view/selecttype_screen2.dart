@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../global/theme/colors.dart';
 import '../../../global/theme/textStyles.dart';
@@ -11,12 +10,12 @@ class SelectTypeScreen2 extends StatefulWidget {
   final Map<String, int> answers;
 
   const SelectTypeScreen2({
-    super.key,
-    required this.onNext,
+    Key? key,
+    required this.controller,
     required this.onAnswerSelected,
     required this.answers,
-    required this.controller,
-  });
+    required this.onNext,
+  }) : super(key: key);
 
   @override
   State<SelectTypeScreen2> createState() => _SelectTypeScreen2State();
@@ -36,6 +35,8 @@ class _SelectTypeScreen2State extends State<SelectTypeScreen2> {
     widget.onAnswerSelected(key, index);
   }
 
+  bool get allSelected => q4 != null && q5 != null && q6 != null;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,20 +53,14 @@ class _SelectTypeScreen2State extends State<SelectTypeScreen2> {
                     title: '4. 물건을 살 때 나는?',
                     keyStr: 'q4',
                     selectedIndex: q4,
-                    options: [
-                      '후기를 꼼꼼히 읽고 실용성을 따진다.',
-                      '감각적으로 끌리는 제품을 선택한다.',
-                    ],
+                    options: ['후기를 꼼꼼히 읽고 실용성을 따진다.', '감각적으로 끌리는 제품을 선택한다.'],
                   ),
                   const SizedBox(height: 20),
                   buildQuestion(
                     title: '5. 가계부를 작성할 때 나는?',
                     keyStr: 'q5',
                     selectedIndex: q5,
-                    options: [
-                      '숫자와 데이터를 꼼꼼하게 정리한다.',
-                      '소비 패턴의 흐름을 감각적으로 파악한다.',
-                    ],
+                    options: ['숫자와 데이터를 꼼꼼하게 정리한다.', '소비 패턴의 흐름을 감각적으로 파악한다.'],
                   ),
                   const SizedBox(height: 20),
                   buildQuestion(
@@ -88,12 +83,15 @@ class _SelectTypeScreen2State extends State<SelectTypeScreen2> {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: () {
-                  widget.controller.nextPage(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                  );
-                },
+                onPressed:
+                    allSelected
+                        ? () {
+                          widget.controller.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                        : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primary_400,
                   shape: RoundedRectangleBorder(
@@ -139,7 +137,7 @@ class _SelectTypeScreen2State extends State<SelectTypeScreen2> {
               onPressed: () => select(keyStr, i),
               style: ElevatedButton.styleFrom(
                 backgroundColor:
-                selectedIndex == i ? primary_300 : Colors.white,
+                    selectedIndex == i ? primary_300 : Colors.white,
                 fixedSize: const Size.fromHeight(48),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

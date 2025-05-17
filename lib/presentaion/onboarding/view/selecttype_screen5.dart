@@ -5,9 +5,15 @@ import '../../../global/theme/textStyles.dart';
 
 class SelectTypeScreen5 extends StatelessWidget {
   final PageController controller;
+  final Map<String, int> answers;
+  final VoidCallback onDone;
 
-  const SelectTypeScreen5({Key? key, required this.controller})
-    : super(key: key);
+  const SelectTypeScreen5({
+    Key? key,
+    required this.controller,
+    required this.answers,
+    required this.onDone,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +25,6 @@ class SelectTypeScreen5 extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 질문 텍스트
               Text(
                 '13. 추가로 선장님(AI)이 꼭 알아야 하는 사실들이 있으면 적어주세요. 최대한 다양하고 자세하게 적어주시면 항해가 수월해집니다!',
                 style: customTextStyle(
@@ -28,12 +33,11 @@ class SelectTypeScreen5 extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-        
-              // 텍스트 입력 필드
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                width: 357, // 13번 질문과 동일한 가로 길이
+                width: 357,
                 child: TextField(
+                  onChanged: (text) => answers['q13'] = text.hashCode,
                   minLines: 5,
                   maxLines: 10,
                   maxLength: 100,
@@ -52,31 +56,27 @@ class SelectTypeScreen5 extends StatelessWidget {
                   ),
                 ),
               ),
-        
               const SizedBox(height: 100),
-        
-              // 다음 버튼
               SizedBox(
                 width: 343,
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () async {
-                    showGeneralDialog(
+                    // 1) 다이얼로그 띄울 때 showDialog 사용 & rootNavigator 지정
+                    showDialog(
                       context: context,
                       barrierDismissible: false,
-                      transitionDuration: const Duration(milliseconds: 120),
-                      pageBuilder: (context, animation1, animation2) {
-                        return const _RocketLoadingDialog();
-                      },
+                      useRootNavigator: true,
+                      builder: (_) => const _RocketLoadingDialog(),
                     );
-        
-                    await Future.delayed(const Duration(seconds: 5));
-        
+
+                    // 2) 분석 작업 (예: 2초 대기)
+                    await Future.delayed(const Duration(seconds: 2));
+
+                    // 3) 다이얼로그 닫기 (최상위 네비게이터에서)
                     if (context.mounted) {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => const ResultTypeScreen()),
-                      );
+                      Navigator.of(context, rootNavigator: true).pop();
+                      onDone();  // 설문 완료 콜백 실행
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -108,7 +108,7 @@ class _RocketLoadingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.85),
+      backgroundColor: Colors.black,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
