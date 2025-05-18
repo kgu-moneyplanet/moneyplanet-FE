@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               SizedBox(height: 40),
 
-              HomeSecondSection(),
+              HomeSecondSection(planetModel: planetModel!,),
 
               SizedBox(height: 40),
 

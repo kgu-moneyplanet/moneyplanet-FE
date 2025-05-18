@@ -1,9 +1,15 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
+import '../../../global/planet_list.dart';
+
 class HomeSecondSection extends StatelessWidget {
-  const HomeSecondSection({super.key});
+  final PlanetModel planetModel;
+
+  const HomeSecondSection({super.key, required this.planetModel});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +39,7 @@ class HomeSecondSection extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                       Image.asset(
-                        'assets/images/planet_icon/EARTH.png',
+                        planetModel.imageURL,
                         width: 88,
                         height: 88,
                       ),
