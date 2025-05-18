@@ -78,7 +78,7 @@ class MypageFirstSection extends StatelessWidget {
 
             // 실제 이미지
             Image.asset(
-              'assets/images/planet_icon/planet3.png',
+              'assets/images/planet_icon/EARTH.png',
               width: 190,
               height: 190,
               fit: BoxFit.cover,

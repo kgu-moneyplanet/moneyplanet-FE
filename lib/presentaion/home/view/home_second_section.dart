@@ -33,7 +33,7 @@ class HomeSecondSection extends StatelessWidget {
                         fit: BoxFit.cover,
                       ),
                       Image.asset(
-                        'assets/images/planet_icon/planet3.png',
+                        'assets/images/planet_icon/EARTH.png',
                         width: 88,
                         height: 88,
                       ),

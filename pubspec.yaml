@@ -93,14 +93,14 @@ flutter:
     - assets/images/icons/arrow_square_downright.png
     - assets/images/icons/arrow_square_upright.png
 
-    - assets/images/planet_icon/planet1.png
-    - assets/images/planet_icon/planet2.png
-    - assets/images/planet_icon/planet3.png
-    - assets/images/planet_icon/planet4.png
-    - assets/images/planet_icon/planet5.png
-    - assets/images/planet_icon/planet6.png
-    - assets/images/planet_icon/planet7.png
-    - assets/images/planet_icon/planet8.png
+    - assets/images/planet_icon/MERCURY.png
+    - assets/images/planet_icon/VENUS.png
+    - assets/images/planet_icon/EARTH.png
+    - assets/images/planet_icon/MARS.png
+    - assets/images/planet_icon/JUPITER.png
+    - assets/images/planet_icon/SATURN.png
+    - assets/images/planet_icon/URANUS.png
+    - assets/images/planet_icon/NEPTUNE.png
     - assets/images/planet_icon/planet_border.png
 
     - assets/images/rocket1.png

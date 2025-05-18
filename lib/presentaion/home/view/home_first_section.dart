@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
+import '../../../global/planet_list.dart';
+import '../../../network/User/Response/UserInfoResponseDTO.dart';
 import '../../myPage/view/hint_screen.dart';
 
 class HomeFirstSection extends StatelessWidget {
-  const HomeFirstSection({super.key});
+  final PlanetModel planetModel;
+
+  const HomeFirstSection({super.key, required this.planetModel});
 
   @override
   Widget build(BuildContext context) {
+
     return Column(
       children: [
         // 앱 이름 및 도움말, 알림 아이콘 부분
@@ -76,7 +81,7 @@ class HomeFirstSection extends StatelessWidget {
 
             // 실제 이미지
             Image.asset(
-              'assets/images/planet_icon/planet3.png',
+              planetModel!.imageURL,
               width: 190,
               height: 190,
               fit: BoxFit.cover,
@@ -88,24 +93,17 @@ class HomeFirstSection extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(width: 40),
-
             Text(
-              "지구형",
+              planetModel.name,
               style: customTextStyle(
                 fontFamily: Pretendard_Bold_24,
                 color: Colors.white,
               ),
             ),
-
-            IconButton(
-              onPressed: () {
-                print('행성설명 부분');
-              },
-              icon: Icon(Icons.keyboard_arrow_down, color: Colors.white),
-            ),
           ],
         ),
+
+        SizedBox(height: 10,),
 
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 48),
@@ -120,7 +118,7 @@ class HomeFirstSection extends StatelessWidget {
             width: double.infinity,
             alignment: Alignment.center,
             child: Text(
-              "지갑은 열려있고 계획은 자유로운 유형",
+              planetModel.summary,
               style: customTextStyle(
                 fontFamily: Pretendard_Medium_16,
                 color: neutral_900,
