@@ -9,9 +9,11 @@ import 'package:money_planet/presentaion/onboarding/view/resulttype_screen.dart'
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../../global/planet_list.dart';
 import '../../../global/theme/textStyles.dart';
+import '../../../network/Login/Response/LoginFailureResponseDTO.dart';
+import '../../../network/Login/Response/LoginSuccessResponseDTO.dart';
+import '../../../network/TokenStorage.dart';
+import '../viewModel/LoginViewModel.dart';
 import '../viewModel/SignupViewModel.dart';
-import 'guidetype_screen.dart';
-import 'dart:convert';
 
 class QuestionScreen extends StatefulWidget {
   final SignUpViewModel viewModel;
@@ -82,35 +84,75 @@ class _QuestionFlowState extends State<QuestionScreen> {
           duration: const Duration(milliseconds: 300), curve: Curves.ease);
 
   Future<void> _onDone() async {
-    // 1) 로딩
-    showDialog(context: context,
-        barrierDismissible: false,
-        useRootNavigator: true,
-        builder: (_) => const _RocketLoadingDialog());
-    // 2) MBTI → Planet
+    // 1) 로딩 다이얼로그
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      useRootNavigator: true,
+      builder: (_) => const _RocketLoadingDialog(),
+    );
+
+    // 2) MBTI → Planet, 뷰모델 세팅 (이미 있으시죠)
     final planetModel = classifyPlanet(_answers);
     widget.viewModel.prefer = _answers['q13']?.toString();
     widget.viewModel.planet = planetModel.apiValue;
-    // 3) API
-    final err = await widget.viewModel.signUp();
-    // 4) 닫기
+
+    // 3) 회원가입 API 호출
+    final signUpError = await widget.viewModel.signUp();
+
     if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
-    // 5) 라우팅
-    if (err == null) {
-      if (context.mounted) Navigator.push(context, MaterialPageRoute(
-          builder: (_) => ResultTypeScreen(planet: planetModel)));
-    } else {
-      if (context.mounted) showDialog(context: context,
-          builder: (_) =>
-              AlertDialog(title: const Text('오류'),
-                  content: Text(err.message),
-                  actions: [
-                    TextButton(onPressed: () => Navigator.pop(context),
-                        child: const Text('확인'))
-                  ]));
+
+    if (signUpError != null) {
+      // 회원가입 실패 처리
+      return showDialog(
+        context: context,
+        builder: (_) =>
+            AlertDialog(
+              title: const Text('회원가입 실패'),
+              content: Text(signUpError.message),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(context),
+                    child: const Text('확인')),
+              ],
+            ),
+      );
+    }
+
+    // 4) 자동 로그인
+    final loginVM = LoginViewModel()
+      ..usernameController.text = widget.viewModel.usernameController.text
+      ..passwordController.text = widget.viewModel.passwordController.text;
+
+    final loginResult = await loginVM.login();
+
+    if (loginResult is LoginFailureResponseDTO) {
+      // 로그인 실패 처리
+      return showDialog(
+        context: context,
+        builder: (_) =>
+            AlertDialog(
+              title: const Text('자동 로그인 실패'),
+              content: Text(loginResult.message),
+              actions: [
+                TextButton(onPressed: () => Navigator.pop(context),
+                    child: const Text('확인')),
+              ],
+            ),
+      );
+    }
+
+    // 5) 로그인 성공 시 토큰 저장 & 화면 이동
+    if (loginResult is LoginSuccessResponseDTO) {
+      await TokenStorage.saveToken(loginResult.token);
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (_) => ResultTypeScreen(planet: planetModel)),
+      );
     }
   }
-}
+  }
 
 class _RocketLoadingDialog extends StatelessWidget {
   const _RocketLoadingDialog();
