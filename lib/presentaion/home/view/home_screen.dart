@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:money_planet/global/theme/colors.dart';
+import 'package:money_planet/network/TokenStorage.dart';
 import 'package:money_planet/presentaion/home/view/home_first_section.dart';
 import 'package:money_planet/presentaion/home/view/home_third_section.dart';
 
 import '../../../global/planet_list.dart';
+import '../../../network/Daily/Response/LWTWResponseDTO.dart';
 import '../../../network/User/Response/UserInfoResponseDTO.dart';
 import '../viewModel/home_viewModel.dart';
 import 'home_second_section.dart';
@@ -20,6 +23,13 @@ class _HomeScreenState extends State<HomeScreen> {
   UserInfoData? userInfo;
   bool isLoading = true;
   PlanetModel? planetModel;
+  LWTWResponseData? comparisonData;
+
+  int getWeekNumber(DateTime date) {
+    final beginningOfYear = DateTime(date.year, 1, 1);
+    final daysDifference = date.difference(beginningOfYear).inDays;
+    return ((daysDifference + beginningOfYear.weekday) / 7).ceil();
+  }
 
   @override
   void initState() {
@@ -29,9 +39,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchUserInfo() async {
     final (user, planet) = await viewModel.getUserInfoWithPlanet();
+
+    final now = DateTime.now();
+    final weekNum = getWeekNumber(now);
+    final year = now.year;
+
+    final comparisonResponse = await viewModel.fetchLWTWComparison(
+      year: year,
+      weekNum: weekNum,
+    );
+
     setState(() {
       userInfo = user;
       planetModel = planet;
+      comparisonData = comparisonResponse?.data;
       isLoading = false;
     });
   }
@@ -48,11 +69,15 @@ class _HomeScreenState extends State<HomeScreen> {
             : SingleChildScrollView(
           child: Column(
             children: [
-              HomeFirstSection(planetModel: planetModel!,),
+              HomeFirstSection(planetModel: planetModel!),
 
               SizedBox(height: 40),
 
-              HomeSecondSection(planetModel: planetModel!,),
+              HomeSecondSection(
+                planetModel: planetModel!,
+                comparisonData: comparisonData,
+                planetTarget: userInfo!.target,
+              ),
 
               SizedBox(height: 40),
 

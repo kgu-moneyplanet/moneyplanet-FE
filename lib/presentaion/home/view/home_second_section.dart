@@ -5,14 +5,27 @@ import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
 import '../../../global/planet_list.dart';
+import '../../../network/Daily/Response/LWTWResponseDTO.dart';
 
 class HomeSecondSection extends StatelessWidget {
   final PlanetModel planetModel;
+  final double planetTarget;
+  final LWTWResponseData? comparisonData;
 
-  const HomeSecondSection({super.key, required this.planetModel});
+  const HomeSecondSection({super.key, required this.planetModel, this.comparisonData, required this.planetTarget});
 
   @override
   Widget build(BuildContext context) {
+    final lastWeekName = comparisonData?.lastWeekCategoryName ?? "N/A";
+    final lastWeekAmount = comparisonData?.lastWeekCategoryAmount ?? 0;
+
+    final thisWeekName = comparisonData?.thisWeekCategoryName ?? "N/A";
+    final thisWeekAmount = comparisonData?.thisWeekCategoryAmount ?? 0;
+
+    final diffAmount = comparisonData?.diffAmount ?? 0;
+    final diffSign = diffAmount >= 0 ? "+" : "";
+    final diffColor = diffAmount >= 0 ? primary_400 : Colors.red;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 23, vertical: 0),
       child: Container(
@@ -48,10 +61,9 @@ class HomeSecondSection extends StatelessWidget {
 
                   SizedBox(height: 10),
 
-                  Text(
-                    "도달률 50%",
+                  Text('$planetTarget%',
                     style: customTextStyle(
-                      fontFamily: Pretendard_Semibold_14,
+                      fontFamily: Pretendard_Semibold_16,
                       color: neutral_1100,
                     ),
                   ),
@@ -66,13 +78,7 @@ class HomeSecondSection extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "저번 달 최대 불필요 지출",
-                      style: customTextStyle(
-                        fontFamily: Pretendard_Medium_12,
-                        color: neutral_1100,
-                      ),
-                    ),
+                    Text("저번 주 최대 불필요 지출"),
                     SizedBox(height: 6),
                     Container(
                       height: 39,
@@ -83,40 +89,23 @@ class HomeSecondSection extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
+                          // 아이콘은 category별로 매핑 필요
                           Image.asset(
                             'assets/images/icons/category_rest.png',
                             width: 20,
                             height: 20,
                           ),
                           SizedBox(width: 4),
-                          Text(
-                            "여가생활",
-                            style: customTextStyle(
-                              fontFamily: Pretendard_Medium_12,
-                              color: neutral_1100,
-                            ),
-                          ),
+                          Text(lastWeekName, style: Pretendard_Medium_10,),
                           Spacer(),
-                          Text(
-                            "20,000원",
-                            style: customTextStyle(
-                              fontFamily: Pretendard_Semibold_14,
-                              color: Colors.red,
-                            ),
-                          ),
+                          Text("$lastWeekAmount원", style: Pretendard_Medium_10,),
                         ],
                       ),
                     ),
 
                     SizedBox(height: 20),
 
-                    Text(
-                      "이번 달 최대 불필요 지출",
-                      style: customTextStyle(
-                        fontFamily: Pretendard_Medium_12,
-                        color: neutral_1100,
-                      ),
-                    ),
+                    Text("이번 주 최대 불필요 지출"),
                     SizedBox(height: 6),
 
                     Expanded(
@@ -134,35 +123,18 @@ class HomeSecondSection extends StatelessWidget {
                               height: 20,
                             ),
                             SizedBox(width: 4),
-                            Text(
-                              "쇼핑",
-                              style: customTextStyle(
-                                fontFamily: Pretendard_Medium_12,
-                                color: neutral_1100,
-                              ),
-                            ),
+                            Text(thisWeekName, style: Pretendard_Medium_10,),
                             Spacer(),
-
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
+                                Text("$thisWeekAmount원", style: Pretendard_Medium_10,),
                                 Text(
-                                  "30,000원",
-                                  style: customTextStyle(
-                                    fontFamily: Pretendard_Semibold_14,
-                                    color: neutral_1100,
-                                  ),
-                                ),
-
-                                Text(
-                                  "(+10,000원)",
-                                  style: customTextStyle(
-                                    fontFamily: Pretendard_Semibold_12,
-                                    color: primary_400,
-                                  ),
+                                  "($diffSign$diffAmount원)",
+                                    style: Pretendard_Medium_10,
                                 ),
                               ],
-                            ),
+                            )
                           ],
                         ),
                       ),

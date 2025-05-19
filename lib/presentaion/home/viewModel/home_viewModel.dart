@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:money_planet/network/TokenStorage.dart';
 import 'package:money_planet/network/User/Response/UserInfoResponseDTO.dart';
 
 import '../../../global/planet_list.dart';
+import '../../../network/Daily/Response/LWTWResponseDTO.dart';
 
 class HomeViewModel {
   /// 유저 정보 API GET 요청 함수
@@ -60,9 +62,6 @@ class HomeViewModel {
     }
   }
 
-
-
-
   PlanetModel? getPlanetModelByCode(String? code) {
     if (code == null) return null;
     return planetList.firstWhere(
@@ -81,4 +80,55 @@ class HomeViewModel {
     }
     return (null, null);
   }
+
+
+  /// 이번주 저번주 지출 비교 API GET 요청 함수
+  Future<LWTWResponseDTO?> fetchLWTWComparison({
+    required int year,
+    required int weekNum,
+  }) async {
+
+    final url = 'http://www.money-planet.store:8080/v1/weekly/lwtw/$year/$weekNum';
+    print('🌐 GET $url');
+
+    try {
+      final token = await TokenStorage.getToken();
+      debugPrint('token: $token');
+
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          if (token != null) 'Authorization': 'Bearer $token',
+        },
+      );
+
+      debugPrint("🌐 Response Status Code: ${response.statusCode}");
+      debugPrint("📦 Response Body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final decodedBody = utf8.decode(response.bodyBytes);
+        final jsonData = jsonDecode(decodedBody);
+        return LWTWResponseDTO(
+          statusCode: jsonData['statusCode'],
+          message: jsonData['message'],
+          data: LWTWResponseData(
+            lastWeekCategoryName: jsonData['data']['lastWeekCategoryName'],
+            lastWeekCategoryAmount: jsonData['data']['lastWeekCategoryAmount'],
+            thisWeekCategoryName: jsonData['data']['thisWeekCategoryName'],
+            thisWeekCategoryAmount: jsonData['data']['thisWeekCategoryAmount'],
+            diffAmount: jsonData['data']['diffAmount'],
+          ),
+        );
+      } else {
+        print('Failed to load comparison data: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching comparison data: $e');
+      return null;
+    }
+  }
+
+
 }
