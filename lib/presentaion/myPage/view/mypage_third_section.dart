@@ -14,7 +14,7 @@ class MyPageThirdSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [
+            /*children: [
               Image.asset(
                 'assets/images/rocket3.png', // 행성 아이콘 작은 이미지
                 width: 27,
@@ -37,9 +37,8 @@ class MyPageThirdSection extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-            ),
+            ),*/
           ),
-          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
