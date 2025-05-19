@@ -1,65 +1,65 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:money_planet/network/Login/Request/SignUpRequestDTO.dart';
-import 'package:money_planet/network/Login/Response/SignUpFailureResponseDTO.dart';
+
+import '../../../network/Signup/Request/SignUpRequestDTO.dart';
+import '../../../network/Signup/Response/SignUpFailureResponseDTO.dart';
+
+
+
 
 class SignUpViewModel {
-  // 입력값들
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController cellphoneController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController birthController = TextEditingController();
-  final TextEditingController jobController = TextEditingController();
+  // 화면1
+  final usernameController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final cellphoneController = TextEditingController();
+  final birthController = TextEditingController(); // YYYY-MM-DD
 
-  // 선택값
-  String? gender; // 'M' or 'F'
-  String? prefer; // 설문 결과
-  String? planet;
+  // 화면2
+  final passwordController = TextEditingController();
+  final passwordConfirmController = TextEditingController();
+  final jobController = TextEditingController();
+  String? gender;   // 'M' or 'F'
 
-  SignUpRequestDTO get signUpRequestDTO => SignUpRequestDTO(
-    username: usernameController.text,
-    name: nameController.text,
-    cellphone: cellphoneController.text,
-    email: emailController.text,
-    password: passwordController.text,
-    birth: birthController.text,
+  // 설문
+  String? prefer;   // q13 텍스트
+  String? planet;   // MBTI → Planet
+
+  SignUpRequestDTO get dto => SignUpRequestDTO(
+    username: usernameController.text.trim(),
+    name: nameController.text.trim(),
+    email: emailController.text.trim(),
+    cellphone: cellphoneController.text.trim(),
+    birth: birthController.text.trim(),
+    password: passwordController.text.trim(),
     gender: gender ?? 'M',
-    job: jobController.text,
+    job: jobController.text.trim(),
     prefer: prefer ?? '',
     planet: planet ?? 'EARTH',
   );
 
-  /// 회원가입 API 요청
-  Future<dynamic> signUp() async {
+  Future<SignUpFailureResponseDTO?> signUp() async {
     const url = 'http://www.money-planet.store:8080/v1/user';
-
-    final requestDTO = signUpRequestDTO;
-
     try {
-      final response = await http.post(
+      final res = await http.post(
         Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(requestDTO.toJson()),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(dto.toJson()),
       );
-
-      if (response.statusCode == 201) {
-        return null; // 성공: 에러 없음
+      if (res.statusCode == 201) {
+        return null;
       } else {
-        final json = jsonDecode(response.body);
+        final j = jsonDecode(res.body);
         return SignUpFailureResponseDTO(
-          statusCode: response.statusCode,
-          message: json['message'] ?? '회원가입 실패',
+          statusCode: res.statusCode,
+          message: j['message'] ?? '회원가입 실패',
         );
       }
     } catch (e) {
       return SignUpFailureResponseDTO(
         statusCode: 500,
-        message: '서버 오류: ${e.toString()}',
+        message: '서버 오류: $e',
       );
     }
   }
@@ -67,10 +67,11 @@ class SignUpViewModel {
   void dispose() {
     usernameController.dispose();
     nameController.dispose();
-    cellphoneController.dispose();
     emailController.dispose();
-    passwordController.dispose();
+    cellphoneController.dispose();
     birthController.dispose();
+    passwordController.dispose();
+    passwordConfirmController.dispose();
     jobController.dispose();
   }
 }

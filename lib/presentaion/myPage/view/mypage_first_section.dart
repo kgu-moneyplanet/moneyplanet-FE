@@ -145,13 +145,13 @@ class MypageFirstSection extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 48),
             child: GestureDetector(
               onTap: () {
-                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                /*Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (_) => const QuestionScreen(),
                   ),
                       (route) => false,
                 );
-              },
+                 */},
               child: Container(
                 width: 343,
                 height: 56,
