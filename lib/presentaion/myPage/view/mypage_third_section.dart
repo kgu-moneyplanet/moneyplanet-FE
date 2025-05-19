@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
+import '../../onboarding/view/login_screen.dart';
+import '../viewModel/LogoutViewModel.dart';
+
 class MyPageThirdSection extends StatelessWidget {
   const MyPageThirdSection({super.key});
 
@@ -115,10 +118,22 @@ class MyPageThirdSection extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          // 로그아웃 처리 로직 삽입
-                          print("로그아웃 실행");
+                        onPressed: () async {
+                          Navigator.of(context).pop(); // 다이얼로그 닫기
+
+                          final viewModel = LogoutViewModel();
+                          final success = await viewModel.logout();
+
+                          if (success) {
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                  (route) => false,
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("로그아웃에 실패했습니다")),
+                            );
+                          }
                         },
                         child: Text(
                           '네',
