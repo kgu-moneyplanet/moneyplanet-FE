@@ -60,6 +60,9 @@ class HomeViewModel {
     }
   }
 
+
+
+
   PlanetModel? getPlanetModelByCode(String? code) {
     if (code == null) return null;
     return planetList.firstWhere(
