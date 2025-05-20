@@ -24,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   PlanetModel? planetModel;
   LWTWResponseData? comparisonData;
+  late var dailyCategoryStats;
+
 
   int getWeekNumber(DateTime date) {
     final beginningOfYear = DateTime(date.year, 1, 1);
@@ -43,6 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final now = DateTime.now();
     final weekNum = getWeekNumber(now);
     final year = now.year;
+    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    final DailyCategoryStats = await viewModel.fetchDailyCategoryStats(today);
 
     final comparisonResponse = await viewModel.fetchLWTWComparison(
       year: year,
@@ -54,6 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
       planetModel = planet;
       comparisonData = comparisonResponse?.data;
       isLoading = false;
+      dailyCategoryStats = DailyCategoryStats;
     });
   }
 
@@ -81,7 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
               SizedBox(height: 40),
 
-              HomeThirdSection(),
+              HomeThirdSection(
+                dailyStats: dailyCategoryStats?.data,
+                viewModel: viewModel,
+              ),
 
               SizedBox(height: 50),
             ],

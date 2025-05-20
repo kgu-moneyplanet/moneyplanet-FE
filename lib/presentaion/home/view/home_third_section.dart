@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
-import 'package:money_planet/presentaion/diary/model/diary_model.dart';
 
-import '../../../global/components/consumption_item.dart';
+import '../../../global/components/daily_category_item.dart';
+import '../../../network/Daily/Response/DailyCategoryResponseDTO.dart';
+import '../viewModel/home_viewModel.dart';
 
 class HomeThirdSection extends StatefulWidget {
-  const HomeThirdSection({super.key});
+  final DailyCategoryResponseData? dailyStats;
+  final HomeViewModel viewModel;
+
+  const HomeThirdSection({super.key, this.dailyStats, required this.viewModel});
 
   @override
   State<HomeThirdSection> createState() => HomeThirdSectionState();
@@ -15,6 +20,14 @@ class HomeThirdSection extends StatefulWidget {
 class HomeThirdSectionState extends State<HomeThirdSection> {
   int selectedMonth = DateTime.now().month;
   String selectedView = 'Daily';
+  DailyCategoryResponseData? _dailyStats;
+  final formatter = NumberFormat('#,###');
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStats();
+  }
 
   void changeMonth(int delta) {
     setState(() {
@@ -28,6 +41,37 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
     setState(() {
       selectedView = view;
     });
+
+    fetchStats(); // 뷰 타입 바뀔 때마다 API 다시 호출
+  }
+
+  String formatAmount(int amount) {
+    return formatter.format(amount);
+  }
+
+  Future<void> fetchStats() async {
+    try {
+      final now = DateTime.now();
+      DailyCategoryResponseDTO? result;
+
+      if (selectedView == 'Daily') {
+        final today = DateFormat('yyyy-MM-dd').format(now);
+        result = await widget.viewModel.fetchDailyCategoryStats(today);
+      } else if (selectedView == 'Weekly') {
+        final weekNum = ((now.difference(DateTime(now.year, 1, 1)).inDays + DateTime(now.year, 1, 1).weekday) / 7).ceil();
+        result = await widget.viewModel.fetchWeeklyCategoryStats(now.year, weekNum);
+      } else if (selectedView == 'Monthly') {
+        result = await widget.viewModel.fetchMonthlyCategoryStats(now.year, selectedMonth);
+      }
+
+      if (result != null) {
+        setState(() {
+          _dailyStats = result?.data;
+        });
+      }
+    } catch (e) {
+      print("Error fetching stats: $e");
+    }
   }
 
   @override
@@ -96,7 +140,7 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
                   ),
                   Spacer(),
                   Text(
-                    "475,180 원",
+                    "${formatAmount(_dailyStats?.totalAmount ?? 0)} 원",
                     style: customTextStyle(
                       fontFamily: Pretendard_Medium_24,
                       color: Colors.black,
@@ -122,7 +166,7 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
                   ),
                   Spacer(),
                   Text(
-                    "0 원",
+                    '0 원',
                     style: customTextStyle(
                       fontFamily: Pretendard_Medium_24,
                       color: Colors.black,
@@ -186,15 +230,19 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                children: DiaryMockData.map((item) => ConsumptionItem(item: item)).toList(),
+                children:
+                _dailyStats?.categoryStatDtoList.map((item) {
+                  return DailyCategoryItem(item: item);
+                }).toList() ??
+                    [],
               ),
             ),
 
             const SizedBox(height: 20),
-
           ],
         ),
       ),
     );
   }
+
 }

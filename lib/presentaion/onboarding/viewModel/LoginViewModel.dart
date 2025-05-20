@@ -17,7 +17,7 @@ class LoginViewModel {
 
   /// 로그인 API 요청 함수
   Future<dynamic> login() async {
-    const url = 'http://www.money-planet.store:8080/login';
+    const url = 'https://money-planet.store/api//login';
 
     final requestDTO = loginRequestDTO;
 
