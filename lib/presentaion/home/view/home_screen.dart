@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:money_planet/global/theme/colors.dart';
-import 'package:money_planet/network/TokenStorage.dart';
 import 'package:money_planet/presentaion/home/view/home_first_section.dart';
 import 'package:money_planet/presentaion/home/view/home_third_section.dart';
 
@@ -25,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
   PlanetModel? planetModel;
   LWTWResponseData? comparisonData;
   late var dailyCategoryStats;
-
 
   int getWeekNumber(DateTime date) {
     final beginningOfYear = DateTime(date.year, 1, 1);
@@ -69,32 +67,30 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: neutral_900,
       body: SafeArea(
-        child: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-          child: Column(
-            children: [
-              HomeFirstSection(planetModel: planetModel!),
+        child:
+            isLoading
+                ? Center(child: CircularProgressIndicator())
+                : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      HomeFirstSection(planetModel: planetModel!),
 
-              SizedBox(height: 40),
+                      SizedBox(height: 40),
 
-              HomeSecondSection(
-                planetModel: planetModel!,
-                comparisonData: comparisonData,
-                planetTarget: userInfo!.target,
-              ),
+                      HomeSecondSection(
+                        planetModel: planetModel!,
+                        comparisonData: comparisonData,
+                        planetTarget: userInfo!.target,
+                      ),
 
-              SizedBox(height: 40),
+                      SizedBox(height: 40),
 
-              HomeThirdSection(
-                dailyStats: dailyCategoryStats?.data,
-                viewModel: viewModel,
-              ),
+                      HomeThirdSection(viewModel: viewModel),
 
-              SizedBox(height: 50),
-            ],
-          ),
-        ),
+                      SizedBox(height: 50),
+                    ],
+                  ),
+                ),
       ),
     );
   }

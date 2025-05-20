@@ -8,10 +8,9 @@ import '../../../network/Daily/Response/DailyCategoryResponseDTO.dart';
 import '../viewModel/home_viewModel.dart';
 
 class HomeThirdSection extends StatefulWidget {
-  final DailyCategoryResponseData? dailyStats;
   final HomeViewModel viewModel;
 
-  const HomeThirdSection({super.key, this.dailyStats, required this.viewModel});
+  const HomeThirdSection({super.key, required this.viewModel});
 
   @override
   State<HomeThirdSection> createState() => HomeThirdSectionState();
@@ -20,8 +19,12 @@ class HomeThirdSection extends StatefulWidget {
 class HomeThirdSectionState extends State<HomeThirdSection> {
   int selectedMonth = DateTime.now().month;
   String selectedView = 'Daily';
-  DailyCategoryResponseData? _dailyStats;
   final formatter = NumberFormat('#,###');
+
+  List<CategoryStatDtoList> _expenseStats = [];
+  List<CategoryStatDtoList> _incomeStats = [];
+
+  String _dateDisplay = '';
 
   @override
   void initState() {
@@ -35,14 +38,14 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
       if (selectedMonth < 1) selectedMonth = 1;
       if (selectedMonth > 12) selectedMonth = 12;
     });
+    fetchStats();
   }
 
   void changeView(String view) {
     setState(() {
       selectedView = view;
     });
-
-    fetchStats(); // 뷰 타입 바뀔 때마다 API 다시 호출
+    fetchStats();
   }
 
   String formatAmount(int amount) {
@@ -57,16 +60,38 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
       if (selectedView == 'Daily') {
         final today = DateFormat('yyyy-MM-dd').format(now);
         result = await widget.viewModel.fetchDailyCategoryStats(today);
+        _dateDisplay = "${now.day}일 오늘";
       } else if (selectedView == 'Weekly') {
-        final weekNum = ((now.difference(DateTime(now.year, 1, 1)).inDays + DateTime(now.year, 1, 1).weekday) / 7).ceil();
-        result = await widget.viewModel.fetchWeeklyCategoryStats(now.year, weekNum);
+        final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+        final endOfWeek = startOfWeek.add(const Duration(days: 6));
+        final weekNum =
+            ((now.difference(DateTime(now.year, 1, 1)).inDays +
+                        DateTime(now.year, 1, 1).weekday) /
+                    7)
+                .ceil();
+        result = await widget.viewModel.fetchWeeklyCategoryStats(
+          now.year,
+          weekNum,
+        );
+        _dateDisplay =
+            "${DateFormat('M월 d일').format(startOfWeek)} ~ ${DateFormat('M월 d일').format(endOfWeek)}";
       } else if (selectedView == 'Monthly') {
-        result = await widget.viewModel.fetchMonthlyCategoryStats(now.year, selectedMonth);
+        result = await widget.viewModel.fetchMonthlyCategoryStats(
+          now.year,
+          selectedMonth,
+        );
+        _dateDisplay = "${selectedMonth}월 전체";
       }
 
       if (result != null) {
+        final data = result.data.categoryStatDtoList;
+
+        final income = data.where((e) => e.categoryName == '월급').toList();
+        final expense = data.where((e) => e.categoryName != '월급').toList();
+
         setState(() {
-          _dailyStats = result?.data;
+          _incomeStats = income;
+          _expenseStats = expense;
         });
       }
     } catch (e) {
@@ -76,8 +101,11 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
 
   @override
   Widget build(BuildContext context) {
+    final totalIncome = _incomeStats.fold(0, (sum, e) => sum + e.amount);
+    final totalExpense = _expenseStats.fold(0, (sum, e) => sum + e.amount);
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 23),
+      padding: const EdgeInsets.symmetric(horizontal: 23),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
@@ -86,7 +114,7 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 달 바꾸는 부분 & 자세히 보기
+            /// Month selector
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Row(
@@ -125,12 +153,12 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
               ),
             ),
 
-            // 지출
+            /// Expense
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Text(
                     "지출",
                     style: customTextStyle(
@@ -138,25 +166,25 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
                       color: neutral_400,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Text(
-                    "${formatAmount(_dailyStats?.totalAmount ?? 0)} 원",
+                    "${formatAmount(totalExpense)} 원",
                     style: customTextStyle(
                       fontFamily: Pretendard_Medium_24,
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                 ],
               ),
             ),
 
-            // 수입
+            /// Income
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   Text(
                     "수입",
                     style: customTextStyle(
@@ -164,22 +192,22 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
                       color: neutral_400,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Text(
-                    '0 원',
+                    "${formatAmount(totalIncome)} 원",
                     style: customTextStyle(
                       fontFamily: Pretendard_Medium_24,
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                 ],
               ),
             ),
 
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-            // daily, weekly, monthly 선택 버튼
+            /// View Type Buttons
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 5),
               child: Row(
@@ -215,26 +243,28 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
 
             const SizedBox(height: 30),
 
+            /// Date Description
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Text("9일 오늘", style: TextStyle(color: Colors.grey[600])),
+              child: Text(
+                _dateDisplay,
+                style: TextStyle(color: Colors.grey[600]),
+              ),
             ),
 
-            // 구분선
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Divider(),
             ),
 
-            // 리스트 보여주는 곳
+            /// Combined List View
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                children:
-                _dailyStats?.categoryStatDtoList.map((item) {
-                  return DailyCategoryItem(item: item);
-                }).toList() ??
-                    [],
+                children: [
+                  ..._expenseStats.map((item) => DailyCategoryItem(item: item)),
+                  ..._incomeStats.map((item) => DailyCategoryItem(item: item)),
+                ],
               ),
             ),
 
@@ -244,5 +274,4 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
       ),
     );
   }
-
 }

@@ -3,7 +3,6 @@ import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
 import '../../../global/planet_list.dart';
-import '../../../network/User/Response/UserInfoResponseDTO.dart';
 import '../../myPage/view/hint_screen.dart';
 
 class HomeFirstSection extends StatelessWidget {
@@ -13,7 +12,6 @@ class HomeFirstSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
         // 앱 이름 및 도움말, 알림 아이콘 부분
@@ -48,9 +46,7 @@ class HomeFirstSection extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => const HintScreen()),
                   );
                 },
-                icon: Image.asset(
-                  'assets/images/icons/help_circle.png',
-                ),
+                icon: Image.asset('assets/images/icons/help_circle.png'),
               ),
 
               SizedBox(width: 28),
@@ -103,7 +99,7 @@ class HomeFirstSection extends StatelessWidget {
           ],
         ),
 
-        SizedBox(height: 10,),
+        SizedBox(height: 10),
 
         Padding(
           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 48),

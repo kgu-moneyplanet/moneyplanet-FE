@@ -100,7 +100,7 @@ class ConsumptionItem extends StatelessWidget {
       case '경조사/회비':
         return 'assets/images/icons/category_event.png';
       case '부모님':
-        return 'assets/images/icons/category_parents.png';
+        return 'assets/images/icons/category_home.png';
       case '저축성 지출':
         return 'assets/images/icons/category_saving.png';
       case '세금':

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
@@ -12,7 +10,12 @@ class HomeSecondSection extends StatelessWidget {
   final double planetTarget;
   final LWTWResponseData? comparisonData;
 
-  const HomeSecondSection({super.key, required this.planetModel, this.comparisonData, required this.planetTarget});
+  const HomeSecondSection({
+    super.key,
+    required this.planetModel,
+    this.comparisonData,
+    required this.planetTarget,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,17 +54,14 @@ class HomeSecondSection extends StatelessWidget {
                         height: 108,
                         fit: BoxFit.cover,
                       ),
-                      Image.asset(
-                        planetModel.imageURL,
-                        width: 88,
-                        height: 88,
-                      ),
+                      Image.asset(planetModel.imageURL, width: 88, height: 88),
                     ],
                   ),
 
                   SizedBox(height: 10),
 
-                  Text('$planetTarget%',
+                  Text(
+                    '$planetTarget%',
                     style: customTextStyle(
                       fontFamily: Pretendard_Semibold_16,
                       color: neutral_1100,
@@ -96,9 +96,9 @@ class HomeSecondSection extends StatelessWidget {
                             height: 20,
                           ),
                           SizedBox(width: 4),
-                          Text(lastWeekName, style: Pretendard_Medium_10,),
+                          Text(lastWeekName, style: Pretendard_Medium_10),
                           Spacer(),
-                          Text("$lastWeekAmount원", style: Pretendard_Medium_10,),
+                          Text("$lastWeekAmount원", style: Pretendard_Medium_10),
                         ],
                       ),
                     ),
@@ -123,18 +123,21 @@ class HomeSecondSection extends StatelessWidget {
                               height: 20,
                             ),
                             SizedBox(width: 4),
-                            Text(thisWeekName, style: Pretendard_Medium_10,),
+                            Text(thisWeekName, style: Pretendard_Medium_10),
                             Spacer(),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("$thisWeekAmount원", style: Pretendard_Medium_10,),
+                                Text(
+                                  "$thisWeekAmount원",
+                                  style: Pretendard_Medium_10,
+                                ),
                                 Text(
                                   "($diffSign$diffAmount원)",
-                                    style: Pretendard_Medium_10,
+                                  style: Pretendard_Medium_10,
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),
