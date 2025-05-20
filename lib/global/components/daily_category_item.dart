@@ -40,10 +40,10 @@ class DailyCategoryItem extends StatelessWidget {
           ),
 
           Text(
-            "${_formatCurrency(item.amount)} 원",
+              item.categoryName == '월급' ? "+ ${_formatCurrency(item.amount)} 원" : "- ${_formatCurrency(item.amount)} 원",
             style: customTextStyle(
               fontFamily: Pretendard_Semibold_16,
-              color: neutral_1100,
+              color: item.categoryName == '월급' ? Colors.green : neutral_1100,
             ),
           ),
         ],

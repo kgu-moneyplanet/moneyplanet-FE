@@ -85,7 +85,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       SizedBox(height: 40),
 
-                      HomeThirdSection(viewModel: viewModel),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 23),
+                        child: HomeThirdSection(viewModel: viewModel),
+                      ),
 
                       SizedBox(height: 50),
                     ],
