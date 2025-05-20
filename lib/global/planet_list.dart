@@ -1,6 +1,7 @@
 class PlanetModel {
   final String code; // MERCURY, EARTH 등
   final String name;
+  final String apiValue;
   final int number;
   final String summary;
   final String description;
@@ -11,6 +12,7 @@ class PlanetModel {
   PlanetModel({
     required this.code,
     required this.name,
+    required this.apiValue,
     required this.number,
     required this.summary,
     required this.description,
@@ -26,6 +28,7 @@ List<PlanetModel> planetList = [
   PlanetModel(
     code: 'MERCURY',
     name: '수성',
+    apiValue: 'MERCURY',
     number: 1,
     summary: '분석적 소비형',
     description:
@@ -37,6 +40,7 @@ List<PlanetModel> planetList = [
   PlanetModel(
     code: 'VENUS',
     name: '금성',
+    apiValue: 'VENUS',
     number: 2,
     summary: '균형 잡힌 감각적 소비형',
     description:
@@ -48,6 +52,7 @@ List<PlanetModel> planetList = [
   PlanetModel(
     code: 'EARTH',
     name: '지구',
+    apiValue: 'EARTH',
     number: 3,
     summary: '계획적 소비형',
     description:
@@ -59,6 +64,7 @@ List<PlanetModel> planetList = [
   PlanetModel(
     code: 'MARS',
     name: '화성',
+    apiValue: 'MARS',
     number: 4,
     summary: '경험 중심 소비형',
     description:
@@ -70,6 +76,7 @@ List<PlanetModel> planetList = [
   PlanetModel(
     code: 'JUPITER',
     name: '목성',
+    apiValue: 'JUPITER',
     number: 5,
     summary: '가치 투자형 소비',
     description:
@@ -81,6 +88,7 @@ List<PlanetModel> planetList = [
   PlanetModel(
     code: 'SATURN',
     name: '토성',
+    apiValue: 'SATURN',
     number: 6,
     summary: '절약 & 실속 소비형',
     description:
@@ -92,6 +100,7 @@ List<PlanetModel> planetList = [
   PlanetModel(
     code: 'URANUS',
     name: '천왕성',
+    apiValue: 'URANUS',
     number: 7,
     summary: '가치 중심 소비형',
     description:
@@ -103,6 +112,7 @@ List<PlanetModel> planetList = [
   PlanetModel(
     code: 'NEPTUNE',
     name: '해왕성',
+    apiValue: 'NEPTUNE',
     number: 8,
     summary: '균형 잡힌 감각적 소비형',
     description:

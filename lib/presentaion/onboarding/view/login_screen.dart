@@ -29,7 +29,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: neutral_900,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
+          child: SingleChildScrollView(
+          child: ConstrainedBox(
+          constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height,
+    ),
+    child: IntrinsicHeight(
         child: Column(
           children: [
             const SizedBox(height: 100),
@@ -192,6 +199,9 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
       ),
+    ),
+          ),
+    ),
     );
   }
 }

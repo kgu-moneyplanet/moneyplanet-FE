@@ -3,7 +3,10 @@ import 'package:money_planet/presentaion/myPage/view/mypage_first_section.dart';
 import 'package:money_planet/presentaion/myPage/view/mypage_second_section.dart';
 import 'package:money_planet/presentaion/myPage/view/mypage_third_section.dart';
 
+import '../../../global/planet_list.dart';
 import '../../../global/theme/colors.dart';
+import '../../../network/Mypage/Response/MyPageResponseDTO.dart';
+import '../viewModel/MypageViewModel.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
@@ -14,23 +17,37 @@ class MyPageScreen extends StatelessWidget {
       home: Scaffold(
         backgroundColor: neutral_900,
         body: SafeArea(
-          child:SingleChildScrollView(
-            child: Column(
-              children: [
-                MypageFirstSection(),
+          child: FutureBuilder<MyPageResponseDTO?>(
+            future: fetchMyPageData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-                SizedBox(height: 10),
+              if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+                return const Center(child: Text('유저 정보를 불러올 수 없습니다.'));
+              }
 
-                MyPageSecondSection(),
+              final user = snapshot.data!;
+              final planet = planetList.firstWhere(
+                    (p) => p.apiValue == user.planet,
+                orElse: () => planetList[0],
+              );
 
-                SizedBox(height: 10),
-
-                MyPageThirdSection(),
-
-              ],
-            ),
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    MypageFirstSection(user: user, planet: planet),
+                    const SizedBox(height: 10),
+                    MyPageSecondSection(planet: planet),
+                    const SizedBox(height: 10),
+                    const MyPageThirdSection(),
+                  ],
+                ),
+              );
+            },
           ),
-        )
+        ),
       ),
     );
   }

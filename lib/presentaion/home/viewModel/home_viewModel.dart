@@ -12,7 +12,7 @@ import '../../../network/Daily/Response/LWTWResponseDTO.dart';
 class HomeViewModel {
   /// 유저 정보 API GET 요청 함수
   Future<dynamic> getUserInfo() async {
-    const url = 'https://money-planet.store/api//v1/user';
+    const url = 'https://money-planet.store/api/v1/user';
 
     try {
       final token = await TokenStorage.getToken();
@@ -88,7 +88,7 @@ class HomeViewModel {
     required int year,
     required int weekNum,
   }) async {
-    final url = 'https://money-planet.store/api//v1/weekly/lwtw/$year/$weekNum';
+    final url = 'https://money-planet.store/api/v1/weekly/lwtw/$year/$weekNum';
 
     try {
       final token = await TokenStorage.getToken();
@@ -134,7 +134,7 @@ class HomeViewModel {
     //TODO: - 여기 변경
     // final url = Uri.parse("https://money-planet.store/api//v1/daily/category/2025-05-16");
     final url = Uri.parse(
-      "https://money-planet.store/api//v1/daily/category/$statDate",
+      "https://money-planet.store/api/v1/daily/category/$statDate",
     );
     print('🌐 GET $url');
 
@@ -168,7 +168,7 @@ class HomeViewModel {
   ) async {
     final token = await TokenStorage.getToken();
     final url = Uri.parse(
-      "https://money-planet.store/api//v1/weekly/category/$year/$weekNum",
+      "https://money-planet.store/api/v1/weekly/category/$year/$weekNum",
     );
     print('🌐 GET $url');
 
@@ -201,7 +201,7 @@ class HomeViewModel {
   ) async {
     final token = await TokenStorage.getToken();
     final url = Uri.parse(
-      "https://money-planet.store/api//v1/monthly/category/$year/$month",
+      "https://money-planet.store/api/v1/monthly/category/$year/$month",
     );
     print('🌐 GET $url');
 
