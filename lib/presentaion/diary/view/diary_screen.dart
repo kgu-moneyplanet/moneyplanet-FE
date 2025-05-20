@@ -45,6 +45,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
                     Spacer(),
 
+
                     IconButton(
                       onPressed: () {
                         print("tapped bell");
