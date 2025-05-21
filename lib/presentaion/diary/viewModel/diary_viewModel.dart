@@ -1,11 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../../../network/Daily/Response/DailyCategoryResponseDTO.dart';
+import '../../../network/TokenStorage.dart';
 import '../model/diary_model.dart';
 
 class DiaryViewModel {
   int selectedMonth = DateTime.now().month;
   String selectedView = 'Daily';
+
+  DailyCategoryResponseDTO? categoryStats;
 
   // 날짜별로 그룹핑한 Map 생성 함수
   Map<String, List<DiaryModel>> groupByDate(List<DiaryModel> data) {
@@ -22,7 +29,4 @@ class DiaryViewModel {
 
     return Map.fromEntries(sortedEntries);
   }
-
-
-
 }

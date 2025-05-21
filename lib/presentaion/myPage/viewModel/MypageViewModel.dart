@@ -6,7 +6,7 @@ import '../../../network/Mypage/Response/MyPageResponseDTO.dart';
 import '../../../network/TokenStorage.dart';
 
 Future<MyPageResponseDTO?> fetchMyPageData() async {
-  final url = Uri.parse('http://www.money-planet.store:8080/v1/user');
+  final url = Uri.parse('https://money-planet.store/api/v1/user');
   final token = await TokenStorage.getToken();
 
   if (token == null) {

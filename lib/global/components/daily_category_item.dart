@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
-import 'package:money_planet/presentaion/diary/model/diary_model.dart';
+import 'package:money_planet/network/Daily/Response/DailyCategoryResponseDTO.dart';
 
-class ConsumptionItem extends StatelessWidget {
-  final DiaryModel item;
+class DailyCategoryItem extends StatelessWidget {
+  final CategoryStatDtoList item;
 
-  const ConsumptionItem({super.key, required this.item});
+  DailyCategoryItem({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -14,53 +14,36 @@ class ConsumptionItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: [
-          // 아이콘 이미지 (카테고리별로 자동 변경)
           Container(
             width: 40,
             height: 40,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: _getImportanceColor(item.type),
+              color: _getCategoryColor(item.categoryName),
             ),
             padding: const EdgeInsets.all(6),
             child: Image.asset(
-              _getCategoryIconPath(item.category),
+              _getCategoryIconPath(item.categoryName),
               fit: BoxFit.fill,
             ),
           ),
-
           const SizedBox(width: 16),
-
-          // 텍스트 영역
+          // 텍스트
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.description,
-                  style: customTextStyle(
-                    fontFamily: Pretendard_Semibold_14,
-                    color: neutral_1100,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  item.category,
-                  style: customTextStyle(
-                    fontFamily: Pretendard_Medium_14,
-                    color: neutral_300,
-                  ),
-                ),
-              ],
+            child: Text(
+              item.categoryName,
+              style: customTextStyle(
+                fontFamily: Pretendard_Semibold_14,
+                color: neutral_1100,
+              ),
             ),
           ),
 
-          // 금액
           Text(
-            "${item.isIncome ? '+ ' : '- '}${_formatCurrency(item.amount)}원",
+              item.categoryName == '월급' ? "+ ${_formatCurrency(item.amount)} 원" : "- ${_formatCurrency(item.amount)} 원",
             style: customTextStyle(
               fontFamily: Pretendard_Semibold_16,
-              color: item.isIncome ? Colors.green : neutral_1100,
+              color: item.categoryName == '월급' ? Colors.green : neutral_1100,
             ),
           ),
         ],
@@ -68,7 +51,6 @@ class ConsumptionItem extends StatelessWidget {
     );
   }
 
-  // 금액 천 단위 콤마 처리
   String _formatCurrency(int amount) {
     return amount.toString().replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
@@ -76,7 +58,6 @@ class ConsumptionItem extends StatelessWidget {
     );
   }
 
-  // 카테고리에 따른 아이콘 경로 반환
   String _getCategoryIconPath(String category) {
     switch (category) {
       case '식비':
@@ -114,16 +95,27 @@ class ConsumptionItem extends StatelessWidget {
     }
   }
 
-  Color _getImportanceColor(String importance) {
-    switch (importance) {
-      case 'a':
-        return primary_400; // 밝은 파랑
-      case 'b':
-        return primary_050; // 밝은 노랑
-      case 'c':
-        return secondary_200; // 밝은 빨강
-      default:
-        return secondary_200; // 기본색
-    }
+  Color _getCategoryColor(String category) {
+    // 카테고리 색상 지정, 없으면 기본값
+    return primary_050;
   }
+
+  final Map<int, String> categoryNames = {
+    1: '식비',
+    2: '교통/차량',
+    3: '문화생활',
+    4: '마트/편의점',
+    5: '패션/미용',
+    6: '생활용품',
+    7: '주거/통신',
+    8: '건강',
+    9: '교육',
+    10: '경조사/회비',
+    11: '부모님',
+    12: '저축성 지출',
+    13: '세금',
+    14: '반려동물',
+    15: '기타',
+    16: '월급',
+  };
 }

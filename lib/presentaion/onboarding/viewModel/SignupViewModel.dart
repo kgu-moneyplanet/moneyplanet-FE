@@ -40,7 +40,7 @@ class SignUpViewModel {
   );
 
   Future<SignUpFailureResponseDTO?> signUp() async {
-    const url = 'http://www.money-planet.store:8080/v1/user';
+    const url = 'https://money-planet.store/api/v1/user';
     try {
       final res = await http.post(
         Uri.parse(url),

@@ -66,7 +66,7 @@ class MypageFirstSection extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => const HintScreen()),
                     );
-                      print("tapped help");
+                    print("tapped help");
                     },
                     icon: Image.asset('assets/images/icons/help_circle.png'),
                   ),

@@ -10,7 +10,7 @@ class LogoutViewModel with ChangeNotifier {
       return false;
     }
 
-    final url = Uri.parse('http://www.money-planet.store:8080/log-out'); // 실제 URL 사용
+    final url = Uri.parse('https://money-planet.store/api/log-out'); // 실제 URL 사용
 
     try {
       final response = await http.post(
