@@ -24,7 +24,6 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
 
   @override
   void dispose() {
-    // 비밀번호 확인 컨트롤러 등 뷰모델에서 다 처리하므로 따로 없음
     super.dispose();
   }
 

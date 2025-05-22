@@ -4,24 +4,21 @@ import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
 class ChartFourthSection extends StatelessWidget {
-  const ChartFourthSection({super.key});
+  final String selectedView;
+
+  const ChartFourthSection({super.key, required this.selectedView});
 
   @override
   Widget build(BuildContext context) {
-    final double categoryA = 200;
-    final double categoryB = 150;
-    final double categoryC = 50;
-    final double total = categoryA + categoryB + categoryC;
+    final sections = _getSectionsByView(selectedView);
 
-    final sections = [
-      {'label': 'A - 필수 소비', 'value': categoryA, 'color': primary_400},
-      {'label': 'B - 선택적 소비', 'value': categoryB, 'color': primary_050},
-      {'label': 'C - 불필요 소비', 'value': categoryC, 'color': secondary_200},
-    ];
+    final total = sections.fold<double>(0, (sum, s) => sum + (s['value']! as double));
     sections.sort((a, b) => (b['value']! as double).compareTo(a['value']! as double));
-    final topSection = sections.first;
-    final topLabel = topSection['label'] as String;
-    final topPercent = total == 0 ? 0 : (topSection['value']! as double) / total * 100;
+    final topSection = sections.isNotEmpty ? sections.first : null;
+    final topLabel = topSection != null ? topSection['label'] as String : '';
+    final topPercent = (topSection != null && total != 0)
+        ? (topSection['value']! as double) / total * 100
+        : 0;
 
     List<PieChartSectionData> _buildSections() {
       return sections.map((s) {
@@ -72,47 +69,47 @@ class ChartFourthSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 40,
-                  bottom: 40,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          offset: Offset(2, 2),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          topLabel.split(' - ').first, // A, B, C
-                          style: customTextStyle(
-                            fontFamily: Pretendard_Medium_12,
-                            color: neutral_1100,
+                if (topSection != null)
+                  Positioned(
+                    right: 40,
+                    bottom: 40,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            offset: Offset(2, 2),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${topPercent.toStringAsFixed(1)}%',
-                          style: customTextStyle(
-                            fontFamily: Pretendard_Semibold_16, // 다른 스타일 적용
-                            color: primary_400,
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            topLabel.split(' - ').first, // A, B, C
+                            style: customTextStyle(
+                              fontFamily: Pretendard_Medium_12,
+                              color: neutral_1100,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 4),
+                          Text(
+                            '${topPercent.toStringAsFixed(1)}%',
+                            style: customTextStyle(
+                              fontFamily: Pretendard_Semibold_16,
+                              color: primary_400,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
-
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -160,5 +157,29 @@ class ChartFourthSection extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Map<String, Object?>> _getSectionsByView(String view) {
+    switch (view) {
+      case 'Weekly':
+        return [
+          {'label': 'A - 필수 소비', 'value': 4000.0, 'color': primary_400},
+          {'label': 'B - 선택적 소비', 'value': 3100.0, 'color': primary_050},
+          {'label': 'C - 불필요 소비', 'value': 1020.0, 'color': secondary_200},
+        ];
+      case 'Monthly':
+        return [
+          {'label': 'A - 필수 소비', 'value': 18000.0, 'color': primary_400},
+          {'label': 'B - 선택적 소비', 'value': 1600.0, 'color': primary_050},
+          {'label': 'C - 불필요 소비', 'value': 1200.0, 'color': secondary_200},
+        ];
+      case 'Daily':
+      default:
+        return [
+          {'label': 'A - 필수 소비', 'value': 20.0, 'color': primary_400},
+          {'label': 'B - 선택적 소비', 'value': 150.0, 'color': primary_050},
+          {'label': 'C - 불필요 소비', 'value': 50.0, 'color': secondary_200},
+        ];
+    }
   }
 }

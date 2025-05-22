@@ -6,10 +6,40 @@ import 'package:money_planet/presentaion/myPage/view/hint_screen.dart';
 import '../../onboarding/view/question_screen.dart';
 
 class ChartSecondSection extends StatelessWidget {
-  const ChartSecondSection({super.key});
+  final String selectedView;
+
+  const ChartSecondSection({super.key, required this.selectedView});
 
   @override
   Widget build(BuildContext context) {
+    // selectedView 값에 따라 텍스트(레이블)와 금액(amount)을 바꾸는 예시
+    String incomeLabel;
+    String expenseLabel;
+    String incomeAmount;
+    String expenseAmount;
+
+    switch (selectedView) {
+      case 'Weekly':
+        incomeLabel = '이번주 수입';
+        expenseLabel = '이번주 지출';
+        incomeAmount = '500,000원';
+        expenseAmount = '300,000원';
+        break;
+      case 'Monthly':
+        incomeLabel = '이번달 수입';
+        expenseLabel = '이번달 지출';
+        incomeAmount = '2,000,000원';
+        expenseAmount = '1,200,000원';
+        break;
+      case 'Daily':
+      default:
+        incomeLabel = '오늘 수입';
+        expenseLabel = '오늘 지출';
+        incomeAmount = '50,000원';
+        expenseAmount = '30,000원';
+        break;
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 23),
       child: Container(
@@ -21,26 +51,22 @@ class ChartSecondSection extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // 이번주 수입
             _buildInfoBlock(
               imagePath: 'assets/images/icons/arrow_square_upright.png',
-              label: '이번주 수입',
-              amount: '500,000원',
+              label: incomeLabel,
+              amount: incomeAmount,
               labelColor: neutral_400,
               amountColor: Colors.black,
             ),
-
             Container(
               width: 1,
               height: 48,
               color: neutral_200,
             ),
-
-            // 이번주 지출
             _buildInfoBlock(
               imagePath: 'assets/images/icons/arrow_square_downright.png',
-              label: '이번주 지출',
-              amount: '500,000원',
+              label: expenseLabel,
+              amount: expenseAmount,
               labelColor: neutral_400,
               amountColor: secondary_200,
             ),
@@ -61,7 +87,6 @@ class ChartSecondSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Icon 대신 Image.asset 사용
           Image.asset(
             imagePath,
             width: 25.5,
