@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
-import 'package:flutter/services.dart';
+import 'package:money_planet/network/TokenStorage.dart';
+
+import '../../../network/Daily/Request/ABCRequestDTO.dart';
+import '../../../network/Daily/Response/ABCResponseDTO.dart';
 
 class RegisterScreen extends StatefulWidget {
   final bool isIncome;
@@ -26,6 +33,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _memoController = TextEditingController();
 
   String selectedType = '';
+
+  String reasonText = '';
+  String feedbackText = '';
 
   @override
   void initState() {
@@ -81,29 +91,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       builder: (_) {
         final categories = [
-          '식비', '교통/차량', '문화생활', '마트/편의점', '패션/미용', '생활용품', '주거/통신', '건강',
-          '교육', '경조사/회비', '부모님', '저축성 지출', '세금', '반려동물', '월급', '기타',
+          '식비',
+          '교통/차량',
+          '문화생활',
+          '마트/편의점',
+          '패션/미용',
+          '생활용품',
+          '주거/통신',
+          '건강',
+          '교육',
+          '경조사/회비',
+          '부모님',
+          '저축성 지출',
+          '세금',
+          '반려동물',
+          '월급',
+          '기타',
         ];
         return Container(
-          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 70, left: 20),
+          padding: const EdgeInsets.only(
+            top: 20,
+            right: 20,
+            bottom: 70,
+            left: 20,
+          ),
           width: double.infinity,
           child: Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: categories.map((category) {
-              return ChoiceChip(
-                label: Text(category),
-                selected: _categoryController.text == category,
-                onSelected: (_) {
-                  setState(() {
-                    _categoryController.text = category;
-                  });
-                  Navigator.pop(context);
-                },
-                selectedColor: primary_050,
-                labelStyle: const TextStyle(fontSize: 16),
-              );
-            }).toList(),
+            children:
+                categories.map((category) {
+                  return ChoiceChip(
+                    label: Text(category),
+                    selected: _categoryController.text == category,
+                    onSelected: (_) {
+                      setState(() {
+                        _categoryController.text = category;
+                      });
+                      Navigator.pop(context);
+                    },
+                    selectedColor: primary_050,
+                    labelStyle: const TextStyle(fontSize: 16),
+                  );
+                }).toList(),
           ),
         );
       },
@@ -119,20 +149,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       builder: (_) {
         final assets = ['현금', '체크카드', '신용카드', '은행계좌'];
         return Container(
-          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 70, left: 20),
+          padding: const EdgeInsets.only(
+            top: 20,
+            right: 20,
+            bottom: 70,
+            left: 20,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: assets.map((asset) {
-              return ListTile(
-                title: Text(asset),
-                onTap: () {
-                  setState(() {
-                    _assetController.text = asset;
-                  });
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
+            children:
+                assets.map((asset) {
+                  return ListTile(
+                    title: Text(asset),
+                    onTap: () {
+                      setState(() {
+                        _assetController.text = asset;
+                      });
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
           ),
         );
       },
@@ -140,7 +176,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> parseClipboardAndFillFields() async {
-
     final clipboardData = await Clipboard.getData('text/plain');
     final text = clipboardData?.text ?? '';
     final lines = text.split('\n');
@@ -152,7 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final dateRegex = RegExp(r'(\d{2})/(\d{2})'); // MM/DD
     final timeRegex = RegExp(r'(\d{2}):(\d{2})'); // HH:mm
-    final amountRegex = RegExp(r'([\d,]+)원');     // 금액
+    final amountRegex = RegExp(r'([\d,]+)원'); // 금액
     final contentRegex = RegExp(r'[^\d]+사용');
 
     for (final line in lines) {
@@ -161,9 +196,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         final month = match.group(1)!;
         final day = match.group(2)!;
         final year = DateTime.now().year;
-        final formattedDate = DateFormat('yyyy-MM-dd').format(
-          DateTime(year, int.parse(month), int.parse(day)),
-        );
+        final formattedDate = DateFormat(
+          'yyyy-MM-dd',
+        ).format(DateTime(year, int.parse(month), int.parse(day)));
         dateStr = formattedDate;
       }
 
@@ -192,7 +227,59 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _amountController.text = amountStr ?? '';
     _memoController.text = contentStr ?? '';
     _assetController.text = contentStr!.isEmpty ? '' : '체크카드';
+  }
 
+  Future<void> analyzeTransactionData() async {
+
+    final token = await TokenStorage.getToken(); // 예: flutter_secure_storage
+
+    final dto = ABCRequestDTO(
+      txDate: _dateController.text.trim(),
+      amount: priceToInt(_amountController.text),
+      categoryId: getCategoryIdPath(_categoryController.text),
+      content: _categoryController.text,
+      memo: _memoController.text,
+    );
+
+    final uri = Uri.parse('https://money-planet.store/api/v1/tx/decision');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    try {
+      final response = await http.post(
+        uri,
+        headers: headers,
+        body: jsonEncode(dto.toJson()),
+      );
+
+      final decodedBody = utf8.decode(response.bodyBytes);
+
+      print('요청 본문: ${jsonEncode(dto.toJson())}');
+      print('응답 코드: ${response.statusCode}');
+      print('응답 본문: ${decodedBody}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(decodedBody);
+        final abcResponse = ABCResponseDTO.fromJson(json);
+
+        final result = abcResponse.data;
+
+        setState(() {
+          showAnalysisResult = true;
+          reasonText = result.reason;
+          feedbackText = result.feedback;
+          selectedType = result.abc;
+        });
+      } else {
+        print('서버 오류 발생: ${response.statusCode}');
+        print('서버 응답: ${response.body}');
+      }
+    } catch (e) {
+      print('네트워크 오류: $e');
+    }
   }
 
   @override
@@ -216,16 +303,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ElevatedButton(
                   onPressed: () => parseClipboardAndFillFields(),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: secondary_200, // 배경 색상
-                    foregroundColor: Colors.white,  // 텍스트 색상
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    backgroundColor: secondary_200,
+                    // 배경 색상
+                    foregroundColor: Colors.white,
+                    // 텍스트 색상
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 14,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12), // 둥근 모서리
                     ),
-                    elevation: 4, // 그림자 깊이
+                    elevation: 4,
+                    // 그림자 깊이
                     shadowColor: secondary_300, // 그림자 색상
                   ),
-                  child: const Text('📋 붙여넣기', style: Pretendard_Semibold_16,),
+                  child: const Text('📋 붙여넣기', style: Pretendard_Semibold_16),
                 ),
                 const SizedBox(height: 30),
               ],
@@ -305,11 +398,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               _buildTextField('내용', _noteController),
 
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
 
               Divider(),
 
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
 
               _buildTextField('메모', _memoController),
               if (!isIncome) ...[
@@ -318,10 +411,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 20),
                 if (!showAnalysisResult) ...[
                   ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showAnalysisResult = true;
-                      });
+                    onPressed: () async {
+                      await analyzeTransactionData();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue[100],
@@ -371,7 +462,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 radius: 36,
                                 backgroundColor: primary_400,
                                 child: Image.asset(
-                                  getCategoryImagePath(_categoryController.text),
+                                  getCategoryImagePath(
+                                    _categoryController.text,
+                                  ),
                                   width: 36,
                                   height: 36,
                                   fit: BoxFit.contain,
@@ -381,9 +474,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
+                                  children: [
                                     Text(
-                                      'A-필수 소비',
+                                      reasonText,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
@@ -391,7 +484,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     ),
                                     SizedBox(height: 6),
                                     Text(
-                                      'Lorem ipsum dolor sit amet consectetur. Feugiat sapien eget lectus integer nulla rhoncus iaculis.',
+                                      feedbackText,
                                       style: TextStyle(fontSize: 14),
                                     ),
                                   ],
@@ -623,5 +716,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // 기본 이미지 지정
     return imageMap[category] ?? 'assets/images/icons/category_coffee.png';
+  }
+
+  int getCategoryIdPath(String category) {
+    final categoryIdMap = {
+      '식비': 1,
+      '교통/차량': 2,
+      '문화생활': 3,
+      '마트/편의점': 4,
+      '패션/미용': 5,
+      '생활용품': 6,
+      '주거/통신': 7,
+      '건강': 8,
+      '교육': 9,
+      '경조사/회비': 10,
+      '부모님': 11,
+      '저축성 지출': 12,
+      '세금': 13,
+      '반려동물': 14,
+      '기타': 15,
+      '월급': 16,
+    };
+
+    return categoryIdMap[category] ?? 15;
+  }
+
+  int priceToInt(String price) {
+    var result = price.replaceAll(',', '');
+    return int.parse(result);
   }
 }
