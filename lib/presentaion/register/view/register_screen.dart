@@ -21,6 +21,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  bool isAnalyzing = false;
   late bool isIncome;
   bool showAnalysisResult = false;
 
@@ -230,25 +231,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> analyzeTransactionData() async {
-
-    final token = await TokenStorage.getToken(); // 예: flutter_secure_storage
-
-    final dto = ABCRequestDTO(
-      txDate: _dateController.text.trim(),
-      amount: priceToInt(_amountController.text),
-      categoryId: getCategoryIdPath(_categoryController.text),
-      content: _categoryController.text,
-      memo: _memoController.text,
-    );
-
-    final uri = Uri.parse('https://money-planet.store/api/v1/tx/decision');
-
-    final headers = {
-      'Content-Type': 'application/json',
-      if (token != null) 'Authorization': 'Bearer $token',
-    };
+    setState(() => isAnalyzing = true); // 시작할 때 true
 
     try {
+      final token = await TokenStorage.getToken();
+
+      final dto = ABCRequestDTO(
+        txDate: _dateController.text.trim(),
+        amount: priceToInt(_amountController.text),
+        categoryId: getCategoryIdPath(_categoryController.text),
+        content: _categoryController.text,
+        memo: _memoController.text,
+      );
+
+      final uri = Uri.parse('https://money-planet.store/api/v1/tx/decision');
+
+      final headers = {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      };
+
       final response = await http.post(
         uri,
         headers: headers,
@@ -259,7 +261,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       print('요청 본문: ${jsonEncode(dto.toJson())}');
       print('응답 코드: ${response.statusCode}');
-      print('응답 본문: ${decodedBody}');
+      print('응답 본문: $decodedBody');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> json = jsonDecode(decodedBody);
@@ -275,276 +277,298 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
       } else {
         print('서버 오류 발생: ${response.statusCode}');
-        print('서버 응답: ${response.body}');
+        print('서버 응답: $decodedBody');
       }
     } catch (e) {
       print('네트워크 오류: $e');
+    } finally {
+      setState(() => isAnalyzing = false); // 끝났을 때 false
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 30),
-              _buildToggleTab(),
-              const SizedBox(height: 30),
-              if (!isIncome) ...[
-                ElevatedButton(
-                  onPressed: () => parseClipboardAndFillFields(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: secondary_200,
-                    // 배경 색상
-                    foregroundColor: Colors.white,
-                    // 텍스트 색상
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 14,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12), // 둥근 모서리
-                    ),
-                    elevation: 4,
-                    // 그림자 깊이
-                    shadowColor: secondary_300, // 그림자 색상
-                  ),
-                  child: const Text('📋 붙여넣기', style: Pretendard_Semibold_16),
-                ),
-                const SizedBox(height: 30),
-              ],
-
-              Row(
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: SafeArea(
+              top: false,
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _buildTextField(
-                      '날짜',
-                      _dateController,
-                      readOnly: true,
-                      onTap: _selectDate,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildTextField(
-                      '시간',
-                      _timeController,
-                      readOnly: true,
-                      onTap: () async {
-                        final selectedTime = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-                        if (selectedTime != null) {
-                          _timeController.text =
-                              "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              _buildTextField(
-                '금액',
-                _amountController,
-                keyboardType: TextInputType.number,
-                suffixText: '원',
-                onChanged: (value) {
-                  var numericString = value.replaceAll(RegExp(r'[^0-9]'), '');
-                  if (numericString.isEmpty) {
-                    _amountController.clear();
-                    return;
-                  }
-                  var intValue = int.parse(numericString);
-                  if (intValue > 10000000) {
-                    _amountController.text = "10,000,000";
-                    intValue = 10000000;
-                    return;
-                  }
-                  var formatted = NumberFormat.decimalPattern().format(
-                    intValue,
-                  );
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _amountController.value = TextEditingValue(
-                      text: formatted,
-                      selection: TextSelection.collapsed(
-                        offset: formatted.length,
+                  _buildHeader(),
+                  const SizedBox(height: 30),
+                  _buildToggleTab(),
+                  const SizedBox(height: 30),
+                  if (!isIncome) ...[
+                    ElevatedButton(
+                      onPressed: () => parseClipboardAndFillFields(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: secondary_200,
+                        // 배경 색상
+                        foregroundColor: Colors.white,
+                        // 텍스트 색상
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                        ),
+                        elevation: 4,
+                        // 그림자 깊이
+                        shadowColor: secondary_300, // 그림자 색상
                       ),
-                    );
-                  });
-                },
-              ),
-              _buildTextField(
-                '분류',
-                _categoryController,
-                readOnly: true,
-                onTap: _showCategoryModal,
-              ),
+                      child: const Text('📋 붙여넣기', style: Pretendard_Semibold_16),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
 
-              _buildTextField(
-                '자산',
-                _assetController,
-                readOnly: true,
-                onTap: _showAssetModal,
-              ),
-              _buildTextField('내용', _noteController),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField(
+                          '날짜',
+                          _dateController,
+                          readOnly: true,
+                          onTap: _selectDate,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildTextField(
+                          '시간',
+                          _timeController,
+                          readOnly: true,
+                          onTap: () async {
+                            final selectedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (selectedTime != null) {
+                              _timeController.text =
+                              "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  _buildTextField(
+                    '금액',
+                    _amountController,
+                    keyboardType: TextInputType.number,
+                    suffixText: '원',
+                    onChanged: (value) {
+                      var numericString = value.replaceAll(RegExp(r'[^0-9]'), '');
+                      if (numericString.isEmpty) {
+                        _amountController.clear();
+                        return;
+                      }
+                      var intValue = int.parse(numericString);
+                      if (intValue > 10000000) {
+                        _amountController.text = "10,000,000";
+                        intValue = 10000000;
+                        return;
+                      }
+                      var formatted = NumberFormat.decimalPattern().format(
+                        intValue,
+                      );
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _amountController.value = TextEditingValue(
+                          text: formatted,
+                          selection: TextSelection.collapsed(
+                            offset: formatted.length,
+                          ),
+                        );
+                      });
+                    },
+                  ),
+                  _buildTextField(
+                    '분류',
+                    _categoryController,
+                    readOnly: true,
+                    onTap: _showCategoryModal,
+                  ),
 
-              SizedBox(height: 20),
+                  _buildTextField(
+                    '자산',
+                    _assetController,
+                    readOnly: true,
+                    onTap: _showAssetModal,
+                  ),
+                  _buildTextField('내용', _noteController),
 
-              Divider(),
+                  SizedBox(height: 20),
 
-              SizedBox(height: 20),
+                  Divider(),
 
-              _buildTextField('메모', _memoController),
-              if (!isIncome) ...[
-                const SizedBox(height: 10),
-                _buildTypeSelector(),
-                const SizedBox(height: 20),
-                if (!showAnalysisResult) ...[
+                  SizedBox(height: 20),
+
+                  _buildTextField('메모', _memoController),
+                  if (!isIncome) ...[
+                    const SizedBox(height: 10),
+                    _buildTypeSelector(),
+                    const SizedBox(height: 20),
+                    if (!showAnalysisResult) ...[
+                      ElevatedButton(
+                        onPressed: () async {
+                          await analyzeTransactionData();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[100],
+                          minimumSize: const Size.fromHeight(50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'AI 분석하기',
+                          style: TextStyle(
+                            color: primary_400,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (showAnalysisResult) ...[
+                      const SizedBox(height: 20),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue[50],
+                          border: Border.all(color: Colors.blue[200]!),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            Text(
+                              'AI 분석결과',
+                              style: TextStyle(
+                                color: primary_400,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 36,
+                                    backgroundColor: primary_400,
+                                    child: Image.asset(
+                                      getCategoryImagePath(
+                                        _categoryController.text,
+                                      ),
+                                      width: 36,
+                                      height: 36,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          reasonText,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(height: 6),
+                                        Text(
+                                          feedbackText,
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                setState(() {
+                                  selectedType = 'C';
+                                  showAnalysisResult = false;
+                                });
+                              },
+                              label: const Text('확인'),
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                  horizontal: 100,
+                                ),
+                                backgroundColor: primary_400,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                foregroundColor: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                  const SizedBox(height: 50),
                   ElevatedButton(
-                    onPressed: () async {
-                      await analyzeTransactionData();
+                    onPressed: () {
+                      // 저장 로직 처리
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[100],
-                      minimumSize: const Size.fromHeight(50),
+                      backgroundColor: primary_400,
+                      minimumSize: const Size.fromHeight(56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: const Text(
-                      'AI 분석하기',
+                      '저장하기',
                       style: TextStyle(
-                        color: primary_400,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
+                  const SizedBox(height: 12),
                 ],
-                if (showAnalysisResult) ...[
-                  const SizedBox(height: 20),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      border: Border.all(color: Colors.blue[200]!),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Text(
-                          'AI 분석결과',
-                          style: TextStyle(
-                            color: primary_400,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 36,
-                                backgroundColor: primary_400,
-                                child: Image.asset(
-                                  getCategoryImagePath(
-                                    _categoryController.text,
-                                  ),
-                                  width: 36,
-                                  height: 36,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      reasonText,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    SizedBox(height: 6),
-                                    Text(
-                                      feedbackText,
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              selectedType = 'C';
-                              showAnalysisResult = false;
-                            });
-                          },
-                          label: const Text('확인'),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                              horizontal: 100,
-                            ),
-                            backgroundColor: primary_400,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-              const SizedBox(height: 50),
-              ElevatedButton(
-                onPressed: () {
-                  // 저장 로직 처리
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primary_400,
-                  minimumSize: const Size.fromHeight(56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  '저장하기',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
-              const SizedBox(height: 12),
-            ],
+            ),
           ),
         ),
-      ),
+        if (isAnalyzing)
+          Positioned.fill(
+            child: Container(
+              color: neutral_900,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/rocket1.png', width: 300),
+                  const SizedBox(height: 24),
+                  const Text('AI가 분석하고 있습니다.', style: TextStyle(color: Colors.white, fontSize: 18)),
+                  const SizedBox(height: 8),
+                  const Text('로켓발사 준비 중...', style: TextStyle(color: Colors.white70)),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 

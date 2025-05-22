@@ -6,6 +6,8 @@ import '../../../global/components/consumption_item.dart';
 import '../model/diary_model.dart';
 
 class DiaryCalendarScreen extends StatefulWidget {
+  const DiaryCalendarScreen({super.key});
+
   @override
   _DiaryCalendarScreenState createState() => _DiaryCalendarScreenState();
 }
