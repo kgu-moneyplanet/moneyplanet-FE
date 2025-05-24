@@ -1,69 +1,80 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../../../global/theme/colors.dart';
 import '../../../global/theme/textStyles.dart';
+import '../viewModel/DailyAnalysisViewModel.dart';
 
-class SumStat {
-  final String weekday;
-  final DateTime day;
-  final int totalIncome;
-  final int totalExpense;
+class ChartFirstSection extends StatefulWidget {
+  const ChartFirstSection({super.key, required this.jwtToken, required String selectedView});
+  final String jwtToken;
 
-  SumStat({
-    required this.weekday,
-    required this.day,
-    required this.totalIncome,
-    required this.totalExpense,
-  });
+  @override
+  State<ChartFirstSection> createState() => _ChartFirstSectionState();
 }
 
-class ChartFirstSection extends StatelessWidget {
-  final String selectedView;
+class _ChartFirstSectionState extends State<ChartFirstSection> {
+  final DailyAnalysisViewModel viewModel = DailyAnalysisViewModel();
 
-  const ChartFirstSection({super.key, required this.selectedView});
+  @override
+  void initState() {
+    super.initState();
+    final statDate = DateTime.now().toIso8601String().substring(0, 10);
+    viewModel.addListener(_onViewModelChanged);
+    viewModel.fetchDailyData(statDate);
+  }
 
-  // 더미 데이터 (일간 기준)
-  List<SumStat> get dailyData => [
-    SumStat(weekday: '월', day: DateTime(2025, 5, 19), totalIncome: 1000, totalExpense: 800),
-    SumStat(weekday: '화', day: DateTime(2025, 5, 20), totalIncome: 1200, totalExpense: 600),
-    SumStat(weekday: '수', day: DateTime(2025, 5, 21), totalIncome: 800, totalExpense: 500),
-    SumStat(weekday: '목', day: DateTime(2025, 5, 22), totalIncome: 900, totalExpense: 400),
-    SumStat(weekday: '금', day: DateTime(2025, 5, 23), totalIncome: 700, totalExpense: 700),
-    SumStat(weekday: '토', day: DateTime(2025, 5, 24), totalIncome: 1000, totalExpense: 900),
-    SumStat(weekday: '일', day: DateTime(2025, 5, 25), totalIncome: 1100, totalExpense: 1000),
-  ];
-  List<SumStat> get weeklyData => [
-    SumStat(weekday: '1주차', day: DateTime(2025, 5, 1), totalIncome: 6000, totalExpense: 4500),
-    SumStat(weekday: '2주차', day: DateTime(2025, 5, 8), totalIncome: 7500, totalExpense: 5200),
-    SumStat(weekday: '3주차', day: DateTime(2025, 5, 15), totalIncome: 7000, totalExpense: 6300),
-    SumStat(weekday: '4주차', day: DateTime(2025, 5, 22), totalIncome: 8000, totalExpense: 5000),
-  ];
-
-  List<SumStat> get monthlyData => [
-    SumStat(weekday: '1월', day: DateTime(2025, 1, 1), totalIncome: 25000, totalExpense: 22000),
-    SumStat(weekday: '2월', day: DateTime(2025, 2, 1), totalIncome: 27000, totalExpense: 21000),
-    SumStat(weekday: '3월', day: DateTime(2025, 3, 1), totalIncome: 26000, totalExpense: 23000),
-    SumStat(weekday: '4월', day: DateTime(2025, 4, 1), totalIncome: 28000, totalExpense: 24000),
-    SumStat(weekday: '5월', day: DateTime(2025, 5, 1), totalIncome: 30000, totalExpense: 25000),
-  ];
-  List<SumStat> get currentData {
-    switch (selectedView) {
-      case 'Daily':
-        return dailyData;
-      case 'Weekly':
-        return weeklyData;
-      case 'Monthly':
-        return monthlyData;
-      default:
-        return dailyData;
+  void _onViewModelChanged() {
+    if (mounted) {
+      print('dailyData updated: ${viewModel.dailyData}');
+      print('isLoading: ${viewModel.isLoading}, error: ${viewModel.error}');
+      setState(() {});
     }
   }
 
   @override
+  void dispose() {
+    viewModel.removeListener(_onViewModelChanged);
+    super.dispose();
+  }
+  String weekdayToKorean(int weekday) {
+    switch (weekday) {
+      case 1:
+        return '월';
+      case 2:
+        return '화';
+      case 3:
+        return '수';
+      case 4:
+        return '목';
+      case 5:
+        return '금';
+      case 6:
+        return '토';
+      case 7:
+        return '일';
+      default:
+        return '';
+    }
+  }
+  @override
   Widget build(BuildContext context) {
-    final maxY = (currentData
-        .map((e) => [e.totalIncome.toDouble(), e.totalExpense.toDouble()].reduce((a, b) => a > b ? a : b))
+    if (viewModel.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (viewModel.error != null) {
+      return Center(child: Text(viewModel.error!));
+    }
+    final dailyData = viewModel.dailyData;
+    if (dailyData == null || dailyData.isEmpty) {
+      return const Center(child: Text('데이터가 없습니다.'));
+    }
+
+    final maxY = (dailyData
+        .map((e) => [
+      e.totalIncome.toDouble(),
+      e.totalExpense.toDouble()
+    ].reduce((a, b) => a > b ? a : b))
         .reduce((a, b) => a > b ? a : b) *
         1.2)
         .ceilToDouble();
@@ -85,7 +96,7 @@ class ChartFirstSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "수입/지출 한 눈에 보기",
+                  "이번주 수입/지출 한 눈에 보기\n",
                   style: customTextStyle(
                     fontFamily: Pretendard_Semibold_16,
                     color: Colors.black,
@@ -95,7 +106,8 @@ class ChartFirstSection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Expanded(
+            SizedBox(
+              height: 160,
               child: BarChart(
                 BarChartData(
                   alignment: BarChartAlignment.spaceAround,
@@ -108,8 +120,8 @@ class ChartFirstSection extends StatelessWidget {
                         reservedSize: 40,
                         getTitlesWidget: (value, meta) {
                           if (value % 5000 == 0) {
-                            return Text('${value ~/ 1000}k',
-                                style: const TextStyle(fontSize: 10));
+                            return Text('${value ~/ 1000}k 원',
+                                style: customTextStyle(fontFamily: Pretendard_Medium_10,color: Colors.black));
                           }
                           return const SizedBox.shrink();
                         },
@@ -118,30 +130,45 @@ class ChartFirstSection extends StatelessWidget {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
+                        reservedSize: 32, // ← 요 부분 추가!
                         getTitlesWidget: (value, meta) {
-                          if (value.toInt() < currentData.length) {
-                            return Text(
-                              currentData[value.toInt()].weekday,
-                              style: const TextStyle(fontSize: 12),
+                          if (value.toInt() < dailyData.length) {
+                            final data = dailyData[value.toInt()];
+                            final weekday = data.weekday;
+                            final formattedDate = DateFormat('MM/dd').format(data.day);
+                            return Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(weekday, style: customTextStyle(fontFamily: Pretendard_Medium_12,color: Colors.black)),
+                                Text(formattedDate, style: const TextStyle(fontSize: 10)),
+                              ],
                             );
                           }
                           return const SizedBox.shrink();
                         },
                       ),
                     ),
-                    rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                    topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    rightTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   ),
                   gridData: FlGridData(show: true, horizontalInterval: 5000),
                   borderData: FlBorderData(show: false),
-                  barGroups: List.generate(currentData.length, (index) {
-                    final data = currentData[index];
+                  barGroups: List.generate(dailyData.length, (index) {
+                    final data = dailyData[index];
                     return BarChartGroupData(
                       x: index,
                       barsSpace: 4,
                       barRods: [
-                        BarChartRodData(toY: data.totalIncome.toDouble(), width: 8, color: primary_400),
-                        BarChartRodData(toY: data.totalExpense.toDouble(), width: 8, color: secondary_200),
+                        BarChartRodData(
+                            toY: data.totalIncome.toDouble(),
+                            width: 8,
+                            color: primary_400),
+                        BarChartRodData(
+                            toY: data.totalExpense.toDouble(),
+                            width: 8,
+                            color: secondary_200),
                       ],
                     );
                   }),

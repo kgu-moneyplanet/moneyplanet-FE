@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 
 import '../../../global/theme/colors.dart';
 import '../../../global/theme/textStyles.dart';
+import '../../../network/TokenStorage.dart';
 import '../../myPage/view/hint_screen.dart';
 import '../model/chartmodel.dart';
+import '../viewModel/DailyAnalysisViewModel.dart';
 import 'chart_first_section.dart';
 import 'chart_fourth_section.dart';
 import 'chart_second_section.dart';
 import 'chart_third_section.dart';
 
 class ChartScreen extends StatefulWidget {
-  const ChartScreen({super.key});
+  const ChartScreen({Key? key}) : super(key: key);
 
   @override
   State<ChartScreen> createState() => _ChartScreenState();
@@ -18,19 +20,36 @@ class ChartScreen extends StatefulWidget {
 
 class _ChartScreenState extends State<ChartScreen> {
   String selectedView = 'Daily';
+  String? jwtToken; // 추가: 토큰 저장용
+  final DailyAnalysisViewModel viewModel = DailyAnalysisViewModel();
+  @override
+  void initState() {
+    super.initState();
+    _loadToken(); // 토큰 로드
+  }
 
+  void _loadToken() async {
+    final token = await TokenStorage.getToken();
+    if (mounted) {
+      setState(() {
+        jwtToken = token;
+      });
+    }
+  }
   void changeView(String view) {
     setState(() {
       selectedView = view;
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: neutral_900,
       body: SafeArea(
-        child: SingleChildScrollView(
+        child: jwtToken == null ? const Center(child: CircularProgressIndicator())
+        : SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(
@@ -113,11 +132,11 @@ class _ChartScreenState extends State<ChartScreen> {
               const SizedBox(height: 20),
 
               // 👉 selectedView 전달
-              ChartFirstSection(selectedView: selectedView),
+              ChartFirstSection(selectedView: selectedView, jwtToken: jwtToken!),
 
               const SizedBox(height: 20),
 
-              ChartSecondSection(selectedView: selectedView),
+              ChartSecondSection(selectedView: selectedView, jwtToken: jwtToken!),
 
               const SizedBox(height: 20),
 
