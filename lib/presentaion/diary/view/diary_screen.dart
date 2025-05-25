@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:money_planet/presentaion/diary/viewModel/diary_viewModel.dart';
 import 'package:money_planet/presentaion/home/view/home_third_section.dart';
 
@@ -7,6 +8,7 @@ import '../../../global/theme/colors.dart';
 import '../../../global/theme/textStyles.dart';
 import '../../home/viewModel/home_viewModel.dart';
 import '../../myPage/view/hint_screen.dart';
+import 'empty_diary_screen.dart';
 
 class DiaryScreen extends StatefulWidget {
   const DiaryScreen({super.key});
@@ -18,12 +20,18 @@ class DiaryScreen extends StatefulWidget {
 class _DiaryScreenState extends State<DiaryScreen> {
   final DiaryViewModel viewModel = DiaryViewModel();
   final HomeViewModel homeViewModel = HomeViewModel();
+  final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+  void _refreshData() {
+    setState(() {
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: neutral_900,
-      floatingActionButton: floatingDialButton(context),
+      floatingActionButton: floatingDialButton(context, _refreshData),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -75,6 +83,14 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
               // 가계부
               HomeThirdSection(viewModel: homeViewModel),
+
+              Image.asset(
+                "assets/images/splash_image.png",
+                width: 300,
+                height: 300,
+                fit: BoxFit.fill,
+
+              ),
             ],
           ),
         ),

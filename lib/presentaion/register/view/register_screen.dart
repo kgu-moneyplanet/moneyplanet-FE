@@ -1,8 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
-import 'package:flutter/services.dart';
+import 'package:money_planet/network/TokenStorage.dart';
+
+import '../../../network/Daily/Request/ABCRequestDTO.dart';
+import '../../../network/Daily/Request/RegisterRequestDTO.dart';
+import '../../../network/Daily/Response/ABCResponseDTO.dart';
+import '../../../network/Daily/Response/RegisterResponseDTO.dart';
 
 class RegisterScreen extends StatefulWidget {
   final bool isIncome;
@@ -14,6 +23,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  bool isAnalyzing = false;
   late bool isIncome;
   bool showAnalysisResult = false;
 
@@ -26,6 +36,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _memoController = TextEditingController();
 
   String selectedType = '';
+
+  String reasonText = '';
+  String feedbackText = '';
 
   @override
   void initState() {
@@ -81,29 +94,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       builder: (_) {
         final categories = [
-          '식비', '교통/차량', '문화생활', '마트/편의점', '패션/미용', '생활용품', '주거/통신', '건강',
-          '교육', '경조사/회비', '부모님', '저축성 지출', '세금', '반려동물', '월급', '기타',
+          '식비',
+          '교통/차량',
+          '문화생활',
+          '마트/편의점',
+          '패션/미용',
+          '생활용품',
+          '주거/통신',
+          '건강',
+          '교육',
+          '경조사/회비',
+          '부모님',
+          '저축성 지출',
+          '세금',
+          '반려동물',
+          '월급',
+          '기타',
         ];
         return Container(
-          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 70, left: 20),
+          padding: const EdgeInsets.only(
+            top: 20,
+            right: 20,
+            bottom: 70,
+            left: 20,
+          ),
           width: double.infinity,
           child: Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: categories.map((category) {
-              return ChoiceChip(
-                label: Text(category),
-                selected: _categoryController.text == category,
-                onSelected: (_) {
-                  setState(() {
-                    _categoryController.text = category;
-                  });
-                  Navigator.pop(context);
-                },
-                selectedColor: primary_050,
-                labelStyle: const TextStyle(fontSize: 16),
-              );
-            }).toList(),
+            children:
+                categories.map((category) {
+                  return ChoiceChip(
+                    label: Text(category),
+                    selected: _categoryController.text == category,
+                    onSelected: (_) {
+                      setState(() {
+                        _categoryController.text = category;
+                      });
+                      Navigator.pop(context);
+                    },
+                    selectedColor: primary_050,
+                    labelStyle: const TextStyle(fontSize: 16),
+                  );
+                }).toList(),
           ),
         );
       },
@@ -119,20 +152,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       builder: (_) {
         final assets = ['현금', '체크카드', '신용카드', '은행계좌'];
         return Container(
-          padding: const EdgeInsets.only(top: 20, right: 20, bottom: 70, left: 20),
+          padding: const EdgeInsets.only(
+            top: 20,
+            right: 20,
+            bottom: 70,
+            left: 20,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: assets.map((asset) {
-              return ListTile(
-                title: Text(asset),
-                onTap: () {
-                  setState(() {
-                    _assetController.text = asset;
-                  });
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
+            children:
+                assets.map((asset) {
+                  return ListTile(
+                    title: Text(asset),
+                    onTap: () {
+                      setState(() {
+                        _assetController.text = asset;
+                      });
+                      Navigator.pop(context);
+                    },
+                  );
+                }).toList(),
           ),
         );
       },
@@ -140,7 +179,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> parseClipboardAndFillFields() async {
-
     final clipboardData = await Clipboard.getData('text/plain');
     final text = clipboardData?.text ?? '';
     final lines = text.split('\n');
@@ -152,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final dateRegex = RegExp(r'(\d{2})/(\d{2})'); // MM/DD
     final timeRegex = RegExp(r'(\d{2}):(\d{2})'); // HH:mm
-    final amountRegex = RegExp(r'([\d,]+)원');     // 금액
+    final amountRegex = RegExp(r'([\d,]+)원'); // 금액
     final contentRegex = RegExp(r'[^\d]+사용');
 
     for (final line in lines) {
@@ -161,9 +199,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         final month = match.group(1)!;
         final day = match.group(2)!;
         final year = DateTime.now().year;
-        final formattedDate = DateFormat('yyyy-MM-dd').format(
-          DateTime(year, int.parse(month), int.parse(day)),
-        );
+        final formattedDate = DateFormat(
+          'yyyy-MM-dd',
+        ).format(DateTime(year, int.parse(month), int.parse(day)));
         dateStr = formattedDate;
       }
 
@@ -192,266 +230,409 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _amountController.text = amountStr ?? '';
     _memoController.text = contentStr ?? '';
     _assetController.text = contentStr!.isEmpty ? '' : '체크카드';
+  }
 
+  Future<void> analyzeTransactionData() async {
+    setState(() => isAnalyzing = true); // 시작할 때 true
+
+    try {
+      final token = await TokenStorage.getToken();
+
+      final dto = ABCRequestDTO(
+        txDate: _dateController.text.trim(),
+        amount: priceToInt(_amountController.text),
+        categoryId: getCategoryIdPath(_categoryController.text),
+        content: _categoryController.text,
+        memo: _memoController.text,
+      );
+
+      final uri = Uri.parse('https://money-planet.store/api/v1/tx/decision');
+
+      final headers = {
+        'Content-Type': 'application/json',
+        if (token != null) 'Authorization': 'Bearer $token',
+      };
+
+      final response = await http.post(
+        uri,
+        headers: headers,
+        body: jsonEncode(dto.toJson()),
+      );
+
+      final decodedBody = utf8.decode(response.bodyBytes);
+
+      print('요청 본문: ${jsonEncode(dto.toJson())}');
+      print('응답 코드: ${response.statusCode}');
+      print('응답 본문: $decodedBody');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(decodedBody);
+        final abcResponse = ABCResponseDTO.fromJson(json);
+
+        final result = abcResponse.data;
+
+        setState(() {
+          showAnalysisResult = true;
+          reasonText = result.reason;
+          feedbackText = result.feedback;
+          selectedType = result.abc;
+        });
+      } else {
+        print('서버 오류 발생: ${response.statusCode}');
+        print('서버 응답: $decodedBody');
+      }
+    } catch (e) {
+      print('네트워크 오류: $e');
+    } finally {
+      setState(() => isAnalyzing = false); // 끝났을 때 false
+    }
+  }
+
+  Future<RegisterResponseDTO?> registerTransaction(RegisterRequestDTO request) async {
+    const url = 'https://money-planet.store/api/v1/tx';
+
+    final token = await TokenStorage.getToken();
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    final body = jsonEncode(request.toJson());
+
+    print('🔵 [Request URL] $url');
+    print('🟢 [Headers] $headers');
+    print('🟡 [Request Body JSON] $body');
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+
+      print('🔴 [Response Status] ${response.statusCode}');
+      print('🟣 [Response Body] ${utf8.decode(response.bodyBytes)}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return RegisterResponseDTO(
+          statusCode: response.statusCode,
+          message: data['message'] ?? '등록 성공',
+        );
+      } else {
+        return RegisterResponseDTO(
+          statusCode: response.statusCode,
+          message: '등록 실패',
+        );
+      }
+    } catch (e) {
+      print('🔥 [Exception] $e');
+      return null;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: SafeArea(
-          top: false,
-          child: Column(
-            children: [
-              _buildHeader(),
-              const SizedBox(height: 30),
-              _buildToggleTab(),
-              const SizedBox(height: 30),
-              if (!isIncome) ...[
-                ElevatedButton(
-                  onPressed: () => parseClipboardAndFillFields(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: secondary_200, // 배경 색상
-                    foregroundColor: Colors.white,  // 텍스트 색상
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12), // 둥근 모서리
-                    ),
-                    elevation: 4, // 그림자 깊이
-                    shadowColor: secondary_300, // 그림자 색상
-                  ),
-                  child: const Text('📋 붙여넣기', style: Pretendard_Semibold_16,),
-                ),
-                const SizedBox(height: 30),
-              ],
-
-              Row(
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: SafeArea(
+              top: false,
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _buildTextField(
-                      '날짜',
-                      _dateController,
-                      readOnly: true,
-                      onTap: _selectDate,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildTextField(
-                      '시간',
-                      _timeController,
-                      readOnly: true,
-                      onTap: () async {
-                        final selectedTime = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.now(),
-                        );
-                        if (selectedTime != null) {
-                          _timeController.text =
-                              "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              _buildTextField(
-                '금액',
-                _amountController,
-                keyboardType: TextInputType.number,
-                suffixText: '원',
-                onChanged: (value) {
-                  var numericString = value.replaceAll(RegExp(r'[^0-9]'), '');
-                  if (numericString.isEmpty) {
-                    _amountController.clear();
-                    return;
-                  }
-                  var intValue = int.parse(numericString);
-                  if (intValue > 10000000) {
-                    _amountController.text = "10,000,000";
-                    intValue = 10000000;
-                    return;
-                  }
-                  var formatted = NumberFormat.decimalPattern().format(
-                    intValue,
-                  );
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    _amountController.value = TextEditingValue(
-                      text: formatted,
-                      selection: TextSelection.collapsed(
-                        offset: formatted.length,
+                  _buildHeader(),
+                  const SizedBox(height: 30),
+                  _buildToggleTab(),
+                  const SizedBox(height: 30),
+                  if (!isIncome) ...[
+                    ElevatedButton(
+                      onPressed: () => parseClipboardAndFillFields(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: secondary_200,
+                        // 배경 색상
+                        foregroundColor: Colors.white,
+                        // 텍스트 색상
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 14,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                        ),
+                        elevation: 4,
+                        // 그림자 깊이
+                        shadowColor: secondary_300, // 그림자 색상
                       ),
-                    );
-                  });
-                },
-              ),
-              _buildTextField(
-                '분류',
-                _categoryController,
-                readOnly: true,
-                onTap: _showCategoryModal,
-              ),
+                      child: const Text(
+                        '📋 붙여넣기',
+                        style: Pretendard_Semibold_16,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                  ],
 
-              _buildTextField(
-                '자산',
-                _assetController,
-                readOnly: true,
-                onTap: _showAssetModal,
-              ),
-              _buildTextField('내용', _noteController),
-
-              SizedBox(height: 20,),
-
-              Divider(),
-
-              SizedBox(height: 20,),
-
-              _buildTextField('메모', _memoController),
-              if (!isIncome) ...[
-                const SizedBox(height: 10),
-                _buildTypeSelector(),
-                const SizedBox(height: 20),
-                if (!showAnalysisResult) ...[
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showAnalysisResult = true;
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField(
+                          '날짜',
+                          _dateController,
+                          readOnly: true,
+                          onTap: _selectDate,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildTextField(
+                          '시간',
+                          _timeController,
+                          readOnly: true,
+                          onTap: () async {
+                            final selectedTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (selectedTime != null) {
+                              _timeController.text =
+                                  "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  _buildTextField(
+                    '금액',
+                    _amountController,
+                    keyboardType: TextInputType.number,
+                    suffixText: '원',
+                    onChanged: (value) {
+                      var numericString = value.replaceAll(
+                        RegExp(r'[^0-9]'),
+                        '',
+                      );
+                      if (numericString.isEmpty) {
+                        _amountController.clear();
+                        return;
+                      }
+                      var intValue = int.parse(numericString);
+                      if (intValue > 10000000) {
+                        _amountController.text = "10,000,000";
+                        intValue = 10000000;
+                        return;
+                      }
+                      var formatted = NumberFormat.decimalPattern().format(
+                        intValue,
+                      );
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        _amountController.value = TextEditingValue(
+                          text: formatted,
+                          selection: TextSelection.collapsed(
+                            offset: formatted.length,
+                          ),
+                        );
                       });
                     },
+                  ),
+                  _buildTextField(
+                    '분류',
+                    _categoryController,
+                    readOnly: true,
+                    onTap: _showCategoryModal,
+                  ),
+
+                  _buildTextField(
+                    '자산',
+                    _assetController,
+                    readOnly: true,
+                    onTap: _showAssetModal,
+                  ),
+                  _buildTextField('내용', _noteController),
+
+                  SizedBox(height: 20),
+
+                  Divider(),
+
+                  SizedBox(height: 20),
+
+                  _buildTextField('메모', _memoController),
+                  if (!isIncome) ...[
+                    const SizedBox(height: 10),
+                    _buildTypeSelector(),
+                    const SizedBox(height: 20),
+                    if (!showAnalysisResult) ...[
+                      ElevatedButton(
+                        onPressed: () async {
+                          await analyzeTransactionData();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[100],
+                          minimumSize: const Size.fromHeight(50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'AI 분석하기',
+                          style: TextStyle(
+                            color: primary_400,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                    if (showAnalysisResult) ...[
+                      const SizedBox(height: 20),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.blue[50],
+                          border: Border.all(color: Colors.blue[200]!),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            Text(
+                              'AI 분석결과',
+                              style: TextStyle(
+                                color: primary_400,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 36,
+                                    backgroundColor: primary_400,
+                                    child: Image.asset(
+                                      getCategoryImagePath(
+                                        _categoryController.text,
+                                      ),
+                                      width: 52,
+                                      height: 52,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          reasonText,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        SizedBox(height: 6),
+                                        Text(
+                                          feedbackText,
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                  const SizedBox(height: 50),
+
+                  // TODO: 여기
+                  ElevatedButton(
+                    onPressed: () async {
+                      final request = RegisterRequestDTO(
+                        txDate: _dateController.text.trim(),
+                        type: isIncome ? 'INCOME' : 'EXPENSE',
+                        categoryId: getCategoryIdPath(_categoryController.text),
+                        abc: selectedType.isEmpty ? null : selectedType,
+                        amount: priceToInt(_amountController.text),
+                        method: _mapAssetToMethod(_assetController.text),
+                        content: _noteController.text,
+                        memo: _memoController.text,
+                        feedback: feedbackText,
+                      );
+
+                      final response = await registerTransaction(request);
+
+                      if (response != null && response.statusCode == 201) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('등록 성공!')),
+                        );
+                        Navigator.pop(context, true); // 저장 후 화면 닫기 등
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('등록 실패')),
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[100],
-                      minimumSize: const Size.fromHeight(50),
+                      backgroundColor: primary_400,
+                      minimumSize: const Size.fromHeight(56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: const Text(
-                      'AI 분석하기',
+                      '저장하기',
                       style: TextStyle(
-                        color: primary_400,
+                        color: Colors.white,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
+                  const SizedBox(height: 12),
                 ],
-                if (showAnalysisResult) ...[
-                  const SizedBox(height: 20),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      border: Border.all(color: Colors.blue[200]!),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Text(
-                          'AI 분석결과',
-                          style: TextStyle(
-                            color: primary_400,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 36,
-                                backgroundColor: primary_400,
-                                child: Image.asset(
-                                  getCategoryImagePath(_categoryController.text),
-                                  width: 36,
-                                  height: 36,
-                                  fit: BoxFit.contain,
-                                ),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    Text(
-                                      'A-필수 소비',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    SizedBox(height: 6),
-                                    Text(
-                                      'Lorem ipsum dolor sit amet consectetur. Feugiat sapien eget lectus integer nulla rhoncus iaculis.',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton.icon(
-                          onPressed: () {
-                            setState(() {
-                              selectedType = 'C';
-                              showAnalysisResult = false;
-                            });
-                          },
-                          label: const Text('확인'),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 14,
-                              horizontal: 100,
-                            ),
-                            backgroundColor: primary_400,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ],
-              const SizedBox(height: 50),
-              ElevatedButton(
-                onPressed: () {
-                  // 저장 로직 처리
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primary_400,
-                  minimumSize: const Size.fromHeight(56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  '저장하기',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
-              const SizedBox(height: 12),
-            ],
+            ),
           ),
         ),
-      ),
+        if (isAnalyzing)
+          Positioned.fill(
+            child: Container(
+              color: neutral_900,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/rocket1.png', width: 300),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'AI가 분석하고 있습니다.',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    '로켓발사 준비 중...',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -604,16 +785,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String getCategoryImagePath(String category) {
     final imageMap = {
       '식비': 'assets/images/icons/category_food.png',
-      '교통/차량': 'assets/images/icons/category_transport.png',
-      '문화생활': 'assets/images/icons/category_entertainment.png',
+      '교통/차량': 'assets/images/icons/category_car.png',
+      '문화생활': 'assets/images/icons/category_culture.png',
       '마트/편의점': 'assets/images/icons/category_mart.png',
       '패션/미용': 'assets/images/icons/category_fashion.png',
-      '생활용품': 'assets/images/icons/category_mart.png',
+      '생활용품': 'assets/images/icons/category_life.png',
       '주거/통신': 'assets/images/icons/category_home.png',
       '건강': 'assets/images/icons/category_health.png',
-      '교육': 'assets/images/icons/category_mart.png',
+      '교육': 'assets/images/icons/category_education.png',
       '경조사/회비': 'assets/images/icons/category_event.png',
-      '부모님': 'assets/images/icons/category_parents.png',
+      '부모님': 'assets/images/icons/category_home.png',
       '저축성 지출': 'assets/images/icons/category_saving.png',
       '세금': 'assets/images/icons/category_tax.png',
       '반려동물': 'assets/images/icons/category_pet.png',
@@ -623,5 +804,48 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // 기본 이미지 지정
     return imageMap[category] ?? 'assets/images/icons/category_coffee.png';
+  }
+
+  int getCategoryIdPath(String category) {
+    final categoryIdMap = {
+      '식비': 1,
+      '교통/차량': 2,
+      '문화생활': 3,
+      '마트/편의점': 4,
+      '패션/미용': 5,
+      '생활용품': 6,
+      '주거/통신': 7,
+      '건강': 8,
+      '교육': 9,
+      '경조사/회비': 10,
+      '부모님': 11,
+      '저축성 지출': 12,
+      '세금': 13,
+      '반려동물': 14,
+      '기타': 15,
+      '월급': 16,
+    };
+
+    return categoryIdMap[category] ?? 15;
+  }
+
+  int priceToInt(String price) {
+    var result = price.replaceAll(',', '');
+    return int.parse(result);
+  }
+
+  String _mapAssetToMethod(String input) {
+    switch (input) {
+      case '현금':
+        return 'CASH';
+      case '체크카드':
+        return 'CHECK';
+      case '신용카드':
+        return 'CREDIT';
+      case '은행계좌':
+        return 'BANK_TRANSFER';
+      default:
+        return 'UNKNOWN'; // 혹시나 예외처리를 위해
+    }
   }
 }

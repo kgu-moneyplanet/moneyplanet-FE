@@ -55,6 +55,20 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.10
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"  # 아이콘 경로
+  remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#ffffff" # 배경색
+  image: "assets/images/splash_image.png" # 중앙에 표시할 이미지
+  android: true
+  ios: true
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -106,6 +120,8 @@ flutter:
     - assets/images/rocket1.png
     - assets/images/rocket3.png
     - assets/images/login_planet.png
+    - assets/images/splash_image.png
+    - assets/images/app_icon.png
 
     - assets/images/type_icon/artist_palette.png
     - assets/images/type_icon/crown.png

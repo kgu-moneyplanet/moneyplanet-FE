@@ -3,8 +3,10 @@ import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 import 'package:money_planet/presentaion/diary/model/diary_model.dart';
 
+import '../../network/Daily/Response/TodayDiaryListResponseDTO.dart';
+
 class ConsumptionItem extends StatelessWidget {
-  final DiaryModel item;
+  final TodayDiaryListResponseDTO item;
 
   const ConsumptionItem({super.key, required this.item});
 
@@ -24,7 +26,7 @@ class ConsumptionItem extends StatelessWidget {
             ),
             padding: const EdgeInsets.all(6),
             child: Image.asset(
-              _getCategoryIconPath(item.category),
+              _getCategoryIconPath(getCategoryNameById(item.categoryId)),
               fit: BoxFit.fill,
             ),
           ),
@@ -37,7 +39,7 @@ class ConsumptionItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.description,
+                  getCategoryNameById(item.categoryId),
                   style: customTextStyle(
                     fontFamily: Pretendard_Semibold_14,
                     color: neutral_1100,
@@ -45,7 +47,7 @@ class ConsumptionItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  item.category,
+                  item.content,
                   style: customTextStyle(
                     fontFamily: Pretendard_Medium_14,
                     color: neutral_300,
@@ -57,10 +59,10 @@ class ConsumptionItem extends StatelessWidget {
 
           // 금액
           Text(
-            "${item.isIncome ? '+ ' : '- '}${_formatCurrency(item.amount)}원",
+            "${item.type == 'INCOME' ? '+ ' : '- '}${_formatCurrency(item.amount)}원",
             style: customTextStyle(
               fontFamily: Pretendard_Semibold_16,
-              color: item.isIncome ? Colors.green : neutral_1100,
+              color: item.type == 'INCOME' ? Colors.green : neutral_1100,
             ),
           ),
         ],
@@ -74,6 +76,29 @@ class ConsumptionItem extends StatelessWidget {
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
       (match) => '${match[1]},',
     );
+  }
+
+  String getCategoryNameById(int categoryId) {
+    final categoryNameMap = {
+      1: '식비',
+      2: '교통/차량',
+      3: '문화생활',
+      4: '마트/편의점',
+      5: '패션/미용',
+      6: '생활용품',
+      7: '주거/통신',
+      8: '건강',
+      9: '교육',
+      10: '경조사/회비',
+      11: '부모님',
+      12: '저축성 지출',
+      13: '세금',
+      14: '반려동물',
+      15: '기타',
+      16: '월급',
+    };
+
+    return categoryNameMap[categoryId] ?? '기타';
   }
 
   // 카테고리에 따른 아이콘 경로 반환
