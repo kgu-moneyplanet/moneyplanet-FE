@@ -131,7 +131,6 @@ class _ChartScreenState extends State<ChartScreen> {
 
               const SizedBox(height: 20),
 
-              // 👉 selectedView 전달
               ChartFirstSection(selectedView: selectedView, jwtToken: jwtToken!),
 
               const SizedBox(height: 20),
@@ -144,7 +143,7 @@ class _ChartScreenState extends State<ChartScreen> {
 
               const SizedBox(height: 20),
 
-              ChartFourthSection(selectedView: selectedView),
+              ChartFourthSection(selectedView: selectedView, jwtToken: jwtToken!,),
 
               const SizedBox(height: 60),
             ],

@@ -34,6 +34,9 @@ class WeeklyAnalysisViewModel extends ChangeNotifier {
 
         if (weeklyResponse.statusCode == 200 && weeklyResponse.data != null) {
           weeklyData = weeklyResponse.data;
+         /* print('abcStat totalA: ${weeklyData?.abcStat.totalA}');
+          print('abcStat totalB: ${weeklyData?.abcStat.totalB}');
+          print('abcStat totalC: ${weeklyData?.abcStat.totalC}');*/
         } else {
           errorMessage = weeklyResponse.message;
         }

@@ -74,28 +74,28 @@ class _ChartSecondSectionState extends State<ChartSecondSection> {
     setState(() {});
     if (dailyViewModel.sumStat != null) {
       final stat = dailyViewModel.sumStat!;
-      print('일일 데이터');
+     /* print('일일 데이터');
       print('총 수입: ${stat.totalIncome}, 총 지출: ${stat.totalExpense}');
-      print('sumstat: ${dailyViewModel.dailyData!}');
+      print('sumstat: ${dailyViewModel.dailyData!}');*/
 
     } else if (dailyViewModel.error != null) {
       print('일일 데이터 에러: ${dailyViewModel.error}');
     }
     if (weeklyViewModel.weeklyData != null) {
       final stat = weeklyViewModel.weeklyData!.sumStat;
-      print('주간 데이터: ${weeklyViewModel.weeklyData!.year}년 ${weeklyViewModel.weeklyData!.week}주');
+      /*print('주간 데이터: ${weeklyViewModel.weeklyData!.year}년 ${weeklyViewModel.weeklyData!.week}주');
       print('총 수입: ${stat.totalIncome}, 총 지출: ${stat.totalExpense}');
-      print('sumstat: ${weeklyViewModel.weeklyData!.sumStat}');
+      print('sumstat: ${weeklyViewModel.weeklyData!.sumStat}');*/
     } else if (weeklyViewModel.errorMessage != null) {
       print('주간 데이터 에러: ${weeklyViewModel.errorMessage}');
     }
 
     if (monthlyViewModel.monthlyData != null) {
-      print('월간 데이터: ${monthlyViewModel.monthlyData!.year}년 ${monthlyViewModel.monthlyData!.month}월');
+      /*print('월간 데이터: ${monthlyViewModel.monthlyData!.year}년 ${monthlyViewModel.monthlyData!.month}월');
       print('sumStatList 개수: ${monthlyViewModel.monthlyData!.sumStatList.length}');
 
       print('총 수입: ${monthlyViewModel.monthlyData!.totalIncome}, 총 지출: ${monthlyViewModel.monthlyData!.totalExpense}');
-      print('sumstat: ${monthlyViewModel.monthlyData!.sumStat}');
+      print('sumstat: ${monthlyViewModel.monthlyData!.sumStat}');*/
     } else if (monthlyViewModel.errorMessage != null) {
       print('월간 데이터 에러: ${monthlyViewModel.errorMessage}');
     }

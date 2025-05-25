@@ -33,6 +33,9 @@ class MonthlyAnalysisViewModel extends ChangeNotifier {
 
         if (monthlyResponse.statusCode == 200 && monthlyResponse.data != null) {
           monthlyData = monthlyResponse.data;
+         print('abcStat totalA: ${monthlyData?.abcStat.totalA}');
+          print('abcStat totalB: ${monthlyData?.abcStat.totalB}');
+          print('abcStat totalC: ${monthlyData?.abcStat.totalC}');
           errorMessage = null;
         } else {
           errorMessage = monthlyResponse.message;
