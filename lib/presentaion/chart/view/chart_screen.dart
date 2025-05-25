@@ -4,7 +4,6 @@ import '../../../global/theme/colors.dart';
 import '../../../global/theme/textStyles.dart';
 import '../../../network/TokenStorage.dart';
 import '../../myPage/view/hint_screen.dart';
-import '../model/chartmodel.dart';
 import '../viewModel/DailyAnalysisViewModel.dart';
 import 'chart_first_section.dart';
 import 'chart_fourth_section.dart';
@@ -139,7 +138,7 @@ class _ChartScreenState extends State<ChartScreen> {
 
               const SizedBox(height: 20),
 
-              ChartThirdSection(selectedView: selectedView),
+              ChartThirdSection(selectedView: selectedView, jwtToken: jwtToken!),
 
               const SizedBox(height: 20),
 

@@ -120,7 +120,7 @@ class _ChartFirstSectionState extends State<ChartFirstSection> {
                         reservedSize: 40,
                         getTitlesWidget: (value, meta) {
                           if (value % 5000 == 0) {
-                            return Text('${value ~/ 1000}k 원',
+                            return Text('${value ~/ 10000} 만원',
                                 style: customTextStyle(fontFamily: Pretendard_Medium_10,color: Colors.black));
                           }
                           return const SizedBox.shrink();
@@ -130,7 +130,7 @@ class _ChartFirstSectionState extends State<ChartFirstSection> {
                     bottomTitles: AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: true,
-                        reservedSize: 32, // ← 요 부분 추가!
+                        reservedSize: 32,
                         getTitlesWidget: (value, meta) {
                           if (value.toInt() < dailyData.length) {
                             final data = dailyData[value.toInt()];
@@ -153,7 +153,20 @@ class _ChartFirstSectionState extends State<ChartFirstSection> {
                     topTitles:
                     AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   ),
-                  gridData: FlGridData(show: true, horizontalInterval: 5000),
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    getDrawingHorizontalLine: (value) {
+                      if (value % 10000 == 0 || value == 0) {
+                        return FlLine(
+                          color: primary_400,
+                          strokeWidth: 1,
+                          dashArray: [4, 4],
+                        );
+                      }
+                      return FlLine(color: Colors.transparent);
+                    },
+                  ),
                   borderData: FlBorderData(show: false),
                   barGroups: List.generate(dailyData.length, (index) {
                     final data = dailyData[index];
