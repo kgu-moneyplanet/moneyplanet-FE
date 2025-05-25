@@ -14,6 +14,7 @@ import '../../../network/Login/Response/LoginSuccessResponseDTO.dart';
 import '../../../network/TokenStorage.dart';
 import '../viewModel/LoginViewModel.dart';
 import '../viewModel/SignupViewModel.dart';
+import 'guidetype_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   final SignUpViewModel viewModel;
@@ -31,6 +32,7 @@ class _QuestionFlowState extends State<QuestionScreen> {
   @override
   Widget build(BuildContext context) {
     final pages = [
+      GuideTypeScreen(controller: _pageController),
       SelectTypeScreen1(controller: _pageController,
           answers: _answers,
           onAnswerSelected: _onAns,
@@ -70,7 +72,9 @@ class _QuestionFlowState extends State<QuestionScreen> {
                     dotWidth: 10,
                     spacing: 8,
                     activeDotColor: neutral_600,
-                    dotColor: neutral_200))),
+                    dotColor: neutral_200),
+            ),
+            ),
           ),
         ],
       ),
@@ -79,12 +83,12 @@ class _QuestionFlowState extends State<QuestionScreen> {
 
   void _onAns(String k, int v) => setState(() => _answers[k] = v);
 
-  void _next() =>
-      _pageController.nextPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.ease);
+  void _next() => _pageController.nextPage(
+    duration: const Duration(milliseconds: 300),
+    curve: Curves.ease,
+  );
 
   Future<void> _onDone() async {
-    // 1) 로딩 다이얼로그
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -92,12 +96,10 @@ class _QuestionFlowState extends State<QuestionScreen> {
       builder: (_) => const _RocketLoadingDialog(),
     );
 
-    // 2) MBTI → Planet, 뷰모델 세팅 (이미 있으시죠)
     final planetModel = classifyPlanet(_answers);
     widget.viewModel.prefer = _answers['q13']?.toString();
     widget.viewModel.planet = planetModel.apiValue;
 
-    // 3) 회원가입 API 호출
     final signUpError = await widget.viewModel.signUp();
 
     if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
