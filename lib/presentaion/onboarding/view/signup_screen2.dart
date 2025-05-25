@@ -31,7 +31,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: neutral_900,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
