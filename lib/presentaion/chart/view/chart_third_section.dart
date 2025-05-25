@@ -148,7 +148,6 @@ class ChartThirdSection extends StatelessWidget {
     );
   }
 
-  // selectedView에 따른 데이터 예시 함수 (실제론 API 연동 필요)
   List<Map<String, Object>> _getCategoriesByView(String view) {
     switch (view) {
       case 'Weekly':

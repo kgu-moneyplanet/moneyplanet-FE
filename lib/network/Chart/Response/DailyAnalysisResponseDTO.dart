@@ -56,13 +56,13 @@ class DailyAnalysisData {
       sumStat: json['sumStat'] != null ? SumStat.fromJson(json['sumStat']) : null,
       categoryStat: json['categoryStat'] != null
           ? CategoryStatList.fromJson(json['categoryStat'])
-          : CategoryStatList(categoryStatDtoList: [], totalAmount: 0),
+          : CategoryStatList(categoryStatList: [], totalAmount: 0),
       abcStat: json['abcStat'] != null
           ? AbcStat.fromJson(json['abcStat'])
           : AbcStat(totalA: 0, totalB: 0, totalC: 0),
       cateAbcStat: json['cateAbcStat'] != null
           ? CateAbcStat.fromJson(json['cateAbcStat'])
-          : CateAbcStat(cateAbcStatDtoList: [], totalAmount: 0),
+          : CateAbcStat(cateAbcStatList: [], totalAmount: 0),
     );
   }
 
@@ -103,17 +103,17 @@ class SumStat {
 }
 
 class CategoryStatList {
-  final List<CategoryStat> categoryStatDtoList;
+  final List<CategoryStat> categoryStatList;
   final int totalAmount;
 
   CategoryStatList({
-    required this.categoryStatDtoList,
+    required this.categoryStatList,
     required this.totalAmount,
   });
 
   factory CategoryStatList.fromJson(Map<String, dynamic> json) {
     return CategoryStatList(
-      categoryStatDtoList: (json['categoryStatDtoList'] as List<dynamic>? ?? [])
+      categoryStatList: (json['categoryStat'] as List<dynamic>? ?? [])
           .map((e) => CategoryStat.fromJson(e))
           .toList(),
       totalAmount: json['totalAmount'] ?? 0,
@@ -162,17 +162,17 @@ class AbcStat {
 }
 
 class CateAbcStat {
-  final List<CateAbcStatDto> cateAbcStatDtoList;
+  final List<CateAbcStatDto> cateAbcStatList;
   final int totalAmount;
 
   CateAbcStat({
-    required this.cateAbcStatDtoList,
+    required this.cateAbcStatList,
     required this.totalAmount,
   });
 
   factory CateAbcStat.fromJson(Map<String, dynamic> json) {
     return CateAbcStat(
-      cateAbcStatDtoList: (json['cateAbcStatDtoList'] as List<dynamic>? ?? [])
+      cateAbcStatList: (json['cateAbcStat'] as List<dynamic>? ?? [])
           .map((e) => CateAbcStatDto.fromJson(e))
           .toList(),
       totalAmount: json['totalAmount'] ?? 0,

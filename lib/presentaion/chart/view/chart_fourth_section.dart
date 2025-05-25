@@ -3,11 +3,13 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:money_planet/global/theme/colors.dart';
 import 'package:money_planet/global/theme/textStyles.dart';
 
+import '../../../network/Chart/Response/DailyAnalysisABCResponseDTO.dart' as dailyResp;
 import '../../../network/Chart/Response/MonthlyAnalysisResponseDTO.dart';
-import '../../../network/Chart/Response/WeeklyAnalysisResponseDTO.dart';
-import '../viewModel/DailyAnalysisViewModel.dart';
+import '../../../network/Chart/Response/WeeklyAnalysisResponseDTO.dart' as weeklyResp;
+
 import '../viewModel/MonthlyAnalysisViewModel.dart';
 import '../viewModel/WeeklyAnalysisViewModel.dart';
+import '../viewModel/DailyABCAnalysisViewModel.dart';
 
 class ChartFourthSection extends StatefulWidget {
   final String selectedView; // 'Daily', 'Weekly', 'Monthly'
@@ -24,6 +26,7 @@ class ChartFourthSection extends StatefulWidget {
 }
 
 class _ChartFourthSectionState extends State<ChartFourthSection> {
+  final DailyABCAnalysisViewModel dailyABCViewModel = DailyABCAnalysisViewModel();
   final WeeklyAnalysisViewModel weeklyViewModel = WeeklyAnalysisViewModel();
   final MonthlyAnalysisViewModel monthlyViewModel = MonthlyAnalysisViewModel();
 
@@ -31,6 +34,7 @@ class _ChartFourthSectionState extends State<ChartFourthSection> {
   void initState() {
     super.initState();
     _fetchDataIfNeeded();
+    dailyABCViewModel.addListener(_onViewModelChanged);
     weeklyViewModel.addListener(_onViewModelChanged);
     monthlyViewModel.addListener(_onViewModelChanged);
   }
@@ -45,8 +49,10 @@ class _ChartFourthSectionState extends State<ChartFourthSection> {
 
   void _fetchDataIfNeeded() {
     final now = DateTime.now();
-
-    if (widget.selectedView == 'Weekly') {
+    if (widget.selectedView == 'Daily') {
+      final statDate = "${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+      dailyABCViewModel.fetchDailyData(statDate);
+    } else if (widget.selectedView == 'Weekly') {
       final weekOfYear = _getWeekNumber(now);
       weeklyViewModel.fetchWeeklyAnalysis(now.year, weekOfYear, widget.jwtToken);
     } else if (widget.selectedView == 'Monthly') {
@@ -63,13 +69,15 @@ class _ChartFourthSectionState extends State<ChartFourthSection> {
   void _onViewModelChanged() {
     if (!mounted) return;
     setState(() {});
-    print('월간 abcStat: A=${monthlyViewModel.monthlyData?.abcStat.totalA}, '
+
+    /*print('월간 abcStat: A=${monthlyViewModel.monthlyData?.abcStat.totalA}, '
         'B=${monthlyViewModel.monthlyData?.abcStat.totalB}, '
-        'C=${monthlyViewModel.monthlyData?.abcStat.totalC}');
+        'C=${monthlyViewModel.monthlyData?.abcStat.totalC}');*/
   }
 
   @override
   void dispose() {
+    dailyABCViewModel.removeListener(_onViewModelChanged);
     weeklyViewModel.removeListener(_onViewModelChanged);
     monthlyViewModel.removeListener(_onViewModelChanged);
     super.dispose();
@@ -78,10 +86,11 @@ class _ChartFourthSectionState extends State<ChartFourthSection> {
   @override
   Widget build(BuildContext context) {
 
-    final weeklyAbc = widget.selectedView == 'Weekly' ? weeklyViewModel.weeklyData?.abcStat : null;
+    final dailyAbc = widget.selectedView == 'Daily' ? dailyABCViewModel.abcStat as dailyResp.AbcStat? : null;
+    final weeklyAbc = widget.selectedView == 'Weekly' ? weeklyViewModel.weeklyData?.abcStat as weeklyResp.AbcStat? : null;
     final monthlyAbc = widget.selectedView == 'Monthly' ? monthlyViewModel.monthlyData?.abcStat : null;
 
-    final sections = _getSectionsByView(widget.selectedView, weeklyAbc, monthlyAbc);
+    final sections = _getSectionsByView(widget.selectedView, dailyAbc, weeklyAbc, monthlyAbc);
 
     final total = sections.fold<double>(0, (sum, s) => sum + (s['value']! as double));
     sections.sort((a, b) => (b['value']! as double).compareTo(a['value']! as double));
@@ -230,8 +239,16 @@ class _ChartFourthSectionState extends State<ChartFourthSection> {
   }
 
   List<Map<String, Object?>> _getSectionsByView(
-      String view, AbcStat? weekly, MonthlyAbcStat? monthly) {
-    if (view == 'Weekly' && weekly != null) {
+      String view,
+      dailyResp.AbcStat? daily,
+      weeklyResp.AbcStat? weekly, MonthlyAbcStat? monthly) {
+    if (view == 'Daily' && daily != null) {
+      return _mapToChartSections({
+        'A': daily.totalA.toDouble(),
+        'B': daily.totalB.toDouble(),
+        'C': daily.totalC.toDouble(),
+      });
+    } else if (view == 'Weekly' && weekly != null) {
       return _mapToChartSections({
         'A': weekly.totalA.toDouble(),
         'B': weekly.totalB.toDouble(),
