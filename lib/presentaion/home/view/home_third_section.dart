@@ -73,7 +73,7 @@ class HomeThirdSectionState extends State<HomeThirdSection> {
                 .ceil();
         result = await widget.viewModel.fetchWeeklyCategoryStats(
           now.year,
-          weekNum,
+          weekNum+1,
         );
         _dateDisplay =
             "${DateFormat('M월 d일').format(startOfWeek)} ~ ${DateFormat('M월 d일').format(endOfWeek)}";

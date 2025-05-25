@@ -5,7 +5,7 @@ import 'package:money_planet/presentaion/register/view/register_screen.dart';
 
 import '../../presentaion/register/view/register_ocr_screen.dart';
 
-SpeedDial floatingDialButton(BuildContext context) {
+SpeedDial floatingDialButton(BuildContext context, VoidCallback onRegisterSuccess) {
   return SpeedDial(
     animatedIcon: AnimatedIcons.add_event,
     backgroundColor: neutral_400,
@@ -29,25 +29,28 @@ SpeedDial floatingDialButton(BuildContext context) {
         child: const Icon(Icons.edit, color: Colors.white),
         backgroundColor: Colors.blue[200],
         label: '직접 작성',
-        onTap:
-            () => showModalBottomSheet(
-              context: context,
-              isScrollControlled: true,
-              backgroundColor: Colors.transparent,
-              enableDrag: false,
-              isDismissible: false,
-              builder: (context) {
-                return Container(
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  padding: EdgeInsets.all(20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-                  ),
-                  child: RegisterScreen(isIncome: true), // 또는 false
-                );
-              },
-            ),
+        onTap: () async {
+          final result = await showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            backgroundColor: Colors.transparent,
+            enableDrag: false,
+            isDismissible: false,
+            builder: (context) {
+              return Container(
+                height: MediaQuery.of(context).size.height * 0.9,
+                padding: const EdgeInsets.all(20),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+                ),
+                child: RegisterScreen(isIncome: true),
+              );
+            },
+          );
+
+          onRegisterSuccess();
+        },
       ),
     ],
   );

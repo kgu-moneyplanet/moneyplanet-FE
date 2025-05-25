@@ -11,10 +11,10 @@ class EmptyDiaryScreen extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(40),
-              topRight: Radius.circular(40),
-            ),
+            // borderRadius: BorderRadius.only(
+            //   topLeft: Radius.circular(40),
+            //   topRight: Radius.circular(40),
+            // ),
             color: Colors.white,
           ),
           height: 500,

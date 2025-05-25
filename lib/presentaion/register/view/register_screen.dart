@@ -9,7 +9,9 @@ import 'package:money_planet/global/theme/textStyles.dart';
 import 'package:money_planet/network/TokenStorage.dart';
 
 import '../../../network/Daily/Request/ABCRequestDTO.dart';
+import '../../../network/Daily/Request/RegisterRequestDTO.dart';
 import '../../../network/Daily/Response/ABCResponseDTO.dart';
+import '../../../network/Daily/Response/RegisterResponseDTO.dart';
 
 class RegisterScreen extends StatefulWidget {
   final bool isIncome;
@@ -286,6 +288,50 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  Future<RegisterResponseDTO?> registerTransaction(RegisterRequestDTO request) async {
+    const url = 'https://money-planet.store/api/v1/tx';
+
+    final token = await TokenStorage.getToken();
+
+    final headers = {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    };
+
+    final body = jsonEncode(request.toJson());
+
+    print('🔵 [Request URL] $url');
+    print('🟢 [Headers] $headers');
+    print('🟡 [Request Body JSON] $body');
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+
+      print('🔴 [Response Status] ${response.statusCode}');
+      print('🟣 [Response Body] ${utf8.decode(response.bodyBytes)}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return RegisterResponseDTO(
+          statusCode: response.statusCode,
+          message: data['message'] ?? '등록 성공',
+        );
+      } else {
+        return RegisterResponseDTO(
+          statusCode: response.statusCode,
+          message: '등록 실패',
+        );
+      }
+    } catch (e) {
+      print('🔥 [Exception] $e');
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -324,7 +370,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         // 그림자 깊이
                         shadowColor: secondary_300, // 그림자 색상
                       ),
-                      child: const Text('📋 붙여넣기', style: Pretendard_Semibold_16),
+                      child: const Text(
+                        '📋 붙여넣기',
+                        style: Pretendard_Semibold_16,
+                      ),
                     ),
                     const SizedBox(height: 30),
                   ],
@@ -352,7 +401,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             );
                             if (selectedTime != null) {
                               _timeController.text =
-                              "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
+                                  "${selectedTime.hour.toString().padLeft(2, '0')}:${selectedTime.minute.toString().padLeft(2, '0')}";
                             }
                           },
                         ),
@@ -365,7 +414,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     keyboardType: TextInputType.number,
                     suffixText: '원',
                     onChanged: (value) {
-                      var numericString = value.replaceAll(RegExp(r'[^0-9]'), '');
+                      var numericString = value.replaceAll(
+                        RegExp(r'[^0-9]'),
+                        '',
+                      );
                       if (numericString.isEmpty) {
                         _amountController.clear();
                         return;
@@ -471,15 +523,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       getCategoryImagePath(
                                         _categoryController.text,
                                       ),
-                                      width: 36,
-                                      height: 36,
+                                      width: 52,
+                                      height: 52,
                                       fit: BoxFit.contain,
                                     ),
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           reasonText,
@@ -500,35 +553,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                setState(() {
-                                  selectedType = 'C';
-                                  showAnalysisResult = false;
-                                });
-                              },
-                              label: const Text('확인'),
-                              style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                  horizontal: 100,
-                                ),
-                                backgroundColor: primary_400,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                foregroundColor: Colors.white,
-                              ),
-                            ),
                           ],
                         ),
                       ),
                     ],
                   ],
                   const SizedBox(height: 50),
+
+                  // TODO: 여기
                   ElevatedButton(
-                    onPressed: () {
-                      // 저장 로직 처리
+                    onPressed: () async {
+                      final request = RegisterRequestDTO(
+                        txDate: _dateController.text.trim(),
+                        type: isIncome ? 'INCOME' : 'EXPENSE',
+                        categoryId: getCategoryIdPath(_categoryController.text),
+                        abc: selectedType.isEmpty ? null : selectedType,
+                        amount: priceToInt(_amountController.text),
+                        method: _mapAssetToMethod(_assetController.text),
+                        content: _noteController.text,
+                        memo: _memoController.text,
+                        feedback: feedbackText,
+                      );
+
+                      final response = await registerTransaction(request);
+
+                      if (response != null && response.statusCode == 201) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('등록 성공!')),
+                        );
+                        Navigator.pop(context, true); // 저장 후 화면 닫기 등
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('등록 실패')),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: primary_400,
@@ -561,9 +619,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   Image.asset('assets/images/rocket1.png', width: 300),
                   const SizedBox(height: 24),
-                  const Text('AI가 분석하고 있습니다.', style: TextStyle(color: Colors.white, fontSize: 18)),
+                  const Text(
+                    'AI가 분석하고 있습니다.',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
                   const SizedBox(height: 8),
-                  const Text('로켓발사 준비 중...', style: TextStyle(color: Colors.white70)),
+                  const Text(
+                    '로켓발사 준비 중...',
+                    style: TextStyle(color: Colors.white70),
+                  ),
                 ],
               ),
             ),
@@ -721,16 +785,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String getCategoryImagePath(String category) {
     final imageMap = {
       '식비': 'assets/images/icons/category_food.png',
-      '교통/차량': 'assets/images/icons/category_transport.png',
-      '문화생활': 'assets/images/icons/category_entertainment.png',
+      '교통/차량': 'assets/images/icons/category_car.png',
+      '문화생활': 'assets/images/icons/category_culture.png',
       '마트/편의점': 'assets/images/icons/category_mart.png',
       '패션/미용': 'assets/images/icons/category_fashion.png',
-      '생활용품': 'assets/images/icons/category_mart.png',
+      '생활용품': 'assets/images/icons/category_life.png',
       '주거/통신': 'assets/images/icons/category_home.png',
       '건강': 'assets/images/icons/category_health.png',
-      '교육': 'assets/images/icons/category_mart.png',
+      '교육': 'assets/images/icons/category_education.png',
       '경조사/회비': 'assets/images/icons/category_event.png',
-      '부모님': 'assets/images/icons/category_parents.png',
+      '부모님': 'assets/images/icons/category_home.png',
       '저축성 지출': 'assets/images/icons/category_saving.png',
       '세금': 'assets/images/icons/category_tax.png',
       '반려동물': 'assets/images/icons/category_pet.png',
@@ -768,5 +832,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   int priceToInt(String price) {
     var result = price.replaceAll(',', '');
     return int.parse(result);
+  }
+
+  String _mapAssetToMethod(String input) {
+    switch (input) {
+      case '현금':
+        return 'CASH';
+      case '체크카드':
+        return 'CHECK';
+      case '신용카드':
+        return 'CREDIT';
+      case '은행계좌':
+        return 'BANK_TRANSFER';
+      default:
+        return 'UNKNOWN'; // 혹시나 예외처리를 위해
+    }
   }
 }

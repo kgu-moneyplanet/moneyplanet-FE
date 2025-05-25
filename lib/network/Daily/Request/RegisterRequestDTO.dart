@@ -2,7 +2,7 @@ class RegisterRequestDTO {
   final String txDate;
   final String type;
   final int categoryId;
-  final String abc;
+  final String? abc;
   final int amount;
   final String method;
   final String content;
