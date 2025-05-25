@@ -72,7 +72,9 @@ class _QuestionFlowState extends State<QuestionScreen> {
                     dotWidth: 10,
                     spacing: 8,
                     activeDotColor: neutral_600,
-                    dotColor: neutral_200))),
+                    dotColor: neutral_200),
+            ),
+            ),
           ),
         ],
       ),
@@ -81,9 +83,10 @@ class _QuestionFlowState extends State<QuestionScreen> {
 
   void _onAns(String k, int v) => setState(() => _answers[k] = v);
 
-  void _next() =>
-      _pageController.nextPage(
-          duration: const Duration(milliseconds: 300), curve: Curves.ease);
+  void _next() => _pageController.nextPage(
+    duration: const Duration(milliseconds: 300),
+    curve: Curves.ease,
+  );
 
   Future<void> _onDone() async {
     showDialog(
