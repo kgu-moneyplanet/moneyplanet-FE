@@ -1,9 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:money_planet/global/theme/colors.dart';
+import 'package:money_planet/global/theme/textStyles.dart';
 
 import '../../../global/components/consumption_item.dart';
-import '../model/diary_model.dart';
+import '../../../network/Daily/Response/TodayDiaryListResponseDTO.dart';
+import '../../../network/TokenStorage.dart';
 
 class DiaryCalendarScreen extends StatefulWidget {
   const DiaryCalendarScreen({super.key});
@@ -16,38 +21,26 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDate;
 
+  List<TodayDiaryListResponseDTO> todayDiaryList = [];
+  bool isLoading = false;
+
   final DateFormat _monthFormat = DateFormat('yyyy.MM');
-  Map<DateTime, bool> transactionDates = {};
 
   @override
   void initState() {
     super.initState();
     _selectedDate = _focusedDay;
-    _loadTransactionDates();
+    _fetchDiaryListByDate(_focusedDay);
   }
 
-  /// 날짜에서 시간 정보를 제거한 날짜를 반환
   DateTime normalizeDate(DateTime date) {
     return DateTime(date.year, date.month, date.day);
-  }
-
-  void _loadTransactionDates() {
-    final Map<DateTime, bool> map = {};
-    for (var item in DiaryMockData) {
-      final dateOnly = normalizeDate(item.date);
-      map[dateOnly] = true;
-    }
-
-    setState(() {
-      transactionDates = map;
-    });
   }
 
   void _goToPreviousMonth() {
     setState(() {
       _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1, 1);
       _selectedDate = null;
-      _loadTransactionDates();
     });
   }
 
@@ -55,7 +48,6 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     setState(() {
       _focusedDay = DateTime(_focusedDay.year, _focusedDay.month + 1, 1);
       _selectedDate = null;
-      _loadTransactionDates();
     });
   }
 
@@ -64,9 +56,12 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     return weekdays
         .map(
           (day) => Center(
-        child: Text(day, style: TextStyle(fontWeight: FontWeight.bold)),
-      ),
-    )
+            child: Text(
+              day,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        )
         .toList();
   }
 
@@ -80,7 +75,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
 
     return List.generate(
       lastToDisplay.difference(firstToDisplay).inDays + 1,
-          (index) => DateTime(
+      (index) => DateTime(
         firstToDisplay.year,
         firstToDisplay.month,
         firstToDisplay.day + index,
@@ -94,9 +89,9 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     return SizedBox(
       height: 320,
       child: GridView.builder(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
           mainAxisSpacing: 4,
           crossAxisSpacing: 4,
@@ -105,57 +100,39 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
         itemBuilder: (context, index) {
           final day = days[index];
           final normalizedDay = normalizeDate(day);
-          final isSelected = _selectedDate != null &&
+          final isSelected =
+              _selectedDate != null &&
               normalizeDate(_selectedDate!) == normalizedDay;
           final isToday = normalizeDate(DateTime.now()) == normalizedDay;
           final isWithinCurrentMonth = day.month == _focusedDay.month;
-          final hasTransaction = transactionDates[normalizedDay] ?? false;
 
           return GestureDetector(
             onTap: () {
+              todayDiaryList.clear();
               setState(() {
                 _selectedDate = day;
               });
+              _fetchDiaryListByDate(day);
             },
             child: Container(
               decoration: BoxDecoration(
-                color: isSelected
-                    ? Colors.blue
-                    : isToday
-                    ? Colors.blue[100]
-                    : Colors.transparent,
+                color:
+                    isSelected
+                        ? Colors.blue
+                        : isToday
+                        ? Colors.blue[100]
+                        : Colors.transparent,
                 borderRadius: BorderRadius.circular(8.0),
               ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: Text(
-                      '${day.day}',
-                      style: TextStyle(
-                        color:
-                        isWithinCurrentMonth ? Colors.black : Colors.grey,
-                        fontWeight:
+              child: Center(
+                child: Text(
+                  '${day.day}',
+                  style: TextStyle(
+                    color: isWithinCurrentMonth ? Colors.black : Colors.grey,
+                    fontWeight:
                         isSelected ? FontWeight.bold : FontWeight.normal,
-                      ),
-                    ),
                   ),
-                  if (hasTransaction)
-                    Positioned(
-                      bottom: 4,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
+                ),
               ),
             ),
           );
@@ -167,25 +144,245 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
   List<Widget> _buildTransactionList() {
     if (_selectedDate == null) return [];
 
-    final normalizedSelected = normalizeDate(_selectedDate!);
-    final selectedList = DiaryMockData.where(
-          (item) => normalizeDate(item.date) == normalizedSelected,
-    ).toList();
-
-    if (selectedList.isEmpty) {
+    if (isLoading) {
       return [
-        Padding(padding: const EdgeInsets.all(16), child: Text('거래 내역이 없습니다.')),
+        const Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(child: CircularProgressIndicator()),
+        ),
       ];
     }
 
-    return selectedList
+    if (todayDiaryList.isEmpty) {
+      return [
+        const Padding(padding: EdgeInsets.all(16), child: Text('거래 내역이 없습니다.')),
+      ];
+    }
+
+    return todayDiaryList
         .map(
           (item) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: ConsumptionItem(item: item),
-      ),
-    )
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: GestureDetector(
+              onTap: () => _showDiaryDetailModal(item),
+              child: ConsumptionItem(item: item),
+            ),
+          ),
+        )
         .toList();
+  }
+
+  Future<void> _fetchDiaryListByDate(DateTime selectedDate) async {
+    try {
+      setState(() => isLoading = true);
+      final token = await TokenStorage.getToken();
+      final formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+      final url = Uri.parse(
+        'https://money-planet.store/api/v1/tx/list/$formattedDate',
+      );
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      final decodedBody = utf8.decode(response.bodyBytes);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(decodedBody);
+        final dataList = json['data'];
+
+        if (dataList != null && dataList is List) {
+          final parsedList =
+              dataList
+                  .map((e) => TodayDiaryListResponseDTO.fromJson(e))
+                  .toList();
+
+          setState(() {
+            todayDiaryList = parsedList;
+          });
+        } else {
+          setState(() {
+            todayDiaryList = [];
+          });
+        }
+      }
+    } catch (e) {
+      print('🔥 [Exception] $e');
+    } finally {
+      setState(() => isLoading = false);
+    }
+  }
+
+  void _showDiaryDetailModal(TodayDiaryListResponseDTO item) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Wrap(
+              runSpacing: 12,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 5,
+                    color: Colors.grey[300],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  '상세 내역',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const Divider(),
+                Row(
+                  children: [
+                    Text('🛍️ 타입: ', style: Pretendard_Semibold_16),
+                    const SizedBox(width: 10),
+                    Text(item.type == 'EXPENSE' ? '지출' : '수입'),
+                  ],
+                ),
+                SizedBox(height: 8),
+
+                Row(
+                  children: [
+                    Text('📌 내용: ', style: Pretendard_Semibold_16),
+                    const SizedBox(width: 10),
+                    Text(item.content),
+                  ],
+                ),
+                SizedBox(height: 8),
+
+                Row(
+                  children: [
+                    Text('💸 금액:', style: Pretendard_Semibold_16),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${NumberFormat('#,###').format(item.amount)}원',
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 8),
+
+                Row(
+                  children: [
+                    Text('👍 소비방법:', style: Pretendard_Semibold_16),
+                    const SizedBox(width: 10),
+                    Text(_mapAssetToMethod(item.method)),
+                  ],
+                ),
+
+                SizedBox(height: 8),
+
+                Row(
+                  children: [
+                    Text('📁 카테고리:', style: Pretendard_Semibold_16),
+                    const SizedBox(width: 10),
+                    Text(
+                      getCategoryNameById(item.categoryId),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 8),
+
+                if (item.memo.isNotEmpty) ...[
+                  Row(
+                    children: [
+                      Text('📝 메모:', style: Pretendard_Semibold_16),
+                      const SizedBox(width: 10),
+                      Text(item.memo,),
+                    ],
+                  ),
+                ],
+
+                const Divider(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '🧠 소비 리포트',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 20),
+
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 10,
+                      children: [
+                        Text('ABC 타입 :', style: Pretendard_Semibold_16),
+                        Expanded(child: Text(item.reportResponseDto?.abc ?? '없음', softWrap: true,)),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 10,
+                      children: [
+                        Text('피드백:', style: Pretendard_Semibold_16),
+                        Expanded(child: Text(item.reportResponseDto?.feedback ?? '없음', softWrap: true)),
+                      ],
+                    ),
+
+                    SizedBox(height: 30,)
+                  ],
+                ),
+
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String _mapAssetToMethod(String input) {
+    switch (input) {
+      case 'CASH':
+        return '현금';
+      case 'CHECK':
+        return '체크카드';
+      case 'CREDIT':
+        return '신용카드';
+      case 'BANK_TRANSFER':
+        return '은행계좌';
+      default:
+        return 'UNKNOWN'; // 혹시나 예외처리를 위해
+    }
+  }
+
+  String getCategoryNameById(int categoryId) {
+    final categoryNameMap = {
+      1: '식비',
+      2: '교통/차량',
+      3: '문화생활',
+      4: '마트/편의점',
+      5: '패션/미용',
+      6: '생활용품',
+      7: '주거/통신',
+      8: '건강',
+      9: '교육',
+      10: '경조사/회비',
+      11: '부모님',
+      12: '저축성 지출',
+      13: '세금',
+      14: '반려동물',
+      15: '기타',
+      16: '월급',
+    };
+    return categoryNameMap[categoryId] ?? '기타';
   }
 
   @override
@@ -193,7 +390,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     return Scaffold(
       backgroundColor: neutral_900,
       appBar: AppBar(
-        title: Text('캘린더', style: TextStyle(color: Colors.white)),
+        title: const Text('캘린더', style: TextStyle(color: Colors.white)),
         backgroundColor: neutral_900,
         foregroundColor: Colors.white,
       ),
@@ -202,7 +399,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
           constraints: BoxConstraints(
             minHeight: MediaQuery.of(context).size.height,
           ),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
             color: Colors.white,
           ),
@@ -214,15 +411,15 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     IconButton(
-                      icon: Icon(Icons.arrow_back),
+                      icon: const Icon(Icons.arrow_back),
                       onPressed: _goToPreviousMonth,
                     ),
                     Text(
                       _monthFormat.format(_focusedDay),
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                     IconButton(
-                      icon: Icon(Icons.arrow_forward),
+                      icon: const Icon(Icons.arrow_forward),
                       onPressed: _goToNextMonth,
                     ),
                   ],
@@ -231,11 +428,12 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
               GridView.count(
                 crossAxisCount: 7,
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: _buildDayHeaders(),
               ),
               _buildDateGrid(),
               if (_selectedDate != null) ..._buildTransactionList(),
+              const SizedBox(height: 50),
             ],
           ),
         ),

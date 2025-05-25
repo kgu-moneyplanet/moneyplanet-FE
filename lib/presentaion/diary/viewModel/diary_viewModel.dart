@@ -1,11 +1,6 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 import '../../../network/Daily/Response/DailyCategoryResponseDTO.dart';
-import '../../../network/TokenStorage.dart';
 import '../model/diary_model.dart';
 
 class DiaryViewModel {
@@ -25,7 +20,7 @@ class DiaryViewModel {
 
     // 최신 날짜가 위에 오도록 정렬
     final sortedEntries =
-    grouped.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
+        grouped.entries.toList()..sort((a, b) => b.key.compareTo(a.key));
 
     return Map.fromEntries(sortedEntries);
   }
