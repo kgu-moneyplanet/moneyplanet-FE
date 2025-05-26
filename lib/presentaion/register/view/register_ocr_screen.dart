@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:money_planet/global/theme/textStyles.dart';
 import 'package:path_provider/path_provider.dart';
 
 class RegisterOcrScreen extends StatefulWidget {
@@ -103,7 +104,7 @@ class _RegisterOcrScreenState extends State<RegisterOcrScreen> {
             if (!bload)
               Expanded(
                 child: SingleChildScrollView(
-                  child: Text(_ocrText, style: const TextStyle(fontSize: 16)),
+                  child: Text(_ocrText, style: customTextStyle(fontFamily: Pretendard_Medium_16)),
                 ),
               ),
             Container(
