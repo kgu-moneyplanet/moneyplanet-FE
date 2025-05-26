@@ -26,7 +26,7 @@ Future<MyPageResponseDTO?> fetchMyPageData() async {
     print('응답 코드: ${response.statusCode}');
     print('응답 본문: ${response.body}');
 
-    final jsonData = json.decode(response.body);
+    final jsonData = json.decode(utf8.decode(response.bodyBytes));
 
     if (response.statusCode == 200) {
       if (jsonData['data'] == null) {

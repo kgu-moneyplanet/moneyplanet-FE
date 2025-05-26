@@ -40,7 +40,7 @@ class DailyABCAnalysisViewModel extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final jsonMap = jsonDecode(response.body);
+        final jsonMap = jsonDecode(utf8.decode(response.bodyBytes));
         final dto = DailyAbcStatResponseDTO.fromJson(jsonMap);
         if (dto.statusCode == 200 && dto.data != null) {
           _abcStat = dto.data; // 바로 할당 가능

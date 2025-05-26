@@ -28,7 +28,7 @@ class WeeklyAnalysisViewModel extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
+        final jsonData = json.decode(utf8.decode(response.bodyBytes));
 
         final weeklyResponse = WeeklyAnalysisResponse.fromJson(jsonData);
 

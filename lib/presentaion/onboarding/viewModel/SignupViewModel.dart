@@ -50,7 +50,7 @@ class SignUpViewModel {
       if (res.statusCode == 201) {
         return null;
       } else {
-        final j = jsonDecode(res.body);
+        final j = jsonDecode(utf8.decode(res.bodyBytes));
         return SignUpFailureResponseDTO(
           statusCode: res.statusCode,
           message: j['message'] ?? '회원가입 실패',

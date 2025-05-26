@@ -45,7 +45,9 @@ class DailyAnalysisViewModel extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final responseDTO = DailyAnalysisResponse.fromJson(json.decode(response.body));
+        final responseDTO = DailyAnalysisResponse.fromJson(
+          json.decode(utf8.decode(response.bodyBytes)),
+        );
 
         if (responseDTO.statusCode == 200 && responseDTO.data != null) {
           _dailyData = responseDTO.data!.sumStatList;

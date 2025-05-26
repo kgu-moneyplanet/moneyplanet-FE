@@ -27,7 +27,7 @@ class MonthlyAnalysisViewModel extends ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body);
+        final jsonData = json.decode(utf8.decode(response.bodyBytes));
 
         final monthlyResponse = MonthlyAnalysisResponse.fromJson(jsonData);
 
@@ -42,7 +42,7 @@ class MonthlyAnalysisViewModel extends ChangeNotifier {
           monthlyData = null;
         }
       } else if (response.statusCode == 401) {
-        errorMessage = '유효하지 않은 토큰입니다. 다시 로그인 해주세요.';
+        errorMessage = '유효하지 않은 토큰입니다. 다시 로그인 해주세요..';
         monthlyData = null;
       } else if (response.statusCode == 404) {
         errorMessage = '사용자를 찾을 수 없습니다.';
